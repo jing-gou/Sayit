@@ -1,0 +1,91 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="org.sayit.voiceime"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="26"
+9        android:targetSdkVersion="34" />
+10
+11    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+11-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:3:5-71
+11-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:3:22-68
+12
+13    <permission
+13-->[androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\8bf70c00bb095dc8f2d5566b6ce6ea4d\transformed\core-1.12.0\AndroidManifest.xml:22:5-24:47
+14        android:name="org.sayit.voiceime.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+14-->[androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\8bf70c00bb095dc8f2d5566b6ce6ea4d\transformed\core-1.12.0\AndroidManifest.xml:23:9-81
+15        android:protectionLevel="signature" />
+15-->[androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\8bf70c00bb095dc8f2d5566b6ce6ea4d\transformed\core-1.12.0\AndroidManifest.xml:24:9-44
+16
+17    <uses-permission android:name="org.sayit.voiceime.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+17-->[androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\8bf70c00bb095dc8f2d5566b6ce6ea4d\transformed\core-1.12.0\AndroidManifest.xml:26:5-97
+17-->[androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\8bf70c00bb095dc8f2d5566b6ce6ea4d\transformed\core-1.12.0\AndroidManifest.xml:26:22-94
+18
+19    <application
+19-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:5:5-23:19
+20        android:allowBackup="false"
+20-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:6:9-36
+21        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+21-->[androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\8bf70c00bb095dc8f2d5566b6ce6ea4d\transformed\core-1.12.0\AndroidManifest.xml:28:18-86
+22        android:debuggable="true"
+23        android:extractNativeLibs="false"
+24        android:icon="@mipmap/ic_launcher"
+24-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:7:9-43
+25        android:label="@string/app_name"
+25-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:9:9-41
+26        android:roundIcon="@mipmap/ic_launcher_round"
+26-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:8:9-54
+27        android:supportsRtl="true"
+27-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:10:9-35
+28        android:testOnly="true"
+29        android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+29-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:11:9-68
+30        <service
+30-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:13:9-21:19
+31            android:name="org.sayit.voiceime.VoiceKeyboard"
+31-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:14:13-60
+32            android:exported="true"
+32-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:16:13-36
+33            android:permission="android.permission.BIND_INPUT_METHOD" >
+33-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:15:13-70
+34            <intent-filter>
+34-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:17:13-19:29
+35                <action android:name="android.view.InputMethod" />
+35-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:18:17-67
+35-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:18:25-64
+36            </intent-filter>
+37
+38            <meta-data
+38-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:20:13-88
+39                android:name="android.view.im"
+39-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:20:24-54
+40                android:resource="@xml/method" />
+40-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:20:55-85
+41        </service>
+42
+43        <provider
+43-->[androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\e3f88e92f3777697484fa17edefc4fac\transformed\emoji2-1.2.0\AndroidManifest.xml:24:9-32:20
+44            android:name="androidx.startup.InitializationProvider"
+44-->[androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\e3f88e92f3777697484fa17edefc4fac\transformed\emoji2-1.2.0\AndroidManifest.xml:25:13-67
+45            android:authorities="org.sayit.voiceime.androidx-startup"
+45-->[androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\e3f88e92f3777697484fa17edefc4fac\transformed\emoji2-1.2.0\AndroidManifest.xml:26:13-68
+46            android:exported="false" >
+46-->[androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\e3f88e92f3777697484fa17edefc4fac\transformed\emoji2-1.2.0\AndroidManifest.xml:27:13-37
+47            <meta-data
+47-->[androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\e3f88e92f3777697484fa17edefc4fac\transformed\emoji2-1.2.0\AndroidManifest.xml:29:13-31:52
+48                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+48-->[androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\e3f88e92f3777697484fa17edefc4fac\transformed\emoji2-1.2.0\AndroidManifest.xml:30:17-75
+49                android:value="androidx.startup" />
+49-->[androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\e3f88e92f3777697484fa17edefc4fac\transformed\emoji2-1.2.0\AndroidManifest.xml:31:17-49
+50            <meta-data
+50-->[androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\38dfb6950c941b6b6660bba94973d9b7\transformed\lifecycle-process-2.4.1\AndroidManifest.xml:31:13-33:52
+51                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+51-->[androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\38dfb6950c941b6b6660bba94973d9b7\transformed\lifecycle-process-2.4.1\AndroidManifest.xml:32:17-78
+52                android:value="androidx.startup" />
+52-->[androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\38dfb6950c941b6b6660bba94973d9b7\transformed\lifecycle-process-2.4.1\AndroidManifest.xml:33:17-49
+53        </provider>
+54    </application>
+55
+56</manifest>
