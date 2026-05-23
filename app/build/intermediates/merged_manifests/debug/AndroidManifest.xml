@@ -40,6 +40,11 @@
                 android:resource="@xml/method" />
         </service>
 
+        <activity
+            android:name="org.sayit.voiceime.PermissionActivity"
+            android:exported="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="org.sayit.voiceime.androidx-startup"

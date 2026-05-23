@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(powershell.exe -Command \"Get-ChildItem 'C:\\\\Program Files' -Directory | Where-Object {$_.Name -like '*Java*' -or $_.Name -like '*JDK*'}\")"
+    ]
+  }
+}

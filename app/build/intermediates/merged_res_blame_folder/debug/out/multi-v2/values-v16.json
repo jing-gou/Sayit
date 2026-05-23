@@ -4,17 +4,7 @@
             "outputFile": "org.sayit.voiceime.app-mergeDebugResources-18:/values-v16/values-v16.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\sugar\\.gradle\\caches\\9.0.0\\transforms\\8bf70c00bb095dc8f2d5566b6ce6ea4d\\transformed\\core-1.12.0\\res\\values-v16\\values-v16.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "55",
-                        "endColumns": "65",
-                        "endOffsets": "116"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\sugar\\.gradle\\caches\\9.0.0\\transforms\\817a8fc399c34af8b42c9d02703f002d\\transformed\\appcompat-1.6.1\\res\\values-v16\\values-v16.xml",
+                    "source": "C:\\Users\\sugar\\.gradle\\caches\\transforms-3\\e65e910e4ec5adc97b96d6ead3e36f95\\transformed\\appcompat-1.6.1\\res\\values-v16\\values-v16.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
@@ -30,6 +20,16 @@
                         "endLines": "6",
                         "endColumns": "12",
                         "endOffsets": "289"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\sugar\\.gradle\\caches\\transforms-3\\616bb398902fce19df3238f6a0dfec56\\transformed\\core-1.12.0\\res\\values-v16\\values-v16.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "65",
+                        "endOffsets": "116"
                     }
                 }
             ]
