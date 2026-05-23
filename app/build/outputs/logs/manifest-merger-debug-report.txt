@@ -1,37 +1,37 @@
 -- Merging decision tree log ---
 manifest
-ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:1:1-25:12
-INJECTED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:1:1-25:12
-INJECTED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:1:1-25:12
-INJECTED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:1:1-25:12
-MERGED from [androidx.appcompat:appcompat-resources:1.6.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\5a2803e8d485de33f9f3049feb070a34\transformed\appcompat-resources-1.6.1\AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.appcompat:appcompat:1.6.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\817a8fc399c34af8b42c9d02703f002d\transformed\appcompat-1.6.1\AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.fragment:fragment:1.3.6] C:\Users\sugar\.gradle\caches\9.0.0\transforms\9c98fe44346c2f260e3ab8346ade20bf\transformed\fragment-1.3.6\AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.activity:activity:1.6.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\de4e380c9cfd59a5d7519b2fc0685772\transformed\activity-1.6.0\AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\99814e9c2a8f15aebcf72636762c5d51\transformed\drawerlayout-1.0.0\AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.emoji2:emoji2-views-helper:1.2.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\95e3a9da4825a50a3a2753f0c6bf1027\transformed\emoji2-views-helper-1.2.0\AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\e3f88e92f3777697484fa17edefc4fac\transformed\emoji2-1.2.0\AndroidManifest.xml:17:1-35:12
-MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\0a28c017773b8fdc866582de071526f8\transformed\vectordrawable-animated-1.1.0\AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\6f0bbb1f89eb7e81de5ba21453f15993\transformed\vectordrawable-1.1.0\AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.viewpager:viewpager:1.0.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\cd891659331fe1abfa40365ba9a021cb\transformed\viewpager-1.0.0\AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.customview:customview:1.0.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\d35f73d5af5cd37256e04c9160e1a438\transformed\customview-1.0.0\AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.loader:loader:1.0.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\13088c994f766068834995533c4c6674\transformed\loader-1.0.0\AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\8bf70c00bb095dc8f2d5566b6ce6ea4d\transformed\core-1.12.0\AndroidManifest.xml:17:1-30:12
-MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.5.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\ab697b028e520922793d57f2757d1c2c\transformed\lifecycle-viewmodel-2.5.1\AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.5.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\fd46151b7d29d85590d001f4a7db3f0f\transformed\lifecycle-viewmodel-savedstate-2.5.1\AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.core:core-ktx:1.12.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\b0936532e9fcc5560f3d99ebdab08657\transformed\core-ktx-1.12.0\AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\83978eca1adf2e69d2c8349bb9ddeeb0\transformed\cursoradapter-1.0.0\AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\38dfb6950c941b6b6660bba94973d9b7\transformed\lifecycle-process-2.4.1\AndroidManifest.xml:17:1-37:12
-MERGED from [androidx.lifecycle:lifecycle-runtime:2.5.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\0fd6eeb35eed943a7a2f868970995e0d\transformed\lifecycle-runtime-2.5.1\AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.savedstate:savedstate:1.2.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\f9fc84e0d9fa667d57ad909e3965281b\transformed\savedstate-1.2.0\AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\29eb7234343af0d704f73fff17df9b50\transformed\startup-runtime-1.1.1\AndroidManifest.xml:17:1-33:12
-MERGED from [androidx.tracing:tracing:1.0.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\bf5cfecd3e7ca4b69b8ecac94e7cf3b5\transformed\tracing-1.0.0\AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\d45082db77335c28f280766b0ec8ff44\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:17:1-27:12
-MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\cf3230911103bc037ff1e6998375e9bb\transformed\lifecycle-livedata-2.0.0\AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.5.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\cb996ad9ffa062b99c57a7719d419e2b\transformed\lifecycle-livedata-core-2.5.1\AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.arch.core:core-runtime:2.1.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\5873ee7afd1cf5b0ec88ed73bd6d8059\transformed\core-runtime-2.1.0\AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.interpolator:interpolator:1.0.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\f2d86505d5c67ee49fda3436a002d3b4\transformed\interpolator-1.0.0\AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.annotation:annotation-experimental:1.3.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\cc87990f7c879aa1dff542e2ad87892b\transformed\annotation-experimental-1.3.0\AndroidManifest.xml:17:1-22:12
+ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:1:1-30:12
+INJECTED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:1:1-30:12
+INJECTED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:1:1-30:12
+INJECTED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:1:1-30:12
+MERGED from [androidx.appcompat:appcompat-resources:1.6.1] C:\Users\sugar\.gradle\caches\transforms-3\90155728aa5f09913b1d91c3df630b8e\transformed\appcompat-resources-1.6.1\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.appcompat:appcompat:1.6.1] C:\Users\sugar\.gradle\caches\transforms-3\e65e910e4ec5adc97b96d6ead3e36f95\transformed\appcompat-1.6.1\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.fragment:fragment:1.3.6] C:\Users\sugar\.gradle\caches\transforms-3\e5e85012be8ac4f0a88a1966ffaa7e25\transformed\fragment-1.3.6\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.activity:activity:1.6.0] C:\Users\sugar\.gradle\caches\transforms-3\0040ecdc412ec9d633e6021390459615\transformed\activity-1.6.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] C:\Users\sugar\.gradle\caches\transforms-3\2d1722d4f2bea05667526ca5c85bce0b\transformed\drawerlayout-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.emoji2:emoji2-views-helper:1.2.0] C:\Users\sugar\.gradle\caches\transforms-3\e9536f3968951e96816a57cc8ab12fb7\transformed\emoji2-views-helper-1.2.0\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\transforms-3\17145ca61afd1cebdd0409bd190b98e6\transformed\emoji2-1.2.0\AndroidManifest.xml:17:1-35:12
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] C:\Users\sugar\.gradle\caches\transforms-3\2e748ee02fbbd946c5f5e593c36d0e51\transformed\vectordrawable-animated-1.1.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] C:\Users\sugar\.gradle\caches\transforms-3\276bb89b0823e1c2b1f5bf19f18e0a2e\transformed\vectordrawable-1.1.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.viewpager:viewpager:1.0.0] C:\Users\sugar\.gradle\caches\transforms-3\01b296cea94c80b6a2d9170d6fc5869e\transformed\viewpager-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.customview:customview:1.0.0] C:\Users\sugar\.gradle\caches\transforms-3\3f018c40e3764fb9881404df30116d43\transformed\customview-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.loader:loader:1.0.0] C:\Users\sugar\.gradle\caches\transforms-3\5bc1f33456849c78496b63c43752cb68\transformed\loader-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\transforms-3\616bb398902fce19df3238f6a0dfec56\transformed\core-1.12.0\AndroidManifest.xml:17:1-30:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.5.1] C:\Users\sugar\.gradle\caches\transforms-3\c88b5aa56285190b68ad8e0f68a2b1a1\transformed\lifecycle-viewmodel-2.5.1\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.5.1] C:\Users\sugar\.gradle\caches\transforms-3\6677bb5e58f0f6408ae7ba26ca198d95\transformed\lifecycle-viewmodel-savedstate-2.5.1\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.core:core-ktx:1.12.0] C:\Users\sugar\.gradle\caches\transforms-3\eadef290daf6c943baabf4cc556f071a\transformed\core-ktx-1.12.0\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.savedstate:savedstate:1.2.0] C:\Users\sugar\.gradle\caches\transforms-3\4decfafe4ba4e481f5a106e003974368\transformed\savedstate-1.2.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.annotation:annotation-experimental:1.3.0] C:\Users\sugar\.gradle\caches\transforms-3\59c2105186c0bc8e9b55a6d40dcc00ce\transformed\annotation-experimental-1.3.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] C:\Users\sugar\.gradle\caches\transforms-3\2187b14303de0daeb368c69b8bb70d05\transformed\cursoradapter-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\sugar\.gradle\caches\transforms-3\955c7fc5548f3c801d17c5041b446b2b\transformed\lifecycle-process-2.4.1\AndroidManifest.xml:17:1-37:12
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.5.1] C:\Users\sugar\.gradle\caches\transforms-3\3c45fa7ae47d32ce60a98c09c4a2388f\transformed\lifecycle-runtime-2.5.1\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\sugar\.gradle\caches\transforms-3\f4b49ca36ac530d1ef17351b8addf73b\transformed\startup-runtime-1.1.1\AndroidManifest.xml:17:1-33:12
+MERGED from [androidx.tracing:tracing:1.0.0] C:\Users\sugar\.gradle\caches\transforms-3\27fce6ffc629f90a0e26f4ce7cbd7f11\transformed\tracing-1.0.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\sugar\.gradle\caches\transforms-3\8b92cdc65806c8dec4eec7a8d0c291f2\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:17:1-27:12
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] C:\Users\sugar\.gradle\caches\transforms-3\22fea7b56c18df774e35d9e44270c916\transformed\lifecycle-livedata-2.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.5.1] C:\Users\sugar\.gradle\caches\transforms-3\3c450fb14e8322dc5b51d97659aa19c0\transformed\lifecycle-livedata-core-2.5.1\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.arch.core:core-runtime:2.1.0] C:\Users\sugar\.gradle\caches\transforms-3\82e7fca43e1ed44030c015de99abc429\transformed\core-runtime-2.1.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.interpolator:interpolator:1.0.0] C:\Users\sugar\.gradle\caches\transforms-3\fdf7e35b11cb73969b146de1e05d8064\transformed\interpolator-1.0.0\AndroidManifest.xml:17:1-22:12
 	package
 		INJECTED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml
 	android:versionName
@@ -45,22 +45,22 @@ ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:3:5-71
 	android:name
 		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:3:22-68
 application
-ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:5:5-23:19
-INJECTED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:5:5-23:19
-MERGED from [androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\e3f88e92f3777697484fa17edefc4fac\transformed\emoji2-1.2.0\AndroidManifest.xml:23:5-33:19
-MERGED from [androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\e3f88e92f3777697484fa17edefc4fac\transformed\emoji2-1.2.0\AndroidManifest.xml:23:5-33:19
-MERGED from [androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\8bf70c00bb095dc8f2d5566b6ce6ea4d\transformed\core-1.12.0\AndroidManifest.xml:28:5-89
-MERGED from [androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\8bf70c00bb095dc8f2d5566b6ce6ea4d\transformed\core-1.12.0\AndroidManifest.xml:28:5-89
-MERGED from [androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\38dfb6950c941b6b6660bba94973d9b7\transformed\lifecycle-process-2.4.1\AndroidManifest.xml:25:5-35:19
-MERGED from [androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\38dfb6950c941b6b6660bba94973d9b7\transformed\lifecycle-process-2.4.1\AndroidManifest.xml:25:5-35:19
-MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\29eb7234343af0d704f73fff17df9b50\transformed\startup-runtime-1.1.1\AndroidManifest.xml:25:5-31:19
-MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\29eb7234343af0d704f73fff17df9b50\transformed\startup-runtime-1.1.1\AndroidManifest.xml:25:5-31:19
-MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\d45082db77335c28f280766b0ec8ff44\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:24:5-25:19
-MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\d45082db77335c28f280766b0ec8ff44\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:24:5-25:19
+ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:5:5-28:19
+INJECTED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:5:5-28:19
+MERGED from [androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\transforms-3\17145ca61afd1cebdd0409bd190b98e6\transformed\emoji2-1.2.0\AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\transforms-3\17145ca61afd1cebdd0409bd190b98e6\transformed\emoji2-1.2.0\AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\transforms-3\616bb398902fce19df3238f6a0dfec56\transformed\core-1.12.0\AndroidManifest.xml:28:5-89
+MERGED from [androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\transforms-3\616bb398902fce19df3238f6a0dfec56\transformed\core-1.12.0\AndroidManifest.xml:28:5-89
+MERGED from [androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\sugar\.gradle\caches\transforms-3\955c7fc5548f3c801d17c5041b446b2b\transformed\lifecycle-process-2.4.1\AndroidManifest.xml:25:5-35:19
+MERGED from [androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\sugar\.gradle\caches\transforms-3\955c7fc5548f3c801d17c5041b446b2b\transformed\lifecycle-process-2.4.1\AndroidManifest.xml:25:5-35:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\sugar\.gradle\caches\transforms-3\f4b49ca36ac530d1ef17351b8addf73b\transformed\startup-runtime-1.1.1\AndroidManifest.xml:25:5-31:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\sugar\.gradle\caches\transforms-3\f4b49ca36ac530d1ef17351b8addf73b\transformed\startup-runtime-1.1.1\AndroidManifest.xml:25:5-31:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\sugar\.gradle\caches\transforms-3\8b92cdc65806c8dec4eec7a8d0c291f2\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\sugar\.gradle\caches\transforms-3\8b92cdc65806c8dec4eec7a8d0c291f2\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:24:5-25:19
 	android:extractNativeLibs
 		INJECTED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml
 	android:appComponentFactory
-		ADDED from [androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\8bf70c00bb095dc8f2d5566b6ce6ea4d\transformed\core-1.12.0\AndroidManifest.xml:28:18-86
+		ADDED from [androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\transforms-3\616bb398902fce19df3238f6a0dfec56\transformed\core-1.12.0\AndroidManifest.xml:28:18-86
 	android:supportsRtl
 		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:10:9-35
 	android:label
@@ -93,113 +93,121 @@ ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:20:13-88
 		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:20:55-85
 	android:name
 		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:20:24-54
+activity#org.sayit.voiceime.PermissionActivity
+ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:23:9-26:39
+	android:exported
+		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:26:13-36
+	android:theme
+		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:25:13-72
+	android:name
+		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:24:13-65
 uses-sdk
 INJECTED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml
 INJECTED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml
-MERGED from [androidx.appcompat:appcompat-resources:1.6.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\5a2803e8d485de33f9f3049feb070a34\transformed\appcompat-resources-1.6.1\AndroidManifest.xml:20:5-44
-MERGED from [androidx.appcompat:appcompat-resources:1.6.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\5a2803e8d485de33f9f3049feb070a34\transformed\appcompat-resources-1.6.1\AndroidManifest.xml:20:5-44
-MERGED from [androidx.appcompat:appcompat:1.6.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\817a8fc399c34af8b42c9d02703f002d\transformed\appcompat-1.6.1\AndroidManifest.xml:20:5-44
-MERGED from [androidx.appcompat:appcompat:1.6.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\817a8fc399c34af8b42c9d02703f002d\transformed\appcompat-1.6.1\AndroidManifest.xml:20:5-44
-MERGED from [androidx.fragment:fragment:1.3.6] C:\Users\sugar\.gradle\caches\9.0.0\transforms\9c98fe44346c2f260e3ab8346ade20bf\transformed\fragment-1.3.6\AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.fragment:fragment:1.3.6] C:\Users\sugar\.gradle\caches\9.0.0\transforms\9c98fe44346c2f260e3ab8346ade20bf\transformed\fragment-1.3.6\AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.activity:activity:1.6.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\de4e380c9cfd59a5d7519b2fc0685772\transformed\activity-1.6.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.activity:activity:1.6.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\de4e380c9cfd59a5d7519b2fc0685772\transformed\activity-1.6.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\99814e9c2a8f15aebcf72636762c5d51\transformed\drawerlayout-1.0.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\99814e9c2a8f15aebcf72636762c5d51\transformed\drawerlayout-1.0.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.emoji2:emoji2-views-helper:1.2.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\95e3a9da4825a50a3a2753f0c6bf1027\transformed\emoji2-views-helper-1.2.0\AndroidManifest.xml:5:5-44
-MERGED from [androidx.emoji2:emoji2-views-helper:1.2.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\95e3a9da4825a50a3a2753f0c6bf1027\transformed\emoji2-views-helper-1.2.0\AndroidManifest.xml:5:5-44
-MERGED from [androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\e3f88e92f3777697484fa17edefc4fac\transformed\emoji2-1.2.0\AndroidManifest.xml:21:5-44
-MERGED from [androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\e3f88e92f3777697484fa17edefc4fac\transformed\emoji2-1.2.0\AndroidManifest.xml:21:5-44
-MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\0a28c017773b8fdc866582de071526f8\transformed\vectordrawable-animated-1.1.0\AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\0a28c017773b8fdc866582de071526f8\transformed\vectordrawable-animated-1.1.0\AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\6f0bbb1f89eb7e81de5ba21453f15993\transformed\vectordrawable-1.1.0\AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\6f0bbb1f89eb7e81de5ba21453f15993\transformed\vectordrawable-1.1.0\AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.viewpager:viewpager:1.0.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\cd891659331fe1abfa40365ba9a021cb\transformed\viewpager-1.0.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.viewpager:viewpager:1.0.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\cd891659331fe1abfa40365ba9a021cb\transformed\viewpager-1.0.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.customview:customview:1.0.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\d35f73d5af5cd37256e04c9160e1a438\transformed\customview-1.0.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.customview:customview:1.0.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\d35f73d5af5cd37256e04c9160e1a438\transformed\customview-1.0.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.loader:loader:1.0.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\13088c994f766068834995533c4c6674\transformed\loader-1.0.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.loader:loader:1.0.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\13088c994f766068834995533c4c6674\transformed\loader-1.0.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\8bf70c00bb095dc8f2d5566b6ce6ea4d\transformed\core-1.12.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\8bf70c00bb095dc8f2d5566b6ce6ea4d\transformed\core-1.12.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.5.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\ab697b028e520922793d57f2757d1c2c\transformed\lifecycle-viewmodel-2.5.1\AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.5.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\ab697b028e520922793d57f2757d1c2c\transformed\lifecycle-viewmodel-2.5.1\AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.5.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\fd46151b7d29d85590d001f4a7db3f0f\transformed\lifecycle-viewmodel-savedstate-2.5.1\AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.5.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\fd46151b7d29d85590d001f4a7db3f0f\transformed\lifecycle-viewmodel-savedstate-2.5.1\AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.core:core-ktx:1.12.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\b0936532e9fcc5560f3d99ebdab08657\transformed\core-ktx-1.12.0\AndroidManifest.xml:5:5-44
-MERGED from [androidx.core:core-ktx:1.12.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\b0936532e9fcc5560f3d99ebdab08657\transformed\core-ktx-1.12.0\AndroidManifest.xml:5:5-44
-MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\83978eca1adf2e69d2c8349bb9ddeeb0\transformed\cursoradapter-1.0.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\83978eca1adf2e69d2c8349bb9ddeeb0\transformed\cursoradapter-1.0.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\38dfb6950c941b6b6660bba94973d9b7\transformed\lifecycle-process-2.4.1\AndroidManifest.xml:21:5-23:41
-MERGED from [androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\38dfb6950c941b6b6660bba94973d9b7\transformed\lifecycle-process-2.4.1\AndroidManifest.xml:21:5-23:41
-MERGED from [androidx.lifecycle:lifecycle-runtime:2.5.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\0fd6eeb35eed943a7a2f868970995e0d\transformed\lifecycle-runtime-2.5.1\AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.lifecycle:lifecycle-runtime:2.5.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\0fd6eeb35eed943a7a2f868970995e0d\transformed\lifecycle-runtime-2.5.1\AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.savedstate:savedstate:1.2.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\f9fc84e0d9fa667d57ad909e3965281b\transformed\savedstate-1.2.0\AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.savedstate:savedstate:1.2.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\f9fc84e0d9fa667d57ad909e3965281b\transformed\savedstate-1.2.0\AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\29eb7234343af0d704f73fff17df9b50\transformed\startup-runtime-1.1.1\AndroidManifest.xml:21:5-23:41
-MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\29eb7234343af0d704f73fff17df9b50\transformed\startup-runtime-1.1.1\AndroidManifest.xml:21:5-23:41
-MERGED from [androidx.tracing:tracing:1.0.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\bf5cfecd3e7ca4b69b8ecac94e7cf3b5\transformed\tracing-1.0.0\AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.tracing:tracing:1.0.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\bf5cfecd3e7ca4b69b8ecac94e7cf3b5\transformed\tracing-1.0.0\AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\d45082db77335c28f280766b0ec8ff44\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\d45082db77335c28f280766b0ec8ff44\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\cf3230911103bc037ff1e6998375e9bb\transformed\lifecycle-livedata-2.0.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\cf3230911103bc037ff1e6998375e9bb\transformed\lifecycle-livedata-2.0.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.5.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\cb996ad9ffa062b99c57a7719d419e2b\transformed\lifecycle-livedata-core-2.5.1\AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.5.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\cb996ad9ffa062b99c57a7719d419e2b\transformed\lifecycle-livedata-core-2.5.1\AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.arch.core:core-runtime:2.1.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\5873ee7afd1cf5b0ec88ed73bd6d8059\transformed\core-runtime-2.1.0\AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.arch.core:core-runtime:2.1.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\5873ee7afd1cf5b0ec88ed73bd6d8059\transformed\core-runtime-2.1.0\AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.interpolator:interpolator:1.0.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\f2d86505d5c67ee49fda3436a002d3b4\transformed\interpolator-1.0.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.interpolator:interpolator:1.0.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\f2d86505d5c67ee49fda3436a002d3b4\transformed\interpolator-1.0.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.annotation:annotation-experimental:1.3.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\cc87990f7c879aa1dff542e2ad87892b\transformed\annotation-experimental-1.3.0\AndroidManifest.xml:20:5-44
-MERGED from [androidx.annotation:annotation-experimental:1.3.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\cc87990f7c879aa1dff542e2ad87892b\transformed\annotation-experimental-1.3.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.appcompat:appcompat-resources:1.6.1] C:\Users\sugar\.gradle\caches\transforms-3\90155728aa5f09913b1d91c3df630b8e\transformed\appcompat-resources-1.6.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.appcompat:appcompat-resources:1.6.1] C:\Users\sugar\.gradle\caches\transforms-3\90155728aa5f09913b1d91c3df630b8e\transformed\appcompat-resources-1.6.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.appcompat:appcompat:1.6.1] C:\Users\sugar\.gradle\caches\transforms-3\e65e910e4ec5adc97b96d6ead3e36f95\transformed\appcompat-1.6.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.appcompat:appcompat:1.6.1] C:\Users\sugar\.gradle\caches\transforms-3\e65e910e4ec5adc97b96d6ead3e36f95\transformed\appcompat-1.6.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.fragment:fragment:1.3.6] C:\Users\sugar\.gradle\caches\transforms-3\e5e85012be8ac4f0a88a1966ffaa7e25\transformed\fragment-1.3.6\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.fragment:fragment:1.3.6] C:\Users\sugar\.gradle\caches\transforms-3\e5e85012be8ac4f0a88a1966ffaa7e25\transformed\fragment-1.3.6\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.activity:activity:1.6.0] C:\Users\sugar\.gradle\caches\transforms-3\0040ecdc412ec9d633e6021390459615\transformed\activity-1.6.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity:1.6.0] C:\Users\sugar\.gradle\caches\transforms-3\0040ecdc412ec9d633e6021390459615\transformed\activity-1.6.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] C:\Users\sugar\.gradle\caches\transforms-3\2d1722d4f2bea05667526ca5c85bce0b\transformed\drawerlayout-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] C:\Users\sugar\.gradle\caches\transforms-3\2d1722d4f2bea05667526ca5c85bce0b\transformed\drawerlayout-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.emoji2:emoji2-views-helper:1.2.0] C:\Users\sugar\.gradle\caches\transforms-3\e9536f3968951e96816a57cc8ab12fb7\transformed\emoji2-views-helper-1.2.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.emoji2:emoji2-views-helper:1.2.0] C:\Users\sugar\.gradle\caches\transforms-3\e9536f3968951e96816a57cc8ab12fb7\transformed\emoji2-views-helper-1.2.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\transforms-3\17145ca61afd1cebdd0409bd190b98e6\transformed\emoji2-1.2.0\AndroidManifest.xml:21:5-44
+MERGED from [androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\transforms-3\17145ca61afd1cebdd0409bd190b98e6\transformed\emoji2-1.2.0\AndroidManifest.xml:21:5-44
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] C:\Users\sugar\.gradle\caches\transforms-3\2e748ee02fbbd946c5f5e593c36d0e51\transformed\vectordrawable-animated-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] C:\Users\sugar\.gradle\caches\transforms-3\2e748ee02fbbd946c5f5e593c36d0e51\transformed\vectordrawable-animated-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] C:\Users\sugar\.gradle\caches\transforms-3\276bb89b0823e1c2b1f5bf19f18e0a2e\transformed\vectordrawable-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] C:\Users\sugar\.gradle\caches\transforms-3\276bb89b0823e1c2b1f5bf19f18e0a2e\transformed\vectordrawable-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.viewpager:viewpager:1.0.0] C:\Users\sugar\.gradle\caches\transforms-3\01b296cea94c80b6a2d9170d6fc5869e\transformed\viewpager-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] C:\Users\sugar\.gradle\caches\transforms-3\01b296cea94c80b6a2d9170d6fc5869e\transformed\viewpager-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] C:\Users\sugar\.gradle\caches\transforms-3\3f018c40e3764fb9881404df30116d43\transformed\customview-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] C:\Users\sugar\.gradle\caches\transforms-3\3f018c40e3764fb9881404df30116d43\transformed\customview-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] C:\Users\sugar\.gradle\caches\transforms-3\5bc1f33456849c78496b63c43752cb68\transformed\loader-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] C:\Users\sugar\.gradle\caches\transforms-3\5bc1f33456849c78496b63c43752cb68\transformed\loader-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\transforms-3\616bb398902fce19df3238f6a0dfec56\transformed\core-1.12.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\transforms-3\616bb398902fce19df3238f6a0dfec56\transformed\core-1.12.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.5.1] C:\Users\sugar\.gradle\caches\transforms-3\c88b5aa56285190b68ad8e0f68a2b1a1\transformed\lifecycle-viewmodel-2.5.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.5.1] C:\Users\sugar\.gradle\caches\transforms-3\c88b5aa56285190b68ad8e0f68a2b1a1\transformed\lifecycle-viewmodel-2.5.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.5.1] C:\Users\sugar\.gradle\caches\transforms-3\6677bb5e58f0f6408ae7ba26ca198d95\transformed\lifecycle-viewmodel-savedstate-2.5.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.5.1] C:\Users\sugar\.gradle\caches\transforms-3\6677bb5e58f0f6408ae7ba26ca198d95\transformed\lifecycle-viewmodel-savedstate-2.5.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.core:core-ktx:1.12.0] C:\Users\sugar\.gradle\caches\transforms-3\eadef290daf6c943baabf4cc556f071a\transformed\core-ktx-1.12.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core-ktx:1.12.0] C:\Users\sugar\.gradle\caches\transforms-3\eadef290daf6c943baabf4cc556f071a\transformed\core-ktx-1.12.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.savedstate:savedstate:1.2.0] C:\Users\sugar\.gradle\caches\transforms-3\4decfafe4ba4e481f5a106e003974368\transformed\savedstate-1.2.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.savedstate:savedstate:1.2.0] C:\Users\sugar\.gradle\caches\transforms-3\4decfafe4ba4e481f5a106e003974368\transformed\savedstate-1.2.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.annotation:annotation-experimental:1.3.0] C:\Users\sugar\.gradle\caches\transforms-3\59c2105186c0bc8e9b55a6d40dcc00ce\transformed\annotation-experimental-1.3.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.3.0] C:\Users\sugar\.gradle\caches\transforms-3\59c2105186c0bc8e9b55a6d40dcc00ce\transformed\annotation-experimental-1.3.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] C:\Users\sugar\.gradle\caches\transforms-3\2187b14303de0daeb368c69b8bb70d05\transformed\cursoradapter-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] C:\Users\sugar\.gradle\caches\transforms-3\2187b14303de0daeb368c69b8bb70d05\transformed\cursoradapter-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\sugar\.gradle\caches\transforms-3\955c7fc5548f3c801d17c5041b446b2b\transformed\lifecycle-process-2.4.1\AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\sugar\.gradle\caches\transforms-3\955c7fc5548f3c801d17c5041b446b2b\transformed\lifecycle-process-2.4.1\AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.5.1] C:\Users\sugar\.gradle\caches\transforms-3\3c45fa7ae47d32ce60a98c09c4a2388f\transformed\lifecycle-runtime-2.5.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.5.1] C:\Users\sugar\.gradle\caches\transforms-3\3c45fa7ae47d32ce60a98c09c4a2388f\transformed\lifecycle-runtime-2.5.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\sugar\.gradle\caches\transforms-3\f4b49ca36ac530d1ef17351b8addf73b\transformed\startup-runtime-1.1.1\AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\sugar\.gradle\caches\transforms-3\f4b49ca36ac530d1ef17351b8addf73b\transformed\startup-runtime-1.1.1\AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.tracing:tracing:1.0.0] C:\Users\sugar\.gradle\caches\transforms-3\27fce6ffc629f90a0e26f4ce7cbd7f11\transformed\tracing-1.0.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.tracing:tracing:1.0.0] C:\Users\sugar\.gradle\caches\transforms-3\27fce6ffc629f90a0e26f4ce7cbd7f11\transformed\tracing-1.0.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\sugar\.gradle\caches\transforms-3\8b92cdc65806c8dec4eec7a8d0c291f2\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\sugar\.gradle\caches\transforms-3\8b92cdc65806c8dec4eec7a8d0c291f2\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] C:\Users\sugar\.gradle\caches\transforms-3\22fea7b56c18df774e35d9e44270c916\transformed\lifecycle-livedata-2.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] C:\Users\sugar\.gradle\caches\transforms-3\22fea7b56c18df774e35d9e44270c916\transformed\lifecycle-livedata-2.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.5.1] C:\Users\sugar\.gradle\caches\transforms-3\3c450fb14e8322dc5b51d97659aa19c0\transformed\lifecycle-livedata-core-2.5.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.5.1] C:\Users\sugar\.gradle\caches\transforms-3\3c450fb14e8322dc5b51d97659aa19c0\transformed\lifecycle-livedata-core-2.5.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.arch.core:core-runtime:2.1.0] C:\Users\sugar\.gradle\caches\transforms-3\82e7fca43e1ed44030c015de99abc429\transformed\core-runtime-2.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.arch.core:core-runtime:2.1.0] C:\Users\sugar\.gradle\caches\transforms-3\82e7fca43e1ed44030c015de99abc429\transformed\core-runtime-2.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.interpolator:interpolator:1.0.0] C:\Users\sugar\.gradle\caches\transforms-3\fdf7e35b11cb73969b146de1e05d8064\transformed\interpolator-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] C:\Users\sugar\.gradle\caches\transforms-3\fdf7e35b11cb73969b146de1e05d8064\transformed\interpolator-1.0.0\AndroidManifest.xml:20:5-44
 	android:targetSdkVersion
 		INJECTED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml
 	android:minSdkVersion
 		INJECTED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml
 provider#androidx.startup.InitializationProvider
-ADDED from [androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\e3f88e92f3777697484fa17edefc4fac\transformed\emoji2-1.2.0\AndroidManifest.xml:24:9-32:20
-MERGED from [androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\38dfb6950c941b6b6660bba94973d9b7\transformed\lifecycle-process-2.4.1\AndroidManifest.xml:26:9-34:20
-MERGED from [androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\38dfb6950c941b6b6660bba94973d9b7\transformed\lifecycle-process-2.4.1\AndroidManifest.xml:26:9-34:20
-MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\29eb7234343af0d704f73fff17df9b50\transformed\startup-runtime-1.1.1\AndroidManifest.xml:26:9-30:34
-MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\29eb7234343af0d704f73fff17df9b50\transformed\startup-runtime-1.1.1\AndroidManifest.xml:26:9-30:34
+ADDED from [androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\transforms-3\17145ca61afd1cebdd0409bd190b98e6\transformed\emoji2-1.2.0\AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\sugar\.gradle\caches\transforms-3\955c7fc5548f3c801d17c5041b446b2b\transformed\lifecycle-process-2.4.1\AndroidManifest.xml:26:9-34:20
+MERGED from [androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\sugar\.gradle\caches\transforms-3\955c7fc5548f3c801d17c5041b446b2b\transformed\lifecycle-process-2.4.1\AndroidManifest.xml:26:9-34:20
+MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\sugar\.gradle\caches\transforms-3\f4b49ca36ac530d1ef17351b8addf73b\transformed\startup-runtime-1.1.1\AndroidManifest.xml:26:9-30:34
+MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\sugar\.gradle\caches\transforms-3\f4b49ca36ac530d1ef17351b8addf73b\transformed\startup-runtime-1.1.1\AndroidManifest.xml:26:9-30:34
 	tools:node
-		ADDED from [androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\e3f88e92f3777697484fa17edefc4fac\transformed\emoji2-1.2.0\AndroidManifest.xml:28:13-31
+		ADDED from [androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\transforms-3\17145ca61afd1cebdd0409bd190b98e6\transformed\emoji2-1.2.0\AndroidManifest.xml:28:13-31
 	android:authorities
-		ADDED from [androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\e3f88e92f3777697484fa17edefc4fac\transformed\emoji2-1.2.0\AndroidManifest.xml:26:13-68
+		ADDED from [androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\transforms-3\17145ca61afd1cebdd0409bd190b98e6\transformed\emoji2-1.2.0\AndroidManifest.xml:26:13-68
 	android:exported
-		ADDED from [androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\e3f88e92f3777697484fa17edefc4fac\transformed\emoji2-1.2.0\AndroidManifest.xml:27:13-37
+		ADDED from [androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\transforms-3\17145ca61afd1cebdd0409bd190b98e6\transformed\emoji2-1.2.0\AndroidManifest.xml:27:13-37
 	android:name
-		ADDED from [androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\e3f88e92f3777697484fa17edefc4fac\transformed\emoji2-1.2.0\AndroidManifest.xml:25:13-67
+		ADDED from [androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\transforms-3\17145ca61afd1cebdd0409bd190b98e6\transformed\emoji2-1.2.0\AndroidManifest.xml:25:13-67
 meta-data#androidx.emoji2.text.EmojiCompatInitializer
-ADDED from [androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\e3f88e92f3777697484fa17edefc4fac\transformed\emoji2-1.2.0\AndroidManifest.xml:29:13-31:52
+ADDED from [androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\transforms-3\17145ca61afd1cebdd0409bd190b98e6\transformed\emoji2-1.2.0\AndroidManifest.xml:29:13-31:52
 	android:value
-		ADDED from [androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\e3f88e92f3777697484fa17edefc4fac\transformed\emoji2-1.2.0\AndroidManifest.xml:31:17-49
+		ADDED from [androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\transforms-3\17145ca61afd1cebdd0409bd190b98e6\transformed\emoji2-1.2.0\AndroidManifest.xml:31:17-49
 	android:name
-		ADDED from [androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\e3f88e92f3777697484fa17edefc4fac\transformed\emoji2-1.2.0\AndroidManifest.xml:30:17-75
+		ADDED from [androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\transforms-3\17145ca61afd1cebdd0409bd190b98e6\transformed\emoji2-1.2.0\AndroidManifest.xml:30:17-75
 permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
-ADDED from [androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\8bf70c00bb095dc8f2d5566b6ce6ea4d\transformed\core-1.12.0\AndroidManifest.xml:22:5-24:47
+ADDED from [androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\transforms-3\616bb398902fce19df3238f6a0dfec56\transformed\core-1.12.0\AndroidManifest.xml:22:5-24:47
 	android:protectionLevel
-		ADDED from [androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\8bf70c00bb095dc8f2d5566b6ce6ea4d\transformed\core-1.12.0\AndroidManifest.xml:24:9-44
+		ADDED from [androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\transforms-3\616bb398902fce19df3238f6a0dfec56\transformed\core-1.12.0\AndroidManifest.xml:24:9-44
 	android:name
-		ADDED from [androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\8bf70c00bb095dc8f2d5566b6ce6ea4d\transformed\core-1.12.0\AndroidManifest.xml:23:9-81
+		ADDED from [androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\transforms-3\616bb398902fce19df3238f6a0dfec56\transformed\core-1.12.0\AndroidManifest.xml:23:9-81
 permission#org.sayit.voiceime.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
-ADDED from [androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\8bf70c00bb095dc8f2d5566b6ce6ea4d\transformed\core-1.12.0\AndroidManifest.xml:22:5-24:47
+ADDED from [androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\transforms-3\616bb398902fce19df3238f6a0dfec56\transformed\core-1.12.0\AndroidManifest.xml:22:5-24:47
 	android:protectionLevel
-		ADDED from [androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\8bf70c00bb095dc8f2d5566b6ce6ea4d\transformed\core-1.12.0\AndroidManifest.xml:24:9-44
+		ADDED from [androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\transforms-3\616bb398902fce19df3238f6a0dfec56\transformed\core-1.12.0\AndroidManifest.xml:24:9-44
 	android:name
-		ADDED from [androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\8bf70c00bb095dc8f2d5566b6ce6ea4d\transformed\core-1.12.0\AndroidManifest.xml:23:9-81
+		ADDED from [androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\transforms-3\616bb398902fce19df3238f6a0dfec56\transformed\core-1.12.0\AndroidManifest.xml:23:9-81
 uses-permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
-ADDED from [androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\8bf70c00bb095dc8f2d5566b6ce6ea4d\transformed\core-1.12.0\AndroidManifest.xml:26:5-97
+ADDED from [androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\transforms-3\616bb398902fce19df3238f6a0dfec56\transformed\core-1.12.0\AndroidManifest.xml:26:5-97
 	android:name
-		ADDED from [androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\8bf70c00bb095dc8f2d5566b6ce6ea4d\transformed\core-1.12.0\AndroidManifest.xml:26:22-94
+		ADDED from [androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\transforms-3\616bb398902fce19df3238f6a0dfec56\transformed\core-1.12.0\AndroidManifest.xml:26:22-94
 uses-permission#org.sayit.voiceime.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
-ADDED from [androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\8bf70c00bb095dc8f2d5566b6ce6ea4d\transformed\core-1.12.0\AndroidManifest.xml:26:5-97
+ADDED from [androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\transforms-3\616bb398902fce19df3238f6a0dfec56\transformed\core-1.12.0\AndroidManifest.xml:26:5-97
 	android:name
-		ADDED from [androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\9.0.0\transforms\8bf70c00bb095dc8f2d5566b6ce6ea4d\transformed\core-1.12.0\AndroidManifest.xml:26:22-94
+		ADDED from [androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\transforms-3\616bb398902fce19df3238f6a0dfec56\transformed\core-1.12.0\AndroidManifest.xml:26:22-94
 meta-data#androidx.lifecycle.ProcessLifecycleInitializer
-ADDED from [androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\38dfb6950c941b6b6660bba94973d9b7\transformed\lifecycle-process-2.4.1\AndroidManifest.xml:31:13-33:52
+ADDED from [androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\sugar\.gradle\caches\transforms-3\955c7fc5548f3c801d17c5041b446b2b\transformed\lifecycle-process-2.4.1\AndroidManifest.xml:31:13-33:52
 	android:value
-		ADDED from [androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\38dfb6950c941b6b6660bba94973d9b7\transformed\lifecycle-process-2.4.1\AndroidManifest.xml:33:17-49
+		ADDED from [androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\sugar\.gradle\caches\transforms-3\955c7fc5548f3c801d17c5041b446b2b\transformed\lifecycle-process-2.4.1\AndroidManifest.xml:33:17-49
 	android:name
-		ADDED from [androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\sugar\.gradle\caches\9.0.0\transforms\38dfb6950c941b6b6660bba94973d9b7\transformed\lifecycle-process-2.4.1\AndroidManifest.xml:32:17-78
+		ADDED from [androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\sugar\.gradle\caches\transforms-3\955c7fc5548f3c801d17c5041b446b2b\transformed\lifecycle-process-2.4.1\AndroidManifest.xml:32:17-78
