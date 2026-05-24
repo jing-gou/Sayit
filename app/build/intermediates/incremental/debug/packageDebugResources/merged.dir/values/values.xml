@@ -2,8 +2,4 @@
 <resources>
     <string name="app_name">Sayit 语音输入法</string>
     <string name="subtype_label">语音输入</string>
-    <style name="Theme.SayitSettings" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:windowBackground">#121218</item>
-        <item name="colorPrimary">#6366F1</item>
-    </style>
 </resources>
