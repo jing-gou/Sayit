@@ -37,11 +37,14 @@ import org.sayit.voiceime.overlay.ResultBubbleView
 import org.sayit.voiceime.widget.FloatingBallConfig
 import org.sayit.voiceime.widget.FloatingBallListener
 import org.sayit.voiceime.widget.FloatingBallView
+import org.sayit.voiceime.widget.RadialMenuAction
+import org.sayit.voiceime.widget.RadialMenuView
+import org.sayit.voiceime.widget.SymbolPanelView
 
 object ASRConfig {
-    val WS_URL = BuildConfig.ASR_WS_URL
-    val API_KEY = BuildConfig.ASR_API_KEY
-    val RESOURCE_ID = BuildConfig.ASR_RESOURCE_ID
+    val WS_URL get() = AppSettings.asrWsUrl
+    val API_KEY get() = AppSettings.asrApiKey
+    val RESOURCE_ID get() = AppSettings.asrResourceId
     const val SAMPLE_RATE = 16000
     const val AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT
     const val CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO
@@ -68,9 +71,15 @@ class VoiceKeyboard : InputMethodService() {
     private var screenW = 0
     private var screenH = 0
 
+    // Drag offset (difference between finger and ball center at drag start)
+    private var dragOffsetX = 0f
+    private var dragOffsetY = 0f
+
     // Views
     private var floatingBall: FloatingBallView? = null
     private var resultBubble: ResultBubbleView? = null
+    private var radialMenu: RadialMenuView? = null
+    private var symbolPanel: SymbolPanelView? = null
     private var gestureHandler: GestureActionHandler? = null
     private var llmService: LLMService? = null
     private var currentVoiceMode = VoiceMode.INPUT
@@ -98,6 +107,7 @@ class VoiceKeyboard : InputMethodService() {
         super.onCreate()
         Log.d(TAG, "onCreate called")
         try {
+            AppSettings.setup(this)
             okHttpClient = OkHttpClient.Builder()
                 .connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
                 .readTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
@@ -140,14 +150,23 @@ class VoiceKeyboard : InputMethodService() {
         val config = FloatingBallConfig.default(this)
         val ballSize = (config.ballRadius * 2.5f).toInt()
 
+        // Initial ball position: right side, upper third
+        val initX = screenW - ballSize - dp(16)
+        val initY = screenH / 3
+
         floatingBall = FloatingBallView(this, config).apply {
             listener = object : FloatingBallListener {
                 override fun onGestureAction(action: GestureAction) {
                     gestureHandler?.handle(action)
                 }
                 override fun onVoiceStateChanged(listening: Boolean) {}
+                override fun onTap() {
+                    showRadialMenu()
+                }
             }
-            layoutParams = FrameLayout.LayoutParams(ballSize, ballSize, Gravity.CENTER)
+            layoutParams = FrameLayout.LayoutParams(ballSize, ballSize)
+            translationX = initX.toFloat()
+            translationY = initY.toFloat()
         }
 
         resultBubble = ResultBubbleView(this).apply {
@@ -164,16 +183,16 @@ class VoiceKeyboard : InputMethodService() {
         }
 
         overlayLayoutParams = WindowManager.LayoutParams(
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
                     WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
             PixelFormat.TRANSLUCENT
         ).apply {
             gravity = Gravity.TOP or Gravity.START
-            x = screenW - ballSize - dp(16)
-            y = screenH / 3
+            x = 0
+            y = 0
         }
 
         windowManager.addView(overlayContainer, overlayLayoutParams)
@@ -202,6 +221,10 @@ class VoiceKeyboard : InputMethodService() {
         if (isListening) stopSpeechRecognition()
     }
 
+    fun getInputConnection(): android.view.inputmethod.InputConnection? {
+        return currentInputConnection
+    }
+
     fun deleteText(count: Int): DeletedText {
         val ic = currentInputConnection ?: return DeletedText("", 0)
         val deleted = ic.getTextBeforeCursor(count, 0)?.toString() ?: ""
@@ -224,13 +247,24 @@ class VoiceKeyboard : InputMethodService() {
     }
 
     fun updateFloatingBallPosition(rawX: Float, rawY: Float) {
-        val params = overlayLayoutParams ?: return
-        val ballSize = floatingBall?.width?.coerceAtLeast(1) ?: return
-        params.x = (rawX - ballSize / 2f).toInt().coerceIn(0, screenW - ballSize)
-        params.y = (rawY - ballSize / 2f).toInt().coerceIn(0, screenH - ballSize)
-        try {
-            windowManager.updateViewLayout(overlayContainer, params)
-        } catch (_: Exception) {}
+        val ball = floatingBall ?: return
+        val ballSize = ball.width.coerceAtLeast(1)
+        // On first call, calculate offset between finger and ball center
+        if (dragOffsetX == 0f && dragOffsetY == 0f) {
+            val ballCenterX = ball.translationX + ballSize / 2f
+            val ballCenterY = ball.translationY + ballSize / 2f
+            dragOffsetX = rawX - ballCenterX
+            dragOffsetY = rawY - ballCenterY
+        }
+        val newX = (rawX - dragOffsetX - ballSize / 2f).coerceIn(0f, (screenW - ballSize).toFloat())
+        val newY = (rawY - dragOffsetY - ballSize / 2f).coerceIn(0f, (screenH - ballSize).toFloat())
+        ball.translationX = newX
+        ball.translationY = newY
+    }
+
+    fun resetDragOffset() {
+        dragOffsetX = 0f
+        dragOffsetY = 0f
     }
 
     private fun startSpeechRecognition() {
@@ -280,10 +314,13 @@ class VoiceKeyboard : InputMethodService() {
                         override fun onDelta(delta: String) {
                             scope.launch(Dispatchers.Main) { resultBubble?.appendText(delta) }
                         }
-                        override fun onComplete(fullText: String) {}
+                        override fun onComplete(fullText: String) {
+                            scope.launch(Dispatchers.Main) { resultBubble?.finalizeResult() }
+                        }
                         override fun onError(e: Exception) {
                             scope.launch(Dispatchers.Main) {
                                 resultBubble?.appendText("\n[错误: ${e.message}]")
+                                resultBubble?.finalizeResult()
                             }
                         }
                     })
@@ -301,10 +338,13 @@ class VoiceKeyboard : InputMethodService() {
                         override fun onDelta(delta: String) {
                             scope.launch(Dispatchers.Main) { resultBubble?.appendText(delta) }
                         }
-                        override fun onComplete(fullText: String) {}
+                        override fun onComplete(fullText: String) {
+                            scope.launch(Dispatchers.Main) { resultBubble?.finalizeResult() }
+                        }
                         override fun onError(e: Exception) {
                             scope.launch(Dispatchers.Main) {
                                 resultBubble?.appendText("\n[错误: ${e.message}]")
+                                resultBubble?.finalizeResult()
                             }
                         }
                     })
@@ -320,6 +360,81 @@ class VoiceKeyboard : InputMethodService() {
         resultBubble?.onInsert = { result ->
             currentInputConnection?.commitText(result, 1)
         }
+    }
+
+    private fun showRadialMenu() {
+        val ball = floatingBall ?: return
+        val container = overlayContainer ?: return
+
+        // Dismiss existing menu
+        radialMenu?.dismiss()
+
+        // Get ball center in container coordinates (container is MATCH_PARENT at 0,0)
+        val ballSize = ball.width.coerceAtLeast(1)
+        val centerX = ball.translationX + ballSize / 2f
+        val centerY = ball.translationY + ballSize / 2f
+
+        val menu = RadialMenuView(this, centerX, centerY, ballSize / 2f).apply {
+            onAction = { action ->
+                handleRadialAction(action)
+            }
+            layoutParams = FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT
+            )
+            visibility = View.GONE
+        }
+
+        container.addView(menu)
+        radialMenu = menu
+        menu.show()
+    }
+
+    private fun handleRadialAction(action: RadialMenuAction) {
+        radialMenu?.dismiss()
+        radialMenu = null
+
+        when (action) {
+            RadialMenuAction.SETTINGS -> {
+                val intent = android.content.Intent(this, SettingsActivity::class.java)
+                intent.flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+                startActivity(intent)
+            }
+            RadialMenuAction.CLIPBOARD -> {
+                val clipboard = getSystemService(CLIPBOARD_SERVICE) as? android.content.ClipboardManager
+                val clip = clipboard?.primaryClip
+                if (clip != null && clip.itemCount > 0) {
+                    val text = clip.getItemAt(0).coerceToText(this).toString()
+                    currentInputConnection?.commitText(text, 1)
+                }
+            }
+            RadialMenuAction.INPUT_MODE -> {
+                showSymbolPanel()
+            }
+            RadialMenuAction.SWITCH_IME -> {
+                val imm = getSystemService(INPUT_METHOD_SERVICE) as? android.view.inputmethod.InputMethodManager
+                imm?.showInputMethodPicker()
+            }
+        }
+    }
+
+    private fun showSymbolPanel() {
+        val container = overlayContainer ?: return
+        symbolPanel?.dismiss()
+
+        val panel = SymbolPanelView(this).apply {
+            onSymbolSelected = { sym ->
+                currentInputConnection?.commitText(sym, 1)
+            }
+            layoutParams = FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                Gravity.BOTTOM
+            )
+        }
+        container.addView(panel)
+        symbolPanel = panel
+        panel.show()
     }
 
     private fun connectToASR() {

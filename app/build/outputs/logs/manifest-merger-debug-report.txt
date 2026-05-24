@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:1:1-35:12
-INJECTED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:1:1-35:12
-INJECTED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:1:1-35:12
-INJECTED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:1:1-35:12
+ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:1:1-45:12
+INJECTED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:1:1-45:12
+INJECTED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:1:1-45:12
+INJECTED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:1:1-45:12
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\sugar\.gradle\caches\8.13\transforms\ad873f467d5cad50be739b3abeb614d8\transformed\material-1.11.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.appcompat:appcompat-resources:1.6.1] C:\Users\sugar\.gradle\caches\8.13\transforms\c84ad69669c439a2b96432349a87779d\transformed\appcompat-resources-1.6.1\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] C:\Users\sugar\.gradle\caches\8.13\transforms\7d47bbd3bbc8de419968000b77c269f8\transformed\constraintlayout-2.0.1\AndroidManifest.xml:2:1-11:12
@@ -76,8 +76,8 @@ ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:8:5-89
 	android:name
 		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:8:19-61
 application
-ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:10:5-33:19
-INJECTED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:10:5-33:19
+ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:10:5-43:19
+INJECTED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:10:5-43:19
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\sugar\.gradle\caches\8.13\transforms\ad873f467d5cad50be739b3abeb614d8\transformed\material-1.11.0\AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\sugar\.gradle\caches\8.13\transforms\ad873f467d5cad50be739b3abeb614d8\transformed\material-1.11.0\AndroidManifest.xml:22:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] C:\Users\sugar\.gradle\caches\8.13\transforms\7d47bbd3bbc8de419968000b77c269f8\transformed\constraintlayout-2.0.1\AndroidManifest.xml:9:5-20
@@ -138,6 +138,24 @@ ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:28:9-31:40
 		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:30:13-72
 	android:name
 		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:29:13-65
+activity#org.sayit.voiceime.SettingsActivity
+ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:33:9-41:20
+	android:exported
+		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:36:13-36
+	android:theme
+		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:35:13-72
+	android:name
+		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:34:13-63
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:37:13-40:29
+action#android.intent.action.MAIN
+ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:38:17-69
+	android:name
+		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:38:25-66
+category#android.intent.category.LAUNCHER
+ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:39:17-77
+	android:name
+		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:39:27-74
 uses-sdk
 INJECTED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml
