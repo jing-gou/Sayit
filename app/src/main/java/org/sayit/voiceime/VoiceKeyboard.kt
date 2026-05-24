@@ -330,14 +330,19 @@ class VoiceKeyboard : InputMethodService() {
 
     override fun onComputeInsets(outInsets: Insets) {
         super.onComputeInsets(outInsets)
-        // Placeholder height already drives visibleTopInsets; don't subtract again
-        outInsets.contentTopInsets = outInsets.visibleTopInsets
+        val inset = symbolPanelInsetHeight.coerceAtLeast(0)
+        if (inset > 0) {
+            outInsets.contentTopInsets = inset
+            outInsets.visibleTopInsets = inset
+        }
         outInsets.touchableInsets = Insets.TOUCHABLE_INSETS_CONTENT
         outInsets.touchableRegion.setEmpty()
     }
 
     private fun updateSymbolPanelInset(heightPx: Int) {
-        symbolPanelInsetHeight = heightPx
+        val next = heightPx.coerceAtLeast(0)
+        if (next == symbolPanelInsetHeight) return
+        symbolPanelInsetHeight = next
         inputPlaceholder?.requestLayout()
         updateInputViewShown()
     }

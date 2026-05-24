@@ -182,7 +182,7 @@ class SettingsActivity : AppCompatActivity() {
         llmModel = llmCard.addField("模型名称", prefs.getString(KEY_LLM_MODEL, BuildConfig.LLM_MODEL) ?: "")
         llmPrompt = llmCard.addField(
             "系统 Prompt",
-            prefs.getString(KEY_LLM_PROMPT, "你是一个智能助手，请简洁回答用户的问题。回答要准确、有帮助。") ?: "",
+            prefs.getString(KEY_LLM_PROMPT, "你是一个智能助手，请简洁回答用户的问题。回答无需格式化，要准确、有帮助、有情感。") ?: "",
             lines = 3
         )
         root.addView(llmCard)
