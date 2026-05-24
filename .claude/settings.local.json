@@ -1,7 +1,43 @@
 {
   "permissions": {
     "allow": [
-      "Bash(powershell.exe -Command \"Get-ChildItem 'C:\\\\Program Files' -Directory | Where-Object {$_.Name -like '*Java*' -or $_.Name -like '*JDK*'}\")"
+      "Bash(powershell.exe -Command \"Get-ChildItem 'C:\\\\Program Files' -Directory | Where-Object {$_.Name -like '*Java*' -or $_.Name -like '*JDK*'}\")",
+      "Bash(echo \"JAVA_HOME: $JAVA_HOME\" && where java 2>/dev/null && java -version 2>&1)",
+      "Read(//c/Program Files/Android/Android Studio/jbr/bin/**)",
+      "Read(//c/Users/sugar/**)",
+      "Read(//c/Program Files/**)",
+      "Bash(find \"C:/Program Files\" -name \"java.exe\" -path \"*/bin/*\" 2>/dev/null | head -20)",
+      "Bash(find \"C:/Users/sugar\" -name \"java.exe\" -path \"*/bin/*\" 2>/dev/null | head -20)",
+      "Bash(find \"C:/Program Files\" -maxdepth 3 -name \"jbr\" -type d 2>/dev/null ; find \"C:/Program Files\" -maxdepth 3 -name \"Android Studio\" -type d 2>/dev/null ; reg query \"HKLM\\\\SOFTWARE\\\\Android Studio\" 2>/dev/null ; reg query \"HKCU\\\\SOFTWARE\\\\Android Studio\" 2>/dev/null)",
+      "Read(//d/AndroidStudio/jbr/bin/**)",
+      "Bash(\"D:/AndroidStudio/jbr/bin/java.exe\" -version)",
+      "Bash(cd F:/Sayit/SayitVoiceIME && ./gradlew assembleDebug 2>&1)",
+      "Bash(cd F:/Sayit/SayitVoiceIME && JAVA_HOME=\"D:/AndroidStudio/jbr\" ./gradlew assembleDebug 2>&1)",
+      "Bash(cd F:/Sayit/SayitVoiceIME && adb install -r app/build/outputs/apk/debug/app-debug.apk 2>&1)",
+      "Bash(\"C:/Users/sugar/AppData/Local/Android/Sdk/platform-tools/adb.exe\" install:*)",
+      "Bash(\"C:/Users/sugar/AppData/Local/Android/Sdk/platform-tools/adb.exe\" shell:*)",
+      "Bash(\"C:/Users/sugar/AppData/Local/Android/Sdk/platform-tools/adb.exe\" push:*)",
+      "Bash(cmd.exe //c \"C:\\\\Users\\\\sugar\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe\" shell \"pm install -t -r /data/local/tmp/app-debug.apk\" 2>&1)",
+      "Bash(cmd.exe //c \"C:\\\\Users\\\\sugar\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe\" push \"F:\\\\Sayit\\\\SayitVoiceIME\\\\app\\\\build\\\\outputs\\\\apk\\\\debug\\\\app-debug.apk\" /data/local/tmp/app-debug.apk\" 2>&1)",
+      "Bash(cmd.exe /c \"C:\\\\Users\\\\sugar\\\\AppData\\\\Local\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe push F:\\\\Sayit\\\\SayitVoiceIME\\\\app\\\\build\\\\outputs\\\\apk\\\\debug\\\\app-debug.apk /data/local/tmp/app-debug.apk\" 2>&1)",
+      "Bash(MSYS_NO_PATHCONV=1 \"C:/Users/sugar/AppData/Local/Android/Sdk/platform-tools/adb.exe\" push \"F:/Sayit/SayitVoiceIME/app/build/outputs/apk/debug/app-debug.apk\" /data/local/tmp/app-debug.apk 2>&1)",
+      "Bash(MSYS_NO_PATHCONV=1 \"C:/Users/sugar/AppData/Local/Android/Sdk/platform-tools/adb.exe\" shell pm install -t -r /data/local/tmp/app-debug.apk 2>&1)",
+      "Bash(MSYS_NO_PATHCONV=1 \"C:/Users/sugar/AppData/Local/Android/Sdk/platform-tools/adb.exe\" shell getprop ro.build.display.id 2>&1 && MSYS_NO_PATHCONV=1 \"C:/Users/sugar/AppData/Local/Android/Sdk/platform-tools/adb.exe\" shell settings get global install_non_market_apps 2>&1 && MSYS_NO_PATHCONV=1 \"C:/Users/sugar/AppData/Local/Android/Sdk/platform-tools/adb.exe\" shell settings get secure install_non_market_apps 2>&1)",
+      "Bash(MSYS_NO_PATHCONV=1 \"C:/Users/sugar/AppData/Local/Android/Sdk/platform-tools/adb.exe\" shell pm list packages org.sayit.voiceime 2>&1)",
+      "Bash(\"C:/Users/sugar/AppData/Local/Android/Sdk/build-tools/35.0.0/aapt.exe\" dump:*)",
+      "Bash(MSYS_NO_PATHCONV=1 \"C:/Users/sugar/AppData/Local/Android/Sdk/platform-tools/adb.exe\" shell settings put global verifier_verify_adb_installs 0 2>&1 && MSYS_NO_PATHCONV=1 \"C:/Users/sugar/AppData/Local/Android/Sdk/platform-tools/adb.exe\" install -t \"F:/Sayit/SayitVoiceIME/app/build/outputs/apk/debug/app-debug.apk\" 2>&1)",
+      "Bash(MSYS_NO_PATHCONV=1 \"C:/Users/sugar/AppData/Local/Android/Sdk/platform-tools/adb.exe\" shell settings list global 2>&1 | grep -i -E \"install|adb|debug|security\" | head -20)",
+      "Bash(MSYS_NO_PATHCONV=1 \"C:/Users/sugar/AppData/Local/Android/Sdk/platform-tools/adb.exe\" shell settings list secure 2>&1 | grep -i -E \"install|adb|debug|miui|xiaomi\" | head -20)",
+      "Bash(MSYS_NO_PATHCONV=1 \"C:/Users/sugar/AppData/Local/Android/Sdk/platform-tools/adb.exe\" shell settings put secure miui_optimization 0 2>&1)",
+      "Bash(MSYS_NO_PATHCONV=1 \"C:/Users/sugar/AppData/Local/Android/Sdk/platform-tools/adb.exe\" install -t \"F:/Sayit/SayitVoiceIME/app/build/outputs/apk/debug/app-debug.apk\" 2>&1)",
+      "Bash(MSYS_NO_PATHCONV=1 \"C:/Users/sugar/AppData/Local/Android/Sdk/platform-tools/adb.exe\" shell am start -a android.settings.APPLICATION_DEVELOPMENT_SETTINGS 2>&1)",
+      "Bash(cd F:/Sayit/SayitVoiceIME && JAVA_HOME=\"D:/AndroidStudio/jbr\" ./gradlew clean assembleDebug 2>&1)",
+      "Bash(MSYS_NO_PATHCONV=1 \"C:/Users/sugar/AppData/Local/Android/Sdk/platform-tools/adb.exe\" install --bypass-low-target-sdk-block -t \"F:/Sayit/SayitVoiceIME/app/build/outputs/apk/debug/app-debug.apk\" 2>&1)",
+      "Bash(MSYS_NO_PATHCONV=1 \"C:/Users/sugar/AppData/Local/Android/Sdk/platform-tools/adb.exe\" shell getprop persist.security.adbinstall 2>&1 && MSYS_NO_PATHCONV=1 \"C:/Users/sugar/AppData/Local/Android/Sdk/platform-tools/adb.exe\" shell getprop persist.security.adbinput 2>&1)",
+      "mcp__ide__getDiagnostics",
+      "Bash(ls \"C:/Program Files/Android/Android Studio/jbr/bin/java.exe\" 2>/dev/null || ls \"C:/Program Files/Android/Android Studio/jre/bin/java.exe\" 2>/dev/null || where java 2>/dev/null)",
+      "Bash(ls \"C:/Program Files/\"*java* \"C:/Program Files/\"*jdk* \"C:/Program Files/\"*Android*)",
+      "Read(//f/Sayit/SayitVoiceIME/$LOCALAPPDATA/Programs/**)"
     ]
   }
 }
