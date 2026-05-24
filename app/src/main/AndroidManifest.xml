@@ -33,7 +33,7 @@
 
         <activity
             android:name="org.sayit.voiceime.SettingsActivity"
-            android:theme="@android:style/Theme.Material.NoActionBar"
+            android:theme="@style/Theme.SayitSettings"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

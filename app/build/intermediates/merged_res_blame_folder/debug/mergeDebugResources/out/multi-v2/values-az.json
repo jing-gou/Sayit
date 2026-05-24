@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "org.sayit.voiceime.app-mergeDebugResources-29:/values-az/values-az.xml",
+            "outputFile": "org.sayit.voiceime.app-mergeDebugResources-33:/values-az/values-az.xml",
             "map": [
                 {
                     "source": "C:\\Users\\sugar\\.gradle\\caches\\8.13\\transforms\\c9591c1d9d48c11e13bd2a43b987c58f\\transformed\\appcompat-1.6.1\\res\\values-az\\values-az.xml",
