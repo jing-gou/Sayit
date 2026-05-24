@@ -3,8 +3,11 @@ package org.sayit.voiceime.widget
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
+import android.os.Handler
+import android.os.Looper
 import android.util.TypedValue
 import android.view.Gravity
+import android.view.MotionEvent
 import android.view.View
 import android.view.View.MeasureSpec
 import android.view.ViewTreeObserver
@@ -24,8 +27,13 @@ class SymbolPanelView(context: Context) : FrameLayout(context) {
     private lateinit var contentLayout: LinearLayout
     private lateinit var contentScroll: ScrollView
     private lateinit var mainLayout: LinearLayout
+    /** Max height of the scrollable key area (emoji/symbol grids). */
     private val maxContentHeightPx: Int
+    /** Max total panel height reported to IME inset (header + tabs + content + bottom bar). */
+    private val maxPanelHeightPx: Int
     private var shiftButton: TextView? = null
+    private val backspaceHandler = Handler(Looper.getMainLooper())
+    private var backspaceRepeatRunnable: Runnable? = null
 
     private val accentColor = Color.parseColor("#6366F1")
     private val surfaceColor = Color.parseColor("#1E1E2E")
@@ -92,7 +100,9 @@ class SymbolPanelView(context: Context) : FrameLayout(context) {
     )
 
     init {
-        maxContentHeightPx = (resources.displayMetrics.heightPixels * 0.38f).toInt()
+        val screenH = resources.displayMetrics.heightPixels
+        maxContentHeightPx = minOf(dp(200), (screenH * 0.26f).toInt())
+        maxPanelHeightPx = minOf(dp(280), (screenH * 0.30f).toInt())
         background = roundedBg(surfaceColor, dp(16), dp(16), 0, 0)
         setPadding(dp(12), dp(10), dp(12), dp(10))
         elevation = dp(8).toFloat()
@@ -203,17 +213,17 @@ class SymbolPanelView(context: Context) : FrameLayout(context) {
             addView(shiftButton)
 
             addView(TextView(context).apply {
-                text = "⌫  退格"
-                textSize = 15f
+                text = "⌫"
+                textSize = 18f
                 gravity = Gravity.CENTER
                 setTextColor(Color.WHITE)
                 background = roundedBg(keyColor, dp(10))
-                setPadding(dp(20), dp(10), dp(20), dp(10))
+                setPadding(dp(16), dp(10), dp(16), dp(10))
                 layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     dp(44)
                 )
-                setOnClickListener { onBackspace?.invoke() }
+                attachRepeatBackspace(this)
             })
         }
     }
@@ -253,11 +263,19 @@ class SymbolPanelView(context: Context) : FrameLayout(context) {
 
     private fun updateContentScrollHeight() {
         contentLayout.post {
-            val contentH = contentLayout.height.coerceAtLeast(0)
+            val width = contentLayout.width.takeIf { it > 0 }
+                ?: (resources.displayMetrics.widthPixels - paddingLeft - paddingRight)
+            val wSpec = MeasureSpec.makeMeasureSpec(width.coerceAtLeast(1), MeasureSpec.EXACTLY)
+            val hSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
+            contentLayout.measure(wSpec, hSpec)
+            val contentH = contentLayout.measuredHeight.coerceAtLeast(0)
+            val scrollH = contentH.coerceAtMost(maxContentHeightPx)
+
             val params = contentScroll.layoutParams as LinearLayout.LayoutParams
-            params.height = if (contentH > maxContentHeightPx) maxContentHeightPx else LinearLayout.LayoutParams.WRAP_CONTENT
+            params.height = if (scrollH > 0) scrollH else LinearLayout.LayoutParams.WRAP_CONTENT
             contentScroll.layoutParams = params
-            scheduleHeightUpdate()
+            contentScroll.requestLayout()
+            mainLayout.post { notifyHeightChanged() }
         }
     }
 
@@ -340,6 +358,40 @@ class SymbolPanelView(context: Context) : FrameLayout(context) {
         }
     }
 
+    private fun attachRepeatBackspace(button: TextView) {
+        val repeatIntervalMs = 50L
+        val longPressDelayMs = 400L
+        button.setOnTouchListener { v, event ->
+            when (event.actionMasked) {
+                MotionEvent.ACTION_DOWN -> {
+                    stopBackspaceRepeat()
+                    onBackspace?.invoke()
+                    backspaceRepeatRunnable = object : Runnable {
+                        override fun run() {
+                            onBackspace?.invoke()
+                            backspaceHandler.postDelayed(this, repeatIntervalMs)
+                        }
+                    }
+                    backspaceHandler.postDelayed(backspaceRepeatRunnable!!, longPressDelayMs)
+                    v.isPressed = true
+                    true
+                }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    stopBackspaceRepeat()
+                    v.isPressed = false
+                    v.performClick()
+                    true
+                }
+                else -> false
+            }
+        }
+    }
+
+    private fun stopBackspaceRepeat() {
+        backspaceRepeatRunnable?.let { backspaceHandler.removeCallbacks(it) }
+        backspaceRepeatRunnable = null
+    }
+
     private fun createIconButton(label: String, bgColor: Int, onClick: () -> Unit): TextView {
         return TextView(context).apply {
             text = label
@@ -372,19 +424,18 @@ class SymbolPanelView(context: Context) : FrameLayout(context) {
         }
         val width = resources.displayMetrics.widthPixels
         val wSpec = MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY)
-        val hSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
+        val hSpec = MeasureSpec.makeMeasureSpec(maxPanelHeightPx, MeasureSpec.AT_MOST)
         mainLayout.measure(wSpec, hSpec)
         val measured = mainLayout.measuredHeight + paddingTop + paddingBottom
         if (measured <= 0) return
-        val maxInset = (resources.displayMetrics.heightPixels * 0.42f).toInt()
-        onPanelHeightChanged?.invoke(measured.coerceAtMost(maxInset))
+        onPanelHeightChanged?.invoke(measured.coerceAtMost(maxPanelHeightPx))
     }
 
     private fun scheduleHeightUpdate() {
         viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 viewTreeObserver.removeOnGlobalLayoutListener(this)
-                notifyHeightChanged()
+                updateContentScrollHeight()
             }
         })
     }
@@ -400,6 +451,7 @@ class SymbolPanelView(context: Context) : FrameLayout(context) {
     }
 
     fun dismiss() {
+        stopBackspaceRepeat()
         onPanelHeightChanged?.invoke(0)
         animate().alpha(0f).translationY(dp(40).toFloat()).setDuration(150).withEndAction {
             visibility = View.GONE
