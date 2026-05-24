@@ -2,6 +2,7 @@ package org.sayit.voiceime.widget
 
 import android.content.Context
 import android.graphics.*
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
@@ -22,7 +23,12 @@ interface FloatingBallListener {
     fun onTap() {}
 }
 
-class FloatingBallView(context: Context, val config: FloatingBallConfig) : View(context) {
+class FloatingBallView(context: Context, initialConfig: FloatingBallConfig) : View(context) {
+
+    var config: FloatingBallConfig = initialConfig
+        private set
+
+    private var customBitmap: Bitmap? = null
 
     var listener: FloatingBallListener? = null
 
@@ -94,7 +100,51 @@ class FloatingBallView(context: Context, val config: FloatingBallConfig) : View(
     init {
         isClickable = true
         isFocusable = true
+        loadCustomBitmap()
         breathAnimator.start()
+    }
+
+    fun updateConfig(newConfig: FloatingBallConfig) {
+        config = newConfig
+        loadCustomBitmap(forceReload = true)
+        requestLayout()
+        invalidate()
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val size = config.overlayWindowSize.toInt().coerceAtLeast(1)
+        setMeasuredDimension(size, size)
+    }
+
+    private fun loadCustomBitmap(forceReload: Boolean = false) {
+        val path = config.customBallImagePath ?: run {
+            customBitmap?.recycle()
+            customBitmap = null
+            return
+        }
+        if (!forceReload && customBitmap != null && customBitmap?.isRecycled != true) return
+        customBitmap?.recycle()
+        customBitmap = null
+        try {
+            customBitmap = BitmapFactory.decodeFile(path)
+            if (customBitmap == null) {
+                android.util.Log.w("FloatingBall", "decodeFile returned null: $path")
+            }
+        } catch (e: Exception) {
+            android.util.Log.e("FloatingBall", "Failed to load custom ball image", e)
+        }
+    }
+
+    fun ensureCustomBitmapLoaded() {
+        loadCustomBitmap(forceReload = false)
+    }
+
+    fun releaseResources() {
+        breathAnimator.cancel()
+        waveAnimator.cancel()
+        handler.removeCallbacksAndMessages(null)
+        customBitmap?.recycle()
+        customBitmap = null
     }
 
     fun setListeningState(listening: Boolean) {
@@ -147,14 +197,27 @@ class FloatingBallView(context: Context, val config: FloatingBallConfig) : View(
     private fun drawBall(canvas: Canvas, cx: Float, cy: Float) {
         val scale = breathScale * iconScale
         val r = config.ballRadius * scale
-        val topColor = lightenColor(getAccentColor(), 1.15f)
-        val bottomColor = darkenColor(getAccentColor(), 0.75f)
-        ballPaint.shader = RadialGradient(
-            cx - r * 0.25f, cy - r * 0.35f, r * 1.8f,
-            topColor, bottomColor,
-            Shader.TileMode.CLAMP
-        )
-        canvas.drawCircle(cx, cy, r, ballPaint)
+        val bitmap = customBitmap
+        if (bitmap != null) {
+            val clipPath = Path().apply { addCircle(cx, cy, r, Path.Direction.CW) }
+            canvas.save()
+            canvas.clipPath(clipPath)
+            val dst = RectF(cx - r, cy - r, cx + r, cy + r)
+            canvas.drawBitmap(
+                bitmap, null, dst,
+                Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
+            )
+            canvas.restore()
+        } else {
+            val topColor = lightenColor(getAccentColor(), 1.15f)
+            val bottomColor = darkenColor(getAccentColor(), 0.75f)
+            ballPaint.shader = RadialGradient(
+                cx - r * 0.25f, cy - r * 0.35f, r * 1.8f,
+                topColor, bottomColor,
+                Shader.TileMode.CLAMP
+            )
+            canvas.drawCircle(cx, cy, r, ballPaint)
+        }
 
         ringPaint.color = Color.argb(90, 255, 255, 255)
         canvas.drawCircle(cx, cy, r - dp(1.5f), ringPaint)
@@ -182,6 +245,11 @@ class FloatingBallView(context: Context, val config: FloatingBallConfig) : View(
     }
 
     private fun drawIcon(canvas: Canvas, cx: Float, cy: Float) {
+        if (customBitmap != null && !isListening &&
+            gestureState == GestureState.IDLE
+        ) {
+            return
+        }
         val (icon, size) = resolveIcon()
         iconPaint.textSize = sp(size)
         canvas.save()
@@ -505,11 +573,18 @@ class FloatingBallView(context: Context, val config: FloatingBallConfig) : View(
      private fun sp(value: Float): Float =
         TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, value, resources.displayMetrics)
 
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        ensureCustomBitmapLoaded()
+        if (!breathAnimator.isRunning) breathAnimator.start()
+    }
+
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         breathAnimator.cancel()
         waveAnimator.cancel()
         handler.removeCallbacksAndMessages(null)
+        // Keep customBitmap — view may be re-attached when "input only" mode toggles
     }
 
     companion object {
