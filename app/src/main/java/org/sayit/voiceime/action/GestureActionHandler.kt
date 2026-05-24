@@ -1,10 +1,9 @@
 package org.sayit.voiceime.action
 
-import android.view.KeyEvent
+import android.view.inputmethod.InputConnection
 import org.sayit.voiceime.VoiceKeyboard
 import org.sayit.voiceime.gesture.Direction
 import org.sayit.voiceime.gesture.GestureAction
-import java.util.ArrayDeque
 
 data class DeletedText(val text: String, val count: Int)
 
@@ -16,10 +15,18 @@ enum class VoiceMode {
 
 class GestureActionHandler(private val ime: VoiceKeyboard) {
 
-    private val deleteHistory = ArrayDeque<DeletedText>()
     private var currentVoiceMode = VoiceMode.INPUT
     private var isDragging = false
     private var logCallback: ((String) -> Unit)? = null
+
+    // Incremental delete state
+    private val deletedChars = StringBuilder()
+    private var deleteCount = 0
+    private var isDeleting = false
+
+    companion object {
+        private const val PX_PER_CHAR = 10f // pixels of horizontal drag per character
+    }
 
     fun setLogCallback(callback: (String) -> Unit) {
         logCallback = callback
@@ -31,12 +38,9 @@ class GestureActionHandler(private val ime: VoiceKeyboard) {
     }
 
     fun handle(action: GestureAction) {
-        val actionName = action::class.simpleName ?: "Unknown"
-        debugLog("handle: $actionName")
         when (action) {
             is GestureAction.LongPressStart -> {
                 currentVoiceMode = VoiceMode.INPUT
-                debugLog("LongPressStart -> startVoiceInput()")
                 ime.startVoiceInput()
             }
 
@@ -58,37 +62,23 @@ class GestureActionHandler(private val ime: VoiceKeyboard) {
 
             is GestureAction.SwipeProgress -> {
                 if (!ime.isCurrentlyListening() && action.direction == Direction.LEFT) {
-                    val count = calculateDeleteCount(action.progress)
-                    if (count > 0) {
-                        val deleted = ime.deleteText(count)
-                        if (deleted.count > 0) {
-                            deleteHistory.push(deleted)
-                        }
-                    }
+                    handleDeleteProgress(action.progress)
                 }
             }
 
             is GestureAction.SwipeComplete -> {
                 if (ime.isCurrentlyListening()) {
                     when (currentVoiceMode) {
-                        VoiceMode.QUESTION -> {
-                            ime.stopVoiceInputWithMode(VoiceMode.QUESTION)
-                        }
-                        VoiceMode.TRANSLATE -> {
-                            ime.stopVoiceInputWithMode(VoiceMode.TRANSLATE)
-                        }
-                        else -> {
-                            ime.stopVoiceInput()
-                        }
+                        VoiceMode.QUESTION -> ime.stopVoiceInputWithMode(VoiceMode.QUESTION)
+                        VoiceMode.TRANSLATE -> ime.stopVoiceInputWithMode(VoiceMode.TRANSLATE)
+                        else -> ime.stopVoiceInput()
                     }
                 }
+                resetDeleteState()
             }
 
             is GestureAction.SwipeCancel -> {
-                if (deleteHistory.isNotEmpty()) {
-                    val last = deleteHistory.pop()
-                    ime.restoreText(last)
-                }
+                resetDeleteState()
             }
 
             is GestureAction.DragStart -> {
@@ -101,25 +91,65 @@ class GestureActionHandler(private val ime: VoiceKeyboard) {
 
             is GestureAction.DragEnd -> {
                 isDragging = false
+                ime.resetDragOffset()
             }
 
             is GestureAction.None -> {}
         }
     }
 
+    private fun handleDeleteProgress(rawDx: Float) {
+        val ic = ime.getInputConnection() ?: return
+
+        // rawDx is the signed horizontal displacement from press start
+        // Negative = finger is left of start (delete), positive = right (restore)
+        // Calculate target character count: only delete when dx is negative
+        val targetCount = if (rawDx < 0) {
+            (-rawDx / PX_PER_CHAR).toInt().coerceAtLeast(0)
+        } else {
+            0 // finger is to the right of start = restore all
+        }
+
+        if (targetCount > deleteCount) {
+            // Delete more characters
+            val toDelete = targetCount - deleteCount
+            val before = ic.getTextBeforeCursor(toDelete, 0)?.toString()
+            if (before != null && before.isNotEmpty()) {
+                deletedChars.append(before)
+                ic.deleteSurroundingText(before.length, 0)
+                deleteCount += before.length
+            }
+        } else if (targetCount < deleteCount && deletedChars.isNotEmpty()) {
+            // Restore characters (finger moved back right)
+            val toRestore = deleteCount - targetCount
+            val actualRestore = toRestore.coerceAtMost(deletedChars.length)
+            if (actualRestore > 0) {
+                val start = deletedChars.length - actualRestore
+                val text = deletedChars.substring(start)
+                deletedChars.delete(start, deletedChars.length)
+                ic.commitText(text, 1)
+                deleteCount -= actualRestore
+            }
+        }
+    }
+
+    private fun resetDeleteState() {
+        deletedChars.clear()
+        deleteCount = 0
+        isDeleting = false
+    }
+
     fun undoDelete(): Boolean {
-        if (deleteHistory.isEmpty()) return false
-        val last = deleteHistory.pop()
-        ime.restoreText(last)
+        if (deletedChars.isEmpty()) return false
+        val ic = ime.getInputConnection() ?: return false
+        ic.commitText(deletedChars.toString(), 1)
+        deletedChars.clear()
+        deleteCount = 0
         return true
     }
 
     fun clearDeleteHistory() {
-        deleteHistory.clear()
-    }
-
-    private fun calculateDeleteCount(progress: Float): Int {
-        val normalized = progress.coerceIn(0f, 1f)
-        return (1 + normalized * normalized * 19).toInt()
+        deletedChars.clear()
+        deleteCount = 0
     }
 }
