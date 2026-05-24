@@ -4424,6 +4424,7 @@ int style Theme_MaterialComponents_Light_NoActionBar 0x7f10026d
 int style Theme_MaterialComponents_Light_NoActionBar_Bridge 0x7f10026e
 int style Theme_MaterialComponents_NoActionBar 0x7f10026f
 int style Theme_MaterialComponents_NoActionBar_Bridge 0x7f100270
+int style Theme_SayitSettings 0x7f10045c
 int style ThemeOverlay_AppCompat 0x7f100271
 int style ThemeOverlay_AppCompat_ActionBar 0x7f100272
 int style ThemeOverlay_AppCompat_Dark 0x7f100273

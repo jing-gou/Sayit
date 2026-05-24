@@ -8,149 +8,175 @@
 8        android:minSdkVersion="26"
 9        android:targetSdkVersion="34" />
 10
-11    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-11-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:3:5-71
-11-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:3:22-68
-12    <uses-permission android:name="android.permission.INTERNET" />
-12-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:4:5-67
-12-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:4:22-64
-13    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-13-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:5:5-79
-13-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:5:22-76
-14
-15    <uses-feature
-15-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:7:5-89
-16        android:name="android.hardware.microphone"
-16-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:7:19-61
-17        android:required="false" />
-17-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:7:62-86
-18
-19    <permission
-19-->[androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\8.13\transforms\f7b8b6b1cc005a1c805b56c9b3407fe6\transformed\core-1.12.0\AndroidManifest.xml:22:5-24:47
-20        android:name="org.sayit.voiceime.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
-20-->[androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\8.13\transforms\f7b8b6b1cc005a1c805b56c9b3407fe6\transformed\core-1.12.0\AndroidManifest.xml:23:9-81
-21        android:protectionLevel="signature" />
-21-->[androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\8.13\transforms\f7b8b6b1cc005a1c805b56c9b3407fe6\transformed\core-1.12.0\AndroidManifest.xml:24:9-44
-22
-23    <uses-permission android:name="org.sayit.voiceime.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
-23-->[androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\8.13\transforms\f7b8b6b1cc005a1c805b56c9b3407fe6\transformed\core-1.12.0\AndroidManifest.xml:26:5-97
-23-->[androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\8.13\transforms\f7b8b6b1cc005a1c805b56c9b3407fe6\transformed\core-1.12.0\AndroidManifest.xml:26:22-94
+11    <uses-permission android:name="android.permission.VIBRATE" />
+11-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:3:5-66
+11-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:3:22-63
+12    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+12-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:4:5-71
+12-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:4:22-68
+13    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+13-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:5:5-78
+13-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:5:22-75
+14    <uses-permission android:name="android.permission.INTERNET" />
+14-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:6:5-67
+14-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:6:22-64
+15    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+15-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:7:5-79
+15-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:7:22-76
+16
+17    <uses-feature
+17-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:9:5-89
+18        android:name="android.hardware.microphone"
+18-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:9:19-61
+19        android:required="false" />
+19-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:9:62-86
+20
+21    <permission
+21-->[androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\8.13\transforms\f7b8b6b1cc005a1c805b56c9b3407fe6\transformed\core-1.12.0\AndroidManifest.xml:22:5-24:47
+22        android:name="org.sayit.voiceime.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+22-->[androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\8.13\transforms\f7b8b6b1cc005a1c805b56c9b3407fe6\transformed\core-1.12.0\AndroidManifest.xml:23:9-81
+23        android:protectionLevel="signature" />
+23-->[androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\8.13\transforms\f7b8b6b1cc005a1c805b56c9b3407fe6\transformed\core-1.12.0\AndroidManifest.xml:24:9-44
 24
-25    <application
-25-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:9:5-32:19
-26        android:allowBackup="false"
-26-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:10:9-36
-27        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
-27-->[androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\8.13\transforms\f7b8b6b1cc005a1c805b56c9b3407fe6\transformed\core-1.12.0\AndroidManifest.xml:28:18-86
-28        android:debuggable="true"
-29        android:extractNativeLibs="false"
-30        android:icon="@mipmap/ic_launcher"
-30-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:11:9-43
-31        android:label="@string/app_name"
-31-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:13:9-41
-32        android:roundIcon="@mipmap/ic_launcher_round"
-32-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:12:9-54
-33        android:supportsRtl="true"
-33-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:14:9-35
-34        android:theme="@android:style/Theme.Translucent.NoTitleBar" >
-34-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:15:9-68
-35        <service
-35-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:17:9-25:19
-36            android:name="org.sayit.voiceime.VoiceKeyboard"
-36-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:18:13-60
-37            android:exported="true"
-37-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:20:13-36
-38            android:permission="android.permission.BIND_INPUT_METHOD" >
-38-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:19:13-70
-39            <intent-filter>
-39-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:21:13-23:29
-40                <action android:name="android.view.InputMethod" />
-40-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:22:17-67
-40-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:22:25-64
-41            </intent-filter>
-42
-43            <meta-data
-43-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:24:13-88
-44                android:name="android.view.im"
-44-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:24:24-54
-45                android:resource="@xml/method" />
-45-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:24:55-85
-46        </service>
-47
-48        <activity
-48-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:27:9-30:40
-49            android:name="org.sayit.voiceime.PermissionActivity"
-49-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:28:13-65
-50            android:exported="false"
-50-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:30:13-37
-51            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-51-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:29:13-72
-52
-53        <provider
-53-->[androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\8.13\transforms\88e5764c6582ed637c3c940aa1ccc9db\transformed\emoji2-1.2.0\AndroidManifest.xml:24:9-32:20
-54            android:name="androidx.startup.InitializationProvider"
-54-->[androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\8.13\transforms\88e5764c6582ed637c3c940aa1ccc9db\transformed\emoji2-1.2.0\AndroidManifest.xml:25:13-67
-55            android:authorities="org.sayit.voiceime.androidx-startup"
-55-->[androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\8.13\transforms\88e5764c6582ed637c3c940aa1ccc9db\transformed\emoji2-1.2.0\AndroidManifest.xml:26:13-68
-56            android:exported="false" >
-56-->[androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\8.13\transforms\88e5764c6582ed637c3c940aa1ccc9db\transformed\emoji2-1.2.0\AndroidManifest.xml:27:13-37
-57            <meta-data
-57-->[androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\8.13\transforms\88e5764c6582ed637c3c940aa1ccc9db\transformed\emoji2-1.2.0\AndroidManifest.xml:29:13-31:52
-58                android:name="androidx.emoji2.text.EmojiCompatInitializer"
-58-->[androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\8.13\transforms\88e5764c6582ed637c3c940aa1ccc9db\transformed\emoji2-1.2.0\AndroidManifest.xml:30:17-75
-59                android:value="androidx.startup" />
-59-->[androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\8.13\transforms\88e5764c6582ed637c3c940aa1ccc9db\transformed\emoji2-1.2.0\AndroidManifest.xml:31:17-49
-60            <meta-data
-60-->[androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\sugar\.gradle\caches\8.13\transforms\a7f56bf29af5669173aff8a0a1376d6a\transformed\lifecycle-process-2.6.1\AndroidManifest.xml:29:13-31:52
-61                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
-61-->[androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\sugar\.gradle\caches\8.13\transforms\a7f56bf29af5669173aff8a0a1376d6a\transformed\lifecycle-process-2.6.1\AndroidManifest.xml:30:17-78
-62                android:value="androidx.startup" />
-62-->[androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\sugar\.gradle\caches\8.13\transforms\a7f56bf29af5669173aff8a0a1376d6a\transformed\lifecycle-process-2.6.1\AndroidManifest.xml:31:17-49
-63            <meta-data
-63-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:29:13-31:52
-64                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
-64-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:30:17-85
-65                android:value="androidx.startup" />
-65-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:31:17-49
-66        </provider>
-67
-68        <receiver
-68-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:34:9-52:20
-69            android:name="androidx.profileinstaller.ProfileInstallReceiver"
-69-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:35:13-76
-70            android:directBootAware="false"
-70-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:36:13-44
-71            android:enabled="true"
-71-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:37:13-35
-72            android:exported="true"
-72-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:38:13-36
-73            android:permission="android.permission.DUMP" >
-73-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:39:13-57
-74            <intent-filter>
-74-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:40:13-42:29
-75                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
-75-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:41:17-91
-75-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:41:25-88
-76            </intent-filter>
-77            <intent-filter>
-77-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:43:13-45:29
-78                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
-78-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:44:17-85
-78-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:44:25-82
-79            </intent-filter>
-80            <intent-filter>
-80-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:46:13-48:29
-81                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
-81-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:47:17-88
-81-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:47:25-85
-82            </intent-filter>
-83            <intent-filter>
-83-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:49:13-51:29
-84                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
-84-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:50:17-95
-84-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:50:25-92
-85            </intent-filter>
-86        </receiver>
-87    </application>
-88
-89</manifest>
+25    <uses-permission android:name="org.sayit.voiceime.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+25-->[androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\8.13\transforms\f7b8b6b1cc005a1c805b56c9b3407fe6\transformed\core-1.12.0\AndroidManifest.xml:26:5-97
+25-->[androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\8.13\transforms\f7b8b6b1cc005a1c805b56c9b3407fe6\transformed\core-1.12.0\AndroidManifest.xml:26:22-94
+26
+27    <application
+27-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:11:5-44:19
+28        android:allowBackup="false"
+28-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:12:9-36
+29        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+29-->[androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\8.13\transforms\f7b8b6b1cc005a1c805b56c9b3407fe6\transformed\core-1.12.0\AndroidManifest.xml:28:18-86
+30        android:debuggable="true"
+31        android:extractNativeLibs="false"
+32        android:icon="@mipmap/ic_launcher"
+32-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:13:9-43
+33        android:label="@string/app_name"
+33-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:15:9-41
+34        android:roundIcon="@mipmap/ic_launcher_round"
+34-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:14:9-54
+35        android:supportsRtl="true"
+35-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:16:9-35
+36        android:testOnly="true"
+37        android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+37-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:17:9-68
+38        <service
+38-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:19:9-27:19
+39            android:name="org.sayit.voiceime.VoiceKeyboard"
+39-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:20:13-60
+40            android:exported="true"
+40-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:22:13-36
+41            android:permission="android.permission.BIND_INPUT_METHOD" >
+41-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:21:13-70
+42            <intent-filter>
+42-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:23:13-25:29
+43                <action android:name="android.view.InputMethod" />
+43-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:24:17-67
+43-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:24:25-64
+44            </intent-filter>
+45
+46            <meta-data
+46-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:26:13-88
+47                android:name="android.view.im"
+47-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:26:24-54
+48                android:resource="@xml/method" />
+48-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:26:55-85
+49        </service>
+50
+51        <activity
+51-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:29:9-32:40
+52            android:name="org.sayit.voiceime.PermissionActivity"
+52-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:30:13-65
+53            android:exported="false"
+53-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:32:13-37
+54            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+54-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:31:13-72
+55        <activity
+55-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:34:9-42:20
+56            android:name="org.sayit.voiceime.SettingsActivity"
+56-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:35:13-63
+57            android:exported="true"
+57-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:37:13-36
+58            android:theme="@style/Theme.SayitSettings" >
+58-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:36:13-55
+59            <intent-filter>
+59-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:38:13-41:29
+60                <action android:name="android.intent.action.MAIN" />
+60-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:39:17-69
+60-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:39:25-66
+61
+62                <category android:name="android.intent.category.LAUNCHER" />
+62-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:40:17-77
+62-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:40:27-74
+63            </intent-filter>
+64        </activity>
+65
+66        <provider
+66-->[androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\8.13\transforms\88e5764c6582ed637c3c940aa1ccc9db\transformed\emoji2-1.2.0\AndroidManifest.xml:24:9-32:20
+67            android:name="androidx.startup.InitializationProvider"
+67-->[androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\8.13\transforms\88e5764c6582ed637c3c940aa1ccc9db\transformed\emoji2-1.2.0\AndroidManifest.xml:25:13-67
+68            android:authorities="org.sayit.voiceime.androidx-startup"
+68-->[androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\8.13\transforms\88e5764c6582ed637c3c940aa1ccc9db\transformed\emoji2-1.2.0\AndroidManifest.xml:26:13-68
+69            android:exported="false" >
+69-->[androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\8.13\transforms\88e5764c6582ed637c3c940aa1ccc9db\transformed\emoji2-1.2.0\AndroidManifest.xml:27:13-37
+70            <meta-data
+70-->[androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\8.13\transforms\88e5764c6582ed637c3c940aa1ccc9db\transformed\emoji2-1.2.0\AndroidManifest.xml:29:13-31:52
+71                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+71-->[androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\8.13\transforms\88e5764c6582ed637c3c940aa1ccc9db\transformed\emoji2-1.2.0\AndroidManifest.xml:30:17-75
+72                android:value="androidx.startup" />
+72-->[androidx.emoji2:emoji2:1.2.0] C:\Users\sugar\.gradle\caches\8.13\transforms\88e5764c6582ed637c3c940aa1ccc9db\transformed\emoji2-1.2.0\AndroidManifest.xml:31:17-49
+73            <meta-data
+73-->[androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\sugar\.gradle\caches\8.13\transforms\a7f56bf29af5669173aff8a0a1376d6a\transformed\lifecycle-process-2.6.1\AndroidManifest.xml:29:13-31:52
+74                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+74-->[androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\sugar\.gradle\caches\8.13\transforms\a7f56bf29af5669173aff8a0a1376d6a\transformed\lifecycle-process-2.6.1\AndroidManifest.xml:30:17-78
+75                android:value="androidx.startup" />
+75-->[androidx.lifecycle:lifecycle-process:2.6.1] C:\Users\sugar\.gradle\caches\8.13\transforms\a7f56bf29af5669173aff8a0a1376d6a\transformed\lifecycle-process-2.6.1\AndroidManifest.xml:31:17-49
+76            <meta-data
+76-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:29:13-31:52
+77                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+77-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:30:17-85
+78                android:value="androidx.startup" />
+78-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:31:17-49
+79        </provider>
+80
+81        <receiver
+81-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:34:9-52:20
+82            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+82-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:35:13-76
+83            android:directBootAware="false"
+83-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:36:13-44
+84            android:enabled="true"
+84-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:37:13-35
+85            android:exported="true"
+85-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:38:13-36
+86            android:permission="android.permission.DUMP" >
+86-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:39:13-57
+87            <intent-filter>
+87-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:40:13-42:29
+88                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+88-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:41:17-91
+88-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:41:25-88
+89            </intent-filter>
+90            <intent-filter>
+90-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:43:13-45:29
+91                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+91-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:44:17-85
+91-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:44:25-82
+92            </intent-filter>
+93            <intent-filter>
+93-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:46:13-48:29
+94                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+94-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:47:17-88
+94-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:47:25-85
+95            </intent-filter>
+96            <intent-filter>
+96-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:49:13-51:29
+97                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+97-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:50:17-95
+97-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\sugar\.gradle\caches\8.13\transforms\812fd09567036f30202cd1faa7f7b027\transformed\profileinstaller-1.3.0\AndroidManifest.xml:50:25-92
+98            </intent-filter>
+99        </receiver>
+100    </application>
+101
+102</manifest>

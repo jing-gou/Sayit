@@ -4,4 +4,5 @@ mipmap ic_launcher
 mipmap ic_launcher_round
 string app_name
 string subtype_label
+style Theme.SayitSettings
 xml method

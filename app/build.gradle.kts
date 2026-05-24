@@ -60,6 +60,7 @@ android {
 }
 
 dependencies {
+    implementation("androidx.activity:activity-ktx:1.8.2")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.core:core-ktx:1.12.0")
 
@@ -74,6 +75,9 @@ dependencies {
 
     // 动画（弹性吸附）
     implementation("androidx.dynamicanimation:dynamicanimation:1.0.0")
+
+    // SSE 流式响应
+    implementation("com.squareup.okhttp3:okhttp-sse:4.12.0")
 
     // Material Design
     implementation("com.google.android.material:material:1.11.0")

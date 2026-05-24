@@ -1,46 +1,46 @@
 [
     {
-        "merged": "org.sayit.voiceime.app-debug-31:/mipmap-xxxhdpi_ic_launcher_round.png.flat",
-        "source": "org.sayit.voiceime.app-main-33:/mipmap-xxxhdpi/ic_launcher_round.png"
+        "merged": "org.sayit.voiceime.app-debug-35:/mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "org.sayit.voiceime.app-main-37:/mipmap-xxhdpi/ic_launcher.png"
     },
     {
-        "merged": "org.sayit.voiceime.app-debug-31:/mipmap-xxhdpi_ic_launcher.png.flat",
-        "source": "org.sayit.voiceime.app-main-33:/mipmap-xxhdpi/ic_launcher.png"
+        "merged": "org.sayit.voiceime.app-debug-35:/mipmap-mdpi_ic_launcher.png.flat",
+        "source": "org.sayit.voiceime.app-main-37:/mipmap-mdpi/ic_launcher.png"
     },
     {
-        "merged": "org.sayit.voiceime.app-debug-31:/mipmap-mdpi_ic_launcher_round.png.flat",
-        "source": "org.sayit.voiceime.app-main-33:/mipmap-mdpi/ic_launcher_round.png"
+        "merged": "org.sayit.voiceime.app-debug-35:/mipmap-mdpi_ic_launcher_round.png.flat",
+        "source": "org.sayit.voiceime.app-main-37:/mipmap-mdpi/ic_launcher_round.png"
     },
     {
-        "merged": "org.sayit.voiceime.app-debug-31:/mipmap-hdpi_ic_launcher_round.png.flat",
-        "source": "org.sayit.voiceime.app-main-33:/mipmap-hdpi/ic_launcher_round.png"
+        "merged": "org.sayit.voiceime.app-debug-35:/mipmap-hdpi_ic_launcher_round.png.flat",
+        "source": "org.sayit.voiceime.app-main-37:/mipmap-hdpi/ic_launcher_round.png"
     },
     {
-        "merged": "org.sayit.voiceime.app-debug-31:/mipmap-xxhdpi_ic_launcher_round.png.flat",
-        "source": "org.sayit.voiceime.app-main-33:/mipmap-xxhdpi/ic_launcher_round.png"
+        "merged": "org.sayit.voiceime.app-debug-35:/mipmap-xxhdpi_ic_launcher_round.png.flat",
+        "source": "org.sayit.voiceime.app-main-37:/mipmap-xxhdpi/ic_launcher_round.png"
     },
     {
-        "merged": "org.sayit.voiceime.app-debug-31:/mipmap-xhdpi_ic_launcher_round.png.flat",
-        "source": "org.sayit.voiceime.app-main-33:/mipmap-xhdpi/ic_launcher_round.png"
+        "merged": "org.sayit.voiceime.app-debug-35:/mipmap-xxxhdpi_ic_launcher_round.png.flat",
+        "source": "org.sayit.voiceime.app-main-37:/mipmap-xxxhdpi/ic_launcher_round.png"
     },
     {
-        "merged": "org.sayit.voiceime.app-debug-31:/mipmap-xxxhdpi_ic_launcher.png.flat",
-        "source": "org.sayit.voiceime.app-main-33:/mipmap-xxxhdpi/ic_launcher.png"
+        "merged": "org.sayit.voiceime.app-debug-35:/mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "org.sayit.voiceime.app-main-37:/mipmap-xxxhdpi/ic_launcher.png"
     },
     {
-        "merged": "org.sayit.voiceime.app-debug-31:/mipmap-xhdpi_ic_launcher.png.flat",
-        "source": "org.sayit.voiceime.app-main-33:/mipmap-xhdpi/ic_launcher.png"
+        "merged": "org.sayit.voiceime.app-debug-35:/xml_method.xml.flat",
+        "source": "org.sayit.voiceime.app-main-37:/xml/method.xml"
     },
     {
-        "merged": "org.sayit.voiceime.app-debug-31:/mipmap-hdpi_ic_launcher.png.flat",
-        "source": "org.sayit.voiceime.app-main-33:/mipmap-hdpi/ic_launcher.png"
+        "merged": "org.sayit.voiceime.app-debug-35:/mipmap-xhdpi_ic_launcher_round.png.flat",
+        "source": "org.sayit.voiceime.app-main-37:/mipmap-xhdpi/ic_launcher_round.png"
     },
     {
-        "merged": "org.sayit.voiceime.app-debug-31:/xml_method.xml.flat",
-        "source": "org.sayit.voiceime.app-main-33:/xml/method.xml"
+        "merged": "org.sayit.voiceime.app-debug-35:/mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "org.sayit.voiceime.app-main-37:/mipmap-xhdpi/ic_launcher.png"
     },
     {
-        "merged": "org.sayit.voiceime.app-debug-31:/mipmap-mdpi_ic_launcher.png.flat",
-        "source": "org.sayit.voiceime.app-main-33:/mipmap-mdpi/ic_launcher.png"
+        "merged": "org.sayit.voiceime.app-debug-35:/mipmap-hdpi_ic_launcher.png.flat",
+        "source": "org.sayit.voiceime.app-main-37:/mipmap-hdpi/ic_launcher.png"
     }
 ]
