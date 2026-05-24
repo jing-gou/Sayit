@@ -38,6 +38,8 @@ import org.sayit.voiceime.widget.FloatingBallListener
 import org.sayit.voiceime.widget.FloatingBallView
 import org.sayit.voiceime.widget.RadialMenuAction
 import org.sayit.voiceime.widget.RadialMenuView
+import org.sayit.voiceime.clipboard.ClipboardHistoryManager
+import org.sayit.voiceime.widget.ClipboardHistoryView
 import org.sayit.voiceime.widget.SymbolPanelView
 
 object ASRConfig {
@@ -58,6 +60,7 @@ class VoiceKeyboard : InputMethodService() {
     @Volatile private var taskFinished = false
     @Volatile private var resultsDelivered = false
     @Volatile private var recordingActive = false
+    @Volatile private var speechCancelled = false
 
     private var symbolPanelInsetHeight = 0
     private var inputPlaceholder: View? = null
@@ -83,6 +86,8 @@ class VoiceKeyboard : InputMethodService() {
     private var resultBubble: ResultBubbleView? = null
     private var radialMenu: RadialMenuView? = null
     private var symbolPanel: SymbolPanelView? = null
+    private var clipboardPanel: ClipboardHistoryView? = null
+    private var clipboardHistory: ClipboardHistoryManager? = null
     private var gestureHandler: GestureActionHandler? = null
     private var llmService: LLMService? = null
     private var currentVoiceMode = VoiceMode.INPUT
@@ -90,6 +95,7 @@ class VoiceKeyboard : InputMethodService() {
     companion object {
         private val gson = Gson()
         private const val CHUNK_SIZE = 6400
+        private const val RECORDING_GRACE_MS = 300L
 
         private const val PROTOCOL_VERSION = 0x01
         private const val MSG_FULL_CLIENT_REQUEST  = 0x01
@@ -123,6 +129,7 @@ class VoiceKeyboard : InputMethodService() {
 
             gestureHandler = GestureActionHandler(this)
             llmService = LLMService(okHttpClient)
+            clipboardHistory = ClipboardHistoryManager(this).also { it.start() }
         } catch (e: Exception) {
             Log.e(TAG, "onCreate error", e)
         }
@@ -242,9 +249,16 @@ class VoiceKeyboard : InputMethodService() {
         currentInputConnection?.sendKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER))
     }
 
-    fun undoLastInput() {
-        val ic = currentInputConnection ?: return
-        ic.commitText("", 1)
+    /** Cancel in-progress voice input and clear ASR composing preview. */
+    fun cancelVoiceInput() {
+        if (!isListening && !recordingActive) return
+        abortSpeechRecognition()
+    }
+
+    private fun clearVoiceComposingText() {
+        scope.launch(Dispatchers.Main) {
+            currentInputConnection?.setComposingText("", 0)
+        }
     }
 
     fun updateFloatingBallPosition(rawX: Float, rawY: Float) {
@@ -277,6 +291,7 @@ class VoiceKeyboard : InputMethodService() {
         isListening = true
         taskFinished = false
         resultsDelivered = false
+        speechCancelled = false
         currentVoiceMode = VoiceMode.INPUT
         floatingBall?.setListeningState(true)
         try {
@@ -368,17 +383,19 @@ class VoiceKeyboard : InputMethodService() {
     }
 
     private fun abortSpeechRecognition() {
+        speechCancelled = true
         isListening = false
         recordingActive = false
         floatingBall?.setListeningState(false)
+        resultBuffer = ""
+        resultsDelivered = true
+        clearVoiceComposingText()
         audioRecord?.stop()
         audioRecord?.release()
         audioRecord = null
         val ws = webSocket
         webSocket = null
         ws?.cancel()
-        resultsDelivered = false
-        resultBuffer = ""
     }
 
     private fun showLoadingBubble() {
@@ -462,14 +479,7 @@ class VoiceKeyboard : InputMethodService() {
                 intent.flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
             }
-            RadialMenuAction.CLIPBOARD -> {
-                val clipboard = getSystemService(CLIPBOARD_SERVICE) as? android.content.ClipboardManager
-                val clip = clipboard?.primaryClip
-                if (clip != null && clip.itemCount > 0) {
-                    val text = clip.getItemAt(0).coerceToText(this).toString()
-                    currentInputConnection?.commitText(text, 1)
-                }
-            }
+            RadialMenuAction.CLIPBOARD -> showClipboardPanel()
             RadialMenuAction.INPUT_MODE -> {
                 showSymbolPanel()
             }
@@ -480,8 +490,36 @@ class VoiceKeyboard : InputMethodService() {
         }
     }
 
+    private fun showClipboardPanel() {
+        val helper = overlayHelper ?: return
+        val history = clipboardHistory ?: return
+        dismissSymbolPanel()
+        dismissClipboardPanel()
+
+        val panel = ClipboardHistoryView(applicationContext).apply {
+            onPaste = { text ->
+                currentInputConnection?.commitText(text, 1)
+                dismissClipboardPanel()
+            }
+            onDismiss = { dismissClipboardPanel() }
+            onPanelHeightChanged = { height -> updateSymbolPanelInset(height) }
+        }
+        history.captureNow()
+        panel.setEntries(history.getEntries())
+        helper.addView(panel, OverlayHelper.bottomPanelParams())
+        clipboardPanel = panel
+        panel.show()
+    }
+
+    private fun dismissClipboardPanel() {
+        updateSymbolPanelInset(0)
+        clipboardPanel?.let { overlayHelper?.removeView(it) }
+        clipboardPanel = null
+    }
+
     private fun showSymbolPanel() {
         val helper = overlayHelper ?: return
+        dismissClipboardPanel()
         dismissSymbolPanel()
 
         val panel = SymbolPanelView(applicationContext).apply {
@@ -599,8 +637,8 @@ class VoiceKeyboard : InputMethodService() {
                 }
             }
 
-            // 1s grace period: keep sending audio before end packet
-            val graceEnd = System.currentTimeMillis() + 1000
+            // Grace period: keep sending audio before end packet
+            val graceEnd = System.currentTimeMillis() + RECORDING_GRACE_MS
             while (isActive && System.currentTimeMillis() < graceEnd) {
                 val read = audioRecord?.read(buffer, 0, CHUNK_SIZE) ?: 0
                 if (read > 0) {
@@ -686,11 +724,13 @@ class VoiceKeyboard : InputMethodService() {
     }
 
     private fun processRecognitionJson(json: String, isLast: Boolean) {
+        if (speechCancelled) return
         try {
             val obj  = gson.fromJson(json, JsonObject::class.java)
             val text = obj.getAsJsonObject("result")?.get("text")?.asString ?: ""
             if (text.isNotEmpty()) {
                 scope.launch(Dispatchers.Main) {
+                    if (speechCancelled) return@launch
                     currentInputConnection?.setComposingText(text, 1)
                     resultBuffer = text
                 }
@@ -765,9 +805,12 @@ class VoiceKeyboard : InputMethodService() {
         stopSpeechRecognition()
         abortSpeechRecognition()
         scope.cancel()
+        clipboardHistory?.stop()
+        clipboardHistory = null
         try {
             dismissRadialMenu()
             dismissSymbolPanel()
+            dismissClipboardPanel()
             dismissResultBubble()
             overlayHelper?.removeAll()
         } catch (_: Exception) {}
