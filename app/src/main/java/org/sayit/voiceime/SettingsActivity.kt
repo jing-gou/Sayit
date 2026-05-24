@@ -162,6 +162,16 @@ class SettingsActivity : AppCompatActivity() {
             textSize = 12f
             setTextColor(textSecondary)
         })
+        ballCard.addView(createSecondaryButton("查看手势教学") {
+            AppSettings.requestGestureGuide(this)
+            AppSettings.notifyShowGestureGuide(this)
+            showToast("手势引导将在输入界面显示")
+        }.apply {
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { topMargin = dp(12) }
+        })
         root.addView(ballCard)
 
         // --- LLM ---
