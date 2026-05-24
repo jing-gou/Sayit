@@ -1,6 +1,7 @@
 package org.sayit.voiceime.widget
 
 import android.content.Context
+import android.graphics.Color
 import android.util.TypedValue
 
 data class FloatingBallConfig(
@@ -10,7 +11,12 @@ data class FloatingBallConfig(
     val listeningColor: Int,
     val gestureColor: Int,
     val deleteColor: Int,
-    val loadingColor: Int,
+    val restoreColor: Int,
+    val translateColor: Int,
+    val sendColor: Int,
+    val robotColor: Int,
+    val trashColor: Int,
+    val dragColor: Int,
     val gestureThreshold: Float,
     val longPressTimeout: Long,
     val trailEnabled: Boolean,
@@ -25,14 +31,19 @@ data class FloatingBallConfig(
                 )
             }
             return FloatingBallConfig(
-                ballRadius = dp(28f),
-                glowRadius = dp(40f),
-                idleColor = 0xFF78909C.toInt(),
-                listeningColor = 0xFFFF5252.toInt(),
-                gestureColor = 0xFF2196F3.toInt(),
-                deleteColor = 0xFFFF9800.toInt(),
-                loadingColor = 0xFF9C27B0.toInt(),
-                gestureThreshold = dp(30f),
+                ballRadius = dp(26f),
+                glowRadius = dp(36f),
+                idleColor = Color.parseColor("#6366F1"),
+                listeningColor = Color.parseColor("#EF4444"),
+                gestureColor = Color.parseColor("#818CF8"),
+                deleteColor = Color.parseColor("#F97316"),
+                restoreColor = Color.parseColor("#22C55E"),
+                translateColor = Color.parseColor("#06B6D4"),
+                sendColor = Color.parseColor("#10B981"),
+                robotColor = Color.parseColor("#A855F7"),
+                trashColor = Color.parseColor("#F43F5E"),
+                dragColor = Color.parseColor("#64748B"),
+                gestureThreshold = dp(24f),
                 longPressTimeout = 300L,
                 trailEnabled = true,
                 hapticEnabled = true
