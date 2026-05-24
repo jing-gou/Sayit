@@ -3,39 +3,45 @@ package org.sayit.voiceime
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Color
+import android.graphics.Typeface
+import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.Gravity
 import android.view.View
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
+import android.app.Activity
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsActivity : Activity() {
 
     private lateinit var prefs: SharedPreferences
 
-    // LLM fields
     private lateinit var llmApiUrl: EditText
     private lateinit var llmApiKey: EditText
     private lateinit var llmModel: EditText
     private lateinit var llmPrompt: EditText
 
-    // ASR fields
     private lateinit var asrApiKey: EditText
     private lateinit var asrResourceId: EditText
     private lateinit var asrWsUrl: EditText
 
-    // Other settings
     private lateinit var translationLang: Spinner
     private lateinit var asrLanguage: Spinner
     private lateinit var ballSizeMode: SeekBar
     private lateinit var ballSizeLabel: TextView
     private lateinit var overlayMode: Switch
 
-    // Custom ball image
     private lateinit var customBallPreview: ImageView
     private var customBallUri: String? = null
+
+    private val bgColor = Color.parseColor("#121218")
+    private val cardColor = Color.parseColor("#1E1E2E")
+    private val accentColor = Color.parseColor("#6366F1")
+    private val textPrimary = Color.parseColor("#F0F0F5")
+    private val textSecondary = Color.parseColor("#9090A0")
+    private val fieldBg = Color.parseColor("#2A2A3C")
 
     companion object {
         const val PREFS_NAME = "sayit_settings"
@@ -58,111 +64,145 @@ class SettingsActivity : AppCompatActivity() {
         prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
         val scrollView = ScrollView(this).apply {
-            setPadding(dp(20), dp(16), dp(20), dp(16))
-            setBackgroundColor(0xFF1A1A1A.toInt())
+            setBackgroundColor(bgColor)
+            isFillViewport = true
         }
 
         val root = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
+            setPadding(dp(16), dp(24), dp(16), dp(32))
         }
 
-        // Title
-        root.addView(TextView(this@SettingsActivity).apply {
-            text = "Sayit 设置"
-            textSize = 24f
-            setPadding(0, 0, 0, dp(20))
+        // Header
+        root.addView(TextView(this).apply {
+            text = "Sayit"
+            textSize = 28f
+            setTextColor(textPrimary)
+            typeface = Typeface.DEFAULT_BOLD
+        })
+        root.addView(TextView(this).apply {
+            text = "语音输入法设置"
+            textSize = 14f
+            setTextColor(textSecondary)
+            setPadding(0, dp(4), 0, dp(24))
         })
 
-        // --- Floating Ball Section ---
-        root.addSection("悬浮球")
+        // --- Floating Ball ---
+        val ballCard = createCard()
+        ballCard.addSectionTitle("悬浮球")
 
-        // Ball size
-        ballSizeLabel = TextView(this).apply { text = "大小: 标准" }
-        root.addView(ballSizeLabel)
+        ballSizeLabel = TextView(this).apply {
+            text = sizeLabel(prefs.getInt(KEY_BALL_SIZE, 50))
+            textSize = 14f
+            setTextColor(textSecondary)
+        }
+        ballCard.addView(ballSizeLabel)
         ballSizeMode = SeekBar(this).apply {
             max = 100
             progress = prefs.getInt(KEY_BALL_SIZE, 50)
+            setPadding(0, dp(8), 0, dp(8))
             setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(sb: SeekBar, progress: Int, fromUser: Boolean) {
-                    ballSizeLabel.text = when {
-                        progress < 33 -> "大小: 小"
-                        progress < 66 -> "大小: 标准"
-                        else -> "大小: 大"
-                    }
+                    ballSizeLabel.text = sizeLabel(progress)
                 }
                 override fun onStartTrackingTouch(sb: SeekBar) {}
                 override fun onStopTrackingTouch(sb: SeekBar) {}
             })
         }
-        root.addView(ballSizeMode)
+        ballCard.addView(ballSizeMode)
 
-        // Custom ball image
-        root.addView(TextView(this@SettingsActivity).apply {
-            text = "自定义悬浮球图片"
-            setPadding(0, dp(12), 0, dp(4))
-        })
+        ballCard.addFieldLabel("自定义悬浮球图片")
+        val previewRow = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(0, dp(4), 0, dp(8))
+        }
         customBallPreview = ImageView(this).apply {
-            layoutParams = LinearLayout.LayoutParams(dp(60), dp(60))
-            setBackgroundColor(0xFF333333.toInt())
+            layoutParams = LinearLayout.LayoutParams(dp(56), dp(56)).apply { marginEnd = dp(12) }
+            background = rounded(fieldBg, dp(12))
             scaleType = ImageView.ScaleType.CENTER_CROP
         }
-        root.addView(customBallPreview)
-        root.addView(Button(this@SettingsActivity).apply {
-            text = "选择图片 (PNG/GIF)"
-            setOnClickListener { pickImage() }
-        })
+        previewRow.addView(customBallPreview)
+        previewRow.addView(createSecondaryButton("选择图片") { pickImage() })
+        ballCard.addView(previewRow)
 
-        // Overlay mode
         overlayMode = Switch(this).apply {
-            text = "悬浮球常驻显示（关闭则仅输入时显示）"
+            text = "悬浮球常驻显示"
             isChecked = prefs.getBoolean(KEY_OVERLAY_ALWAYS, true)
+            setTextColor(textPrimary)
+            setPadding(0, dp(8), 0, 0)
         }
-        root.addView(overlayMode)
+        ballCard.addView(overlayMode)
+        ballCard.addView(TextView(this).apply {
+            text = "关闭后仅在输入时显示悬浮球"
+            textSize = 12f
+            setTextColor(textSecondary)
+        })
+        root.addView(ballCard)
 
-        // --- LLM Section ---
-        root.addSection("大模型 (LLM)")
-        llmApiUrl = root.addSettingField("API 地址", prefs.getString(KEY_LLM_API_URL, BuildConfig.LLM_API_URL) ?: "")
-        llmApiKey = root.addSettingField("API Key", prefs.getString(KEY_LLM_API_KEY, BuildConfig.LLM_API_KEY) ?: "")
-        llmModel = root.addSettingField("模型名称", prefs.getString(KEY_LLM_MODEL, BuildConfig.LLM_MODEL) ?: "")
-        llmPrompt = root.addSettingField("系统 Prompt", prefs.getString(KEY_LLM_PROMPT, "你是一个智能助手，请简洁回答用户的问题。回答要准确、有帮助。") ?: "", lines = 3)
+        // --- LLM ---
+        val llmCard = createCard()
+        llmCard.addSectionTitle("大模型 (LLM)")
+        llmApiUrl = llmCard.addField("API 地址", prefs.getString(KEY_LLM_API_URL, BuildConfig.LLM_API_URL) ?: "")
+        llmApiKey = llmCard.addField("API Key", prefs.getString(KEY_LLM_API_KEY, BuildConfig.LLM_API_KEY) ?: "")
+        llmModel = llmCard.addField("模型名称", prefs.getString(KEY_LLM_MODEL, BuildConfig.LLM_MODEL) ?: "")
+        llmPrompt = llmCard.addField(
+            "系统 Prompt",
+            prefs.getString(KEY_LLM_PROMPT, "你是一个智能助手，请简洁回答用户的问题。回答要准确、有帮助。") ?: "",
+            lines = 3
+        )
+        root.addView(llmCard)
 
-        // --- ASR Section ---
-        root.addSection("语音识别 (ASR)")
-        asrApiKey = root.addSettingField("API Key", prefs.getString(KEY_ASR_API_KEY, BuildConfig.ASR_API_KEY) ?: "")
-        asrResourceId = root.addSettingField("Resource ID", prefs.getString(KEY_ASR_RESOURCE_ID, BuildConfig.ASR_RESOURCE_ID) ?: "")
-        asrWsUrl = root.addSettingField("WebSocket URL", prefs.getString(KEY_ASR_WS_URL, BuildConfig.ASR_WS_URL) ?: "")
+        // --- ASR ---
+        val asrCard = createCard()
+        asrCard.addSectionTitle("语音识别 (ASR)")
+        asrApiKey = asrCard.addField("API Key", prefs.getString(KEY_ASR_API_KEY, BuildConfig.ASR_API_KEY) ?: "")
+        asrResourceId = asrCard.addField("Resource ID", prefs.getString(KEY_ASR_RESOURCE_ID, BuildConfig.ASR_RESOURCE_ID) ?: "")
+        asrWsUrl = asrCard.addField("WebSocket URL", prefs.getString(KEY_ASR_WS_URL, BuildConfig.ASR_WS_URL) ?: "")
+        root.addView(asrCard)
 
-        // --- Language Section ---
-        root.addSection("语言设置")
-
-        root.addView(TextView(this@SettingsActivity).apply { text = "翻译目标语种" })
+        // --- Language ---
+        val langCard = createCard()
+        langCard.addSectionTitle("语言设置")
+        langCard.addFieldLabel("翻译目标语种")
         translationLang = Spinner(this).apply {
-            adapter = ArrayAdapter(this@SettingsActivity,
-                android.R.layout.simple_spinner_dropdown_item,
-                listOf("英文", "日文", "韩文", "法文", "德文", "西班牙文", "俄文", "中文"))
+            adapter = styledSpinnerAdapter(listOf("英文", "日文", "韩文", "法文", "德文", "西班牙文", "俄文", "中文"))
             setSelection(
                 (adapter as ArrayAdapter<String>).getPosition(
                     prefs.getString(KEY_TRANSLATION_LANG, "英文") ?: "英文"
                 )
             )
+            background = rounded(fieldBg, dp(8))
+            setPadding(dp(8), dp(8), dp(8), dp(8))
         }
-        root.addView(translationLang)
+        langCard.addView(translationLang)
 
-        root.addView(TextView(this@SettingsActivity).apply {
-            text = "语音识别语种"
-            setPadding(0, dp(12), 0, 0)
-        })
+        langCard.addFieldLabel("语音识别语种")
         asrLanguage = Spinner(this).apply {
-            adapter = ArrayAdapter(this@SettingsActivity,
-                android.R.layout.simple_spinner_dropdown_item,
-                listOf("中文", "英文", "日文", "粤语", "四川话"))
+            adapter = styledSpinnerAdapter(listOf("中文", "英文", "日文", "粤语", "四川话"))
+            background = rounded(fieldBg, dp(8))
+            setPadding(dp(8), dp(8), dp(8), dp(8))
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { topMargin = dp(12) }
         }
-        root.addView(asrLanguage)
+        langCard.addView(asrLanguage)
+        root.addView(langCard)
 
-        // --- Save Button ---
-        root.addView(Button(this@SettingsActivity).apply {
+        // Save button
+        root.addView(TextView(this).apply {
             text = "保存设置"
-            setPadding(0, dp(24), 0, 0)
+            textSize = 16f
+            gravity = Gravity.CENTER
+            setTextColor(Color.WHITE)
+            typeface = Typeface.DEFAULT_BOLD
+            background = rounded(accentColor, dp(12))
+            setPadding(0, dp(14), 0, dp(14))
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { topMargin = dp(20) }
             setOnClickListener { saveSettings() }
         })
 
@@ -205,32 +245,50 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
-    // Helper extensions
-    private fun LinearLayout.addSection(title: String) {
+    private fun createCard(): LinearLayout {
+        return LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            background = rounded(cardColor, dp(14))
+            setPadding(dp(16), dp(16), dp(16), dp(16))
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { bottomMargin = dp(12) }
+        }
+    }
+
+    private fun LinearLayout.addSectionTitle(title: String) {
         addView(TextView(this@SettingsActivity).apply {
             text = title
-            textSize = 18f
-            setPadding(0, dp(24), 0, dp(8))
-        })
-        addView(View(this@SettingsActivity).apply {
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, dp(1)
-            ).apply { bottomMargin = dp(8) }
-            setBackgroundColor(0xFF444444.toInt())
+            textSize = 16f
+            setTextColor(textPrimary)
+            typeface = Typeface.DEFAULT_BOLD
+            setPadding(0, 0, 0, dp(12))
         })
     }
 
-    private fun LinearLayout.addSettingField(label: String, default: String, lines: Int = 1): EditText {
+    private fun LinearLayout.addFieldLabel(label: String) {
         addView(TextView(this@SettingsActivity).apply {
             text = label
+            textSize = 13f
+            setTextColor(textSecondary)
             setPadding(0, dp(8), 0, dp(4))
         })
+    }
+
+    private fun LinearLayout.addField(label: String, default: String, lines: Int = 1): EditText {
+        addFieldLabel(label)
         val field = EditText(this@SettingsActivity).apply {
             setText(default)
             textSize = 14f
-            setPadding(dp(12), dp(8), dp(12), dp(8))
-            setBackgroundColor(0xFF2A2A2A.toInt())
-            setTextColor(0xFFFFFFFF.toInt())
+            setTextColor(textPrimary)
+            setHintTextColor(textSecondary)
+            background = rounded(fieldBg, dp(8))
+            setPadding(dp(12), dp(10), dp(12), dp(10))
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { bottomMargin = dp(4) }
             if (lines > 1) {
                 minLines = lines
                 maxLines = lines
@@ -239,6 +297,37 @@ class SettingsActivity : AppCompatActivity() {
         }
         addView(field)
         return field
+    }
+
+    private fun createSecondaryButton(label: String, onClick: () -> Unit): TextView {
+        return TextView(this).apply {
+            text = label
+            textSize = 14f
+            setTextColor(accentColor)
+            gravity = Gravity.CENTER
+            background = rounded(fieldBg, dp(8))
+            setPadding(dp(16), dp(10), dp(16), dp(10))
+            setOnClickListener { onClick() }
+        }
+    }
+
+    private fun styledSpinnerAdapter(items: List<String>): ArrayAdapter<String> {
+        return ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, items).apply {
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        }
+    }
+
+    private fun sizeLabel(progress: Int): String = when {
+        progress < 33 -> "大小：小"
+        progress < 66 -> "大小：标准"
+        else -> "大小：大"
+    }
+
+    private fun rounded(color: Int, radius: Int): GradientDrawable {
+        return GradientDrawable().apply {
+            setColor(color)
+            cornerRadius = radius.toFloat()
+        }
     }
 
     private fun dp(value: Int): Int {
