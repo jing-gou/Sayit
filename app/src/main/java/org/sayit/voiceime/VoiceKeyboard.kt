@@ -16,8 +16,10 @@ import android.inputmethodservice.InputMethodService.Insets
 import android.net.Uri
 import android.provider.Settings
 import android.util.Log
+import android.text.InputType
 import android.view.KeyEvent
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.view.View.MeasureSpec
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
@@ -47,6 +49,7 @@ import org.sayit.voiceime.widget.RadialMenuView
 import org.sayit.voiceime.clipboard.ClipboardHistoryManager
 import org.sayit.voiceime.widget.ClipboardHistoryView
 import org.sayit.voiceime.widget.SymbolPanelView
+import org.sayit.voiceime.widget.GestureGuideView
 
 object ASRConfig {
     val WS_URL get() = AppSettings.asrWsUrl
@@ -67,6 +70,7 @@ class VoiceKeyboard : InputMethodService() {
     @Volatile private var resultsDelivered = false
     @Volatile private var recordingActive = false
     @Volatile private var speechCancelled = false
+    @Volatile private var pendingSendAfterResults = false
     private var inputViewVisible = false
 
     private var symbolPanelInsetHeight = 0
@@ -95,6 +99,7 @@ class VoiceKeyboard : InputMethodService() {
     private var radialMenu: RadialMenuView? = null
     private var symbolPanel: SymbolPanelView? = null
     private var clipboardPanel: ClipboardHistoryView? = null
+    private var gestureGuide: GestureGuideView? = null
     private var clipboardHistory: ClipboardHistoryManager? = null
     private var gestureHandler: GestureActionHandler? = null
     private var llmService: LLMService? = null
@@ -113,12 +118,17 @@ class VoiceKeyboard : InputMethodService() {
     private val ballSettingsReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             mainHandler.post {
-                val overlayOnly = intent?.getBooleanExtra(AppSettings.EXTRA_OVERLAY_ONLY, false) == true
-                if (overlayOnly) {
-                    applyOverlayPolicy()
-                } else {
-                    reloadFloatingBall()
-                    applyOverlayPolicy()
+                when (intent?.action) {
+                    AppSettings.ACTION_SHOW_GESTURE_GUIDE -> showGestureGuide(autoPrompt = false)
+                    else -> {
+                        val overlayOnly = intent?.getBooleanExtra(AppSettings.EXTRA_OVERLAY_ONLY, false) == true
+                        if (overlayOnly) {
+                            applyOverlayPolicy()
+                        } else {
+                            reloadFloatingBall()
+                            applyOverlayPolicy()
+                        }
+                    }
                 }
             }
         }
@@ -165,7 +175,10 @@ class VoiceKeyboard : InputMethodService() {
             settingsPrefs = AppSettings.prefs(this).also {
                 it.registerOnSharedPreferenceChangeListener(settingsChangeListener)
             }
-            val filter = IntentFilter(AppSettings.ACTION_BALL_SETTINGS_CHANGED)
+            val filter = IntentFilter().apply {
+                addAction(AppSettings.ACTION_BALL_SETTINGS_CHANGED)
+                addAction(AppSettings.ACTION_SHOW_GESTURE_GUIDE)
+            }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 registerReceiver(ballSettingsReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
             } else {
@@ -335,7 +348,8 @@ class VoiceKeyboard : InputMethodService() {
         if (!isListening) startSpeechRecognition()
     }
 
-    fun stopVoiceInput() {
+    fun stopVoiceInput(sendAfter: Boolean = false) {
+        if (sendAfter) pendingSendAfterResults = true
         if (isListening) stopSpeechRecognition()
     }
 
@@ -359,13 +373,54 @@ class VoiceKeyboard : InputMethodService() {
         currentInputConnection?.commitText(deleted.text, 1)
     }
 
-    fun commitEnterKey() {
-        currentInputConnection?.sendKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER))
-        currentInputConnection?.sendKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER))
+    /**
+     * Triggers the focused field's editor action (send / go / done).
+     * Falls back to newline only when no editor action is accepted.
+     */
+    fun performSendAction(): Boolean {
+        val ic = currentInputConnection ?: return false
+        val editorInfo = currentInputEditorInfo
+
+        val action = when {
+            editorInfo == null -> EditorInfo.IME_ACTION_DONE
+            editorInfo.actionId != EditorInfo.IME_ACTION_NONE -> editorInfo.actionId
+            else -> {
+                val masked = editorInfo.imeOptions and EditorInfo.IME_MASK_ACTION
+                if (masked != EditorInfo.IME_ACTION_NONE) masked else EditorInfo.IME_ACTION_DONE
+            }
+        }
+
+        if (ic.performEditorAction(action)) return true
+
+        for (fallback in intArrayOf(
+            EditorInfo.IME_ACTION_SEND,
+            EditorInfo.IME_ACTION_GO,
+            EditorInfo.IME_ACTION_DONE
+        )) {
+            if (action != fallback && ic.performEditorAction(fallback)) return true
+        }
+
+        return commitNewlineFallback(ic, editorInfo)
+    }
+
+    private fun commitNewlineFallback(
+        ic: android.view.inputmethod.InputConnection,
+        editorInfo: EditorInfo?
+    ): Boolean {
+        val inputType = editorInfo?.inputType ?: 0
+        val isMultiLine = (inputType and InputType.TYPE_TEXT_FLAG_MULTI_LINE) != 0
+        if (isMultiLine) {
+            ic.commitText("\n", 1)
+            return true
+        }
+        ic.sendKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER))
+        ic.sendKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER))
+        return true
     }
 
     /** Cancel in-progress voice input and clear ASR composing preview. */
     fun cancelVoiceInput() {
+        pendingSendAfterResults = false
         if (!isListening && !recordingActive) return
         abortSpeechRecognition()
     }
@@ -444,6 +499,10 @@ class VoiceKeyboard : InputMethodService() {
                     commitText(resultBuffer)
                     resultBuffer = ""
                 }
+                if (pendingSendAfterResults) {
+                    pendingSendAfterResults = false
+                    performSendAction()
+                }
             }
             VoiceMode.QUESTION -> {
                 val question = resultBuffer
@@ -498,6 +557,7 @@ class VoiceKeyboard : InputMethodService() {
     }
 
     private fun abortSpeechRecognition() {
+        pendingSendAfterResults = false
         speechCancelled = true
         isListening = false
         recordingActive = false
@@ -662,6 +722,42 @@ class VoiceKeyboard : InputMethodService() {
             overlayHelper?.removeView(it)
         }
         symbolPanel = null
+    }
+
+    private fun showGestureGuide(autoPrompt: Boolean = false) {
+        if (gestureGuide != null) return
+        if (!Settings.canDrawOverlays(this)) return
+        val helper = overlayHelper ?: return
+        dismissRadialMenu()
+        dismissSymbolPanel()
+        dismissClipboardPanel()
+
+        val guide = GestureGuideView(applicationContext, defaultDontShowAgain = autoPrompt).apply {
+            onDismiss = { dismissGestureGuide() }
+            onComplete = { dontShowAgain ->
+                if (dontShowAgain) {
+                    AppSettings.markGestureGuideShown(this@VoiceKeyboard)
+                }
+                dismissGestureGuide()
+            }
+        }
+        helper.addView(guide, OverlayHelper.fullScreenParams())
+        gestureGuide = guide
+        guide.show()
+    }
+
+    private fun dismissGestureGuide() {
+        gestureGuide?.let { overlayHelper?.removeView(it) }
+        gestureGuide = null
+    }
+
+    private fun scheduleGestureGuideIfNeeded() {
+        when {
+            AppSettings.consumePendingGestureGuide(this) ->
+                mainHandler.postDelayed({ showGestureGuide(autoPrompt = false) }, 350)
+            !AppSettings.readGestureGuideShown(this) ->
+                mainHandler.postDelayed({ showGestureGuide(autoPrompt = true) }, 600)
+        }
     }
 
     private fun connectToASR() {
@@ -929,6 +1025,7 @@ class VoiceKeyboard : InputMethodService() {
     private fun onInputSessionStarted() {
         inputViewVisible = true
         ensureOverlay()
+        scheduleGestureGuideIfNeeded()
     }
 
     private fun onInputSessionEnded() {
@@ -952,6 +1049,7 @@ class VoiceKeyboard : InputMethodService() {
             dismissRadialMenu()
             dismissSymbolPanel()
             dismissClipboardPanel()
+            dismissGestureGuide()
             dismissResultBubble()
             overlayHelper?.removeAll()
         } catch (_: Exception) {}
