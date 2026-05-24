@@ -22,7 +22,9 @@ class SymbolPanelView(context: Context) : FrameLayout(context) {
     private var isUpperCase = false
     private val tabButtons = mutableListOf<TextView>()
     private lateinit var contentLayout: LinearLayout
+    private lateinit var contentScroll: ScrollView
     private lateinit var mainLayout: LinearLayout
+    private val maxContentHeightPx: Int
     private var shiftButton: TextView? = null
 
     private val accentColor = Color.parseColor("#6366F1")
@@ -34,24 +36,53 @@ class SymbolPanelView(context: Context) : FrameLayout(context) {
     )
 
     private val punctuationKeys = listOf(
+        // 中文标点
         "。", "，", "！", "？", "；", "：",
-        "\u201C", "\u201D", "\u2018", "\u2019", "·", "——",
-        "……", "、", "（", "）", "【", "】",
-        "《", "》", "「", "」", "『", "』"
+        "、", "……", "—", "～", "·", "『",
+        "』", "「", "」", "（", "）", "【",
+        "】", "《", "》", "\u201C", "\u201D",
+        "\u2018", "\u2019", "〈", "〉", "﹏", "﹑",
+        // 英文 / 半角标点
+        ".", ",", "!", "?", ";", ":",
+        "'", "\"", "(", ")", "[", "]",
+        "{", "}", "-", "…", "/", "\\"
     )
 
     private val symbolKeys = listOf(
         "@", "#", "$", "%", "&", "*",
         "+", "-", "×", "÷", "=", "≠",
         "<", ">", "≤", "≥", "~", "^",
-        "_", "|", "\\", "/", "€", "¥"
+        "_", "|", "\\", "/", "€", "¥",
+        "£", "¢", "°", "±", "∞", "√",
+        "π", "≈", "≡", "•", "※", "§",
+        "©", "®", "™", "№", "‰", "★",
+        "☆", "○", "●", "◆", "◇", "□",
+        "■", "△", "▽", "←", "→", "↑",
+        "↓", "↔", "☑", "☒", "♂", "♀",
+        "♠", "♥", "♦", "♣", "♪", "♫",
+        "✓", "✗", "✦", "✧", "❖", "◉"
     )
 
     private val emojiKeys = listOf(
-        "😀", "😂", "🤣", "😍", "🥰", "😎",
-        "🤔", "😢", "😡", "🥺", "😴", "🤯",
-        "👍", "👎", "❤️", "🔥", "⭐", "✅",
-        "❌", "🎉", "🙏", "💪", "👏", "🤝"
+        // 表情
+        "😀", "😃", "😄", "😁", "😆", "😅",
+        "😂", "🤣", "🥲", "😊", "😇", "🙂",
+        "😉", "😍", "🥰", "😘", "😎", "🤔",
+        "😐", "😑", "😶", "🙄", "😏", "😣",
+        "😢", "😭", "😤", "😡", "🥺", "😴",
+        "🤯", "🤗", "🤭", "🫡", "🫠", "🤫",
+        // 手势 / 人物
+        "👍", "👎", "👌", "✌️", "🤞", "🤝",
+        "🙏", "👏", "💪", "🫶", "👋", "🤷",
+        // 心形 / 符号
+        "❤️", "🧡", "💛", "💚", "💙", "💜",
+        "🖤", "🤍", "💔", "❣️", "💕", "✨",
+        "💯", "🔥", "⭐", "🌟", "💫", "⚡",
+        "✅", "❌", "❗", "❓", "‼️", "💢",
+        // 庆祝 / 物品
+        "🎉", "🎊", "🎁", "🏆", "📱", "💻",
+        "📧", "📝", "📌", "🔗", "☕", "🍎",
+        "🌈", "☀️", "🌙", "☁️", "🌸", "🐶"
     )
 
     private val letterRows = listOf(
@@ -61,6 +92,7 @@ class SymbolPanelView(context: Context) : FrameLayout(context) {
     )
 
     init {
+        maxContentHeightPx = (resources.displayMetrics.heightPixels * 0.38f).toInt()
         background = roundedBg(surfaceColor, dp(16), dp(16), 0, 0)
         setPadding(dp(12), dp(10), dp(12), dp(10))
         elevation = dp(8).toFloat()
@@ -126,7 +158,15 @@ class SymbolPanelView(context: Context) : FrameLayout(context) {
                 LinearLayout.LayoutParams.WRAP_CONTENT
             )
         }
-        mainLayout.addView(contentLayout)
+        contentScroll = ScrollView(context).apply {
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+            isVerticalScrollBarEnabled = false
+            addView(contentLayout)
+        }
+        mainLayout.addView(contentScroll)
         mainLayout.addView(createBottomBar())
 
         addView(mainLayout)
@@ -208,7 +248,17 @@ class SymbolPanelView(context: Context) : FrameLayout(context) {
             4 -> showSymbolGrid(emojiKeys)
         }
         updateBottomBarForTab()
-        scheduleHeightUpdate()
+        updateContentScrollHeight()
+    }
+
+    private fun updateContentScrollHeight() {
+        contentLayout.post {
+            val contentH = contentLayout.height.coerceAtLeast(0)
+            val params = contentScroll.layoutParams as LinearLayout.LayoutParams
+            params.height = if (contentH > maxContentHeightPx) maxContentHeightPx else LinearLayout.LayoutParams.WRAP_CONTENT
+            contentScroll.layoutParams = params
+            scheduleHeightUpdate()
+        }
     }
 
     private fun showNumberPad() {

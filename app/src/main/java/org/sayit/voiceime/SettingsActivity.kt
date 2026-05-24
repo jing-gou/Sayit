@@ -3,18 +3,26 @@ package org.sayit.voiceime
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.*
-import android.app.Activity
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
+import org.sayit.voiceime.widget.FloatingBallConfig
 
-class SettingsActivity : Activity() {
+class SettingsActivity : AppCompatActivity() {
+
+    private lateinit var pickImageLauncher: ActivityResultLauncher<Array<String>>
 
     private lateinit var prefs: SharedPreferences
 
@@ -34,7 +42,7 @@ class SettingsActivity : Activity() {
     private lateinit var overlayMode: Switch
 
     private lateinit var customBallPreview: ImageView
-    private var customBallUri: String? = null
+    private var customBallImagePath: String? = null
 
     private val bgColor = Color.parseColor("#121218")
     private val cardColor = Color.parseColor("#1E1E2E")
@@ -44,7 +52,8 @@ class SettingsActivity : Activity() {
     private val fieldBg = Color.parseColor("#2A2A3C")
 
     companion object {
-        const val PREFS_NAME = "sayit_settings"
+        const val PREFS_NAME = AppSettings.PREFS_NAME
+        private const val TAG = "SettingsActivity"
         const val KEY_LLM_API_URL = "llm_api_url"
         const val KEY_LLM_API_KEY = "llm_api_key"
         const val KEY_LLM_MODEL = "llm_model"
@@ -54,13 +63,17 @@ class SettingsActivity : Activity() {
         const val KEY_ASR_WS_URL = "asr_ws_url"
         const val KEY_TRANSLATION_LANG = "translation_lang"
         const val KEY_ASR_LANGUAGE = "asr_language"
-        const val KEY_BALL_SIZE = "ball_size"
-        const val KEY_OVERLAY_ALWAYS = "overlay_always"
-        const val KEY_CUSTOM_BALL_URI = "custom_ball_uri"
+        const val KEY_BALL_SIZE = AppSettings.KEY_BALL_SIZE
+        const val KEY_OVERLAY_ALWAYS = AppSettings.KEY_OVERLAY_ALWAYS
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        pickImageLauncher = registerForActivityResult(
+            ActivityResultContracts.OpenDocument()
+        ) { uri ->
+            if (uri != null) onImagePicked(uri)
+        }
         prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
         val scrollView = ScrollView(this).apply {
@@ -106,7 +119,9 @@ class SettingsActivity : Activity() {
                     ballSizeLabel.text = sizeLabel(progress)
                 }
                 override fun onStartTrackingTouch(sb: SeekBar) {}
-                override fun onStopTrackingTouch(sb: SeekBar) {}
+                override fun onStopTrackingTouch(sb: SeekBar) {
+                    applyBallSize(sb.progress)
+                }
             })
         }
         ballCard.addView(ballSizeMode)
@@ -124,6 +139,10 @@ class SettingsActivity : Activity() {
         }
         previewRow.addView(customBallPreview)
         previewRow.addView(createSecondaryButton("选择图片") { pickImage() })
+        previewRow.addView(TextView(this).apply {
+            layoutParams = LinearLayout.LayoutParams(dp(8), 0)
+        })
+        previewRow.addView(createSecondaryButton("清除") { clearCustomBallImage() })
         ballCard.addView(previewRow)
 
         overlayMode = Switch(this).apply {
@@ -131,6 +150,11 @@ class SettingsActivity : Activity() {
             isChecked = prefs.getBoolean(KEY_OVERLAY_ALWAYS, true)
             setTextColor(textPrimary)
             setPadding(0, dp(8), 0, 0)
+            setOnCheckedChangeListener { _, isChecked ->
+                prefs.edit().putBoolean(KEY_OVERLAY_ALWAYS, isChecked).commit()
+                notifyBallSettingsChanged(overlayOnly = true)
+                showToast(if (isChecked) "悬浮球将常驻显示" else "悬浮球仅在输入时显示")
+            }
         }
         ballCard.addView(overlayMode)
         ballCard.addView(TextView(this).apply {
@@ -208,6 +232,9 @@ class SettingsActivity : Activity() {
 
         scrollView.addView(root)
         setContentView(scrollView)
+
+        customBallImagePath = prefs.getString(AppSettings.KEY_CUSTOM_BALL_PATH, null)
+        refreshCustomBallPreview()
     }
 
     private fun saveSettings() {
@@ -223,26 +250,103 @@ class SettingsActivity : Activity() {
             putString(KEY_ASR_LANGUAGE, asrLanguage.selectedItem.toString())
             putInt(KEY_BALL_SIZE, ballSizeMode.progress)
             putBoolean(KEY_OVERLAY_ALWAYS, overlayMode.isChecked)
-            customBallUri?.let { putString(KEY_CUSTOM_BALL_URI, it) }
-            apply()
+            if (customBallImagePath.isNullOrBlank()) {
+                remove(AppSettings.KEY_CUSTOM_BALL_PATH)
+                java.io.File(filesDir, "custom_ball.jpg").delete()
+            } else {
+                putString(AppSettings.KEY_CUSTOM_BALL_PATH, customBallImagePath)
+            }
+            commit()
         }
-        Toast.makeText(this, "设置已保存", Toast.LENGTH_SHORT).show()
-        finish()
+        notifyBallSettingsChanged()
+        showToast("设置已保存，悬浮球将立即更新")
+        Handler(Looper.getMainLooper()).postDelayed({ finish() }, 350)
+    }
+
+    private fun applyBallSize(progress: Int) {
+        prefs.edit().putInt(KEY_BALL_SIZE, progress).commit()
+        ballSizeLabel.text = sizeLabel(progress)
+        notifyBallSettingsChanged()
+        showToast("悬浮球大小：${FloatingBallConfig.radiusDpForProgress(progress)}dp")
+    }
+
+    private fun notifyBallSettingsChanged(overlayOnly: Boolean = false) {
+        sendBroadcast(
+            Intent(AppSettings.ACTION_BALL_SETTINGS_CHANGED).apply {
+                setPackage(packageName)
+                putExtra(AppSettings.EXTRA_OVERLAY_ONLY, overlayOnly)
+            }
+        )
     }
 
     private fun pickImage() {
-        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        intent.type = "image/*"
-        startActivityForResult(intent, 1001)
+        pickImageLauncher.launch(arrayOf("image/*"))
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 1001 && resultCode == RESULT_OK) {
-            val uri = data?.data ?: return
-            customBallUri = uri.toString()
-            customBallPreview.setImageURI(uri)
+    private fun onImagePicked(uri: Uri) {
+        try {
+            contentResolver.takePersistableUriPermission(
+                uri,
+                Intent.FLAG_GRANT_READ_URI_PERMISSION
+            )
+        } catch (_: Exception) {
+            // Some providers don't support persistable grants
         }
+
+        val path = copyImageToInternal(uri)
+        if (path == null) {
+            showToast("图片读取失败，请换一张试试")
+            return
+        }
+        customBallImagePath = path
+        prefs.edit().putString(AppSettings.KEY_CUSTOM_BALL_PATH, path).commit()
+        refreshCustomBallPreview()
+        notifyBallSettingsChanged()
+        showToast("图片已应用")
+    }
+
+    private fun copyImageToInternal(uri: Uri): String? {
+        return try {
+            val dest = java.io.File(filesDir, "custom_ball.jpg")
+            contentResolver.openInputStream(uri)?.use { input ->
+                dest.outputStream().use { output -> input.copyTo(output) }
+            } ?: run {
+                Log.e(TAG, "openInputStream returned null for $uri")
+                return null
+            }
+            if (!dest.exists() || dest.length() == 0L) {
+                Log.e(TAG, "dest file empty: ${dest.absolutePath}")
+                return null
+            }
+            dest.absolutePath
+        } catch (e: Exception) {
+            Log.e(TAG, "copyImageToInternal failed", e)
+            null
+        }
+    }
+
+    private fun clearCustomBallImage() {
+        customBallImagePath = null
+        java.io.File(filesDir, "custom_ball.jpg").delete()
+        prefs.edit().remove(AppSettings.KEY_CUSTOM_BALL_PATH).commit()
+        refreshCustomBallPreview()
+        notifyBallSettingsChanged()
+        showToast("已清除自定义图片")
+    }
+
+    private fun refreshCustomBallPreview() {
+        val path = customBallImagePath
+        if (path != null && java.io.File(path).exists()) {
+            val opts = BitmapFactory.Options().apply { inSampleSize = 2 }
+            val bitmap = BitmapFactory.decodeFile(path, opts)
+            customBallPreview.setImageBitmap(bitmap)
+        } else {
+            customBallPreview.setImageDrawable(null)
+        }
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
     }
 
     private fun createCard(): LinearLayout {
@@ -317,10 +421,9 @@ class SettingsActivity : Activity() {
         }
     }
 
-    private fun sizeLabel(progress: Int): String = when {
-        progress < 33 -> "大小：小"
-        progress < 66 -> "大小：标准"
-        else -> "大小：大"
+    private fun sizeLabel(progress: Int): String {
+        val radiusDp = FloatingBallConfig.radiusDpForProgress(progress)
+        return "大小：${radiusDp}dp（${progress}%）"
     }
 
     private fun rounded(color: Int, radius: Int): GradientDrawable {

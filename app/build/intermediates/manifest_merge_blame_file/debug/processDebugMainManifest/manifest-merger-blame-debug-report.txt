@@ -98,8 +98,8 @@
 56-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:35:13-63
 57            android:exported="true"
 57-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:37:13-36
-58            android:theme="@android:style/Theme.Material.NoActionBar" >
-58-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:36:13-70
+58            android:theme="@style/Theme.SayitSettings" >
+58-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:36:13-55
 59            <intent-filter>
 59-->F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:38:13-41:29
 60                <action android:name="android.intent.action.MAIN" />

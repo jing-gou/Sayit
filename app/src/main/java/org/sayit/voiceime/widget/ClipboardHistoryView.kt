@@ -211,10 +211,22 @@ class ClipboardHistoryView(context: Context) : FrameLayout(context) {
         }
     }
 
-    private fun roundedBg(color: Int, radius: Int): GradientDrawable {
+    private fun roundedBg(
+        color: Int,
+        radius: Int,
+        tl: Int = radius,
+        tr: Int = radius,
+        bl: Int = radius,
+        br: Int = radius
+    ): GradientDrawable {
         return GradientDrawable().apply {
             setColor(color)
-            cornerRadius = radius.toFloat()
+            cornerRadii = floatArrayOf(
+                tl.toFloat(), tl.toFloat(),
+                tr.toFloat(), tr.toFloat(),
+                br.toFloat(), br.toFloat(),
+                bl.toFloat(), bl.toFloat()
+            )
         }
     }
 

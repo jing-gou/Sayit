@@ -6429,6 +6429,10 @@
     <item name="windowActionBar">false</item>
     <item name="windowNoTitle">true</item>
   </style>
+    <style name="Theme.SayitSettings" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">#121218</item>
+        <item name="colorPrimary">#6366F1</item>
+    </style>
     <style name="ThemeOverlay.AppCompat" parent="Base.ThemeOverlay.AppCompat"/>
     <style name="ThemeOverlay.AppCompat.ActionBar" parent="Base.ThemeOverlay.AppCompat.ActionBar"/>
     <style name="ThemeOverlay.AppCompat.Dark" parent="Base.ThemeOverlay.AppCompat.Dark"/>

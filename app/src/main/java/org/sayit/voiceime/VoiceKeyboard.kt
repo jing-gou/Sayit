@@ -1,7 +1,13 @@
 package org.sayit.voiceime
 
 import android.Manifest
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.os.Build
 import android.media.AudioFormat
 import android.media.AudioRecord
 import android.media.MediaRecorder
@@ -61,6 +67,7 @@ class VoiceKeyboard : InputMethodService() {
     @Volatile private var resultsDelivered = false
     @Volatile private var recordingActive = false
     @Volatile private var speechCancelled = false
+    private var inputViewVisible = false
 
     private var symbolPanelInsetHeight = 0
     private var inputPlaceholder: View? = null
@@ -74,6 +81,7 @@ class VoiceKeyboard : InputMethodService() {
     // Overlay — ball uses a small window; other UI added on demand
     private var overlayHelper: OverlayHelper? = null
     private var ballLayoutParams: WindowManager.LayoutParams? = null
+    private var ballAttached = false
     private var screenW = 0
     private var screenH = 0
 
@@ -91,6 +99,30 @@ class VoiceKeyboard : InputMethodService() {
     private var gestureHandler: GestureActionHandler? = null
     private var llmService: LLMService? = null
     private var currentVoiceMode = VoiceMode.INPUT
+
+    private val mainHandler = android.os.Handler(android.os.Looper.getMainLooper())
+    private var settingsPrefs: SharedPreferences? = null
+    private val settingsChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+        when (key) {
+            AppSettings.KEY_BALL_SIZE, AppSettings.KEY_CUSTOM_BALL_PATH ->
+                mainHandler.post { reloadFloatingBall() }
+            AppSettings.KEY_OVERLAY_ALWAYS ->
+                mainHandler.post { applyOverlayPolicy() }
+        }
+    }
+    private val ballSettingsReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            mainHandler.post {
+                val overlayOnly = intent?.getBooleanExtra(AppSettings.EXTRA_OVERLAY_ONLY, false) == true
+                if (overlayOnly) {
+                    applyOverlayPolicy()
+                } else {
+                    reloadFloatingBall()
+                    applyOverlayPolicy()
+                }
+            }
+        }
+    }
 
     companion object {
         private val gson = Gson()
@@ -130,40 +162,57 @@ class VoiceKeyboard : InputMethodService() {
             gestureHandler = GestureActionHandler(this)
             llmService = LLMService(okHttpClient)
             clipboardHistory = ClipboardHistoryManager(this).also { it.start() }
+            settingsPrefs = AppSettings.prefs(this).also {
+                it.registerOnSharedPreferenceChangeListener(settingsChangeListener)
+            }
+            val filter = IntentFilter(AppSettings.ACTION_BALL_SETTINGS_CHANGED)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                registerReceiver(ballSettingsReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
+            } else {
+                registerReceiver(ballSettingsReceiver, filter)
+            }
+            if (AppSettings.readOverlayAlways(this)) {
+                mainHandler.post { ensureOverlay() }
+            }
         } catch (e: Exception) {
             Log.e(TAG, "onCreate error", e)
         }
     }
 
     private fun ensureOverlay() {
-        if (floatingBall != null) return
-        if (Settings.canDrawOverlays(this)) {
-            createOverlayWindow()
-        } else {
-            Log.w(TAG, "SYSTEM_ALERT_WINDOW not granted, launching settings")
-            try {
-                val intent = android.content.Intent(
-                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                    Uri.parse("package:$packageName")
-                )
-                intent.flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK
-                startActivity(intent)
-            } catch (e: Exception) {
-                Log.e(TAG, "Failed to launch overlay settings", e)
+        if (!Settings.canDrawOverlays(this)) {
+            if (floatingBall == null) {
+                Log.w(TAG, "SYSTEM_ALERT_WINDOW not granted, launching settings")
+                try {
+                    val intent = android.content.Intent(
+                        Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:$packageName")
+                    )
+                    intent.flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Failed to launch overlay settings", e)
+                }
             }
+            return
         }
+        ensureFloatingBallCreated()
+        applyOverlayPolicy()
     }
 
-    private fun createOverlayWindow() {
-        Log.d(TAG, "createOverlayWindow")
-        val helper = overlayHelper ?: return
+    private fun shouldShowFloatingBall(): Boolean {
+        return AppSettings.readOverlayAlways(this) || inputViewVisible
+    }
 
-        val config = FloatingBallConfig.default(applicationContext)
-        val ballSize = (config.ballRadius * 2.5f).toInt()
-        val initX = screenW - ballSize - dp(16)
+    /** Create ball view + layout params without attaching to WindowManager. */
+    private fun ensureFloatingBallCreated() {
+        if (floatingBall != null) return
+        val config = FloatingBallConfig.fromSettings(this)
+        val windowSize = windowSizeForConfig(config)
+        val initX = screenW - windowSize - dp(16)
         val initY = screenH / 3
 
-        floatingBall = FloatingBallView(applicationContext, config).apply {
+        floatingBall = FloatingBallView(this, config).apply {
             listener = object : FloatingBallListener {
                 override fun onGestureAction(action: GestureAction) {
                     gestureHandler?.handle(action)
@@ -174,10 +223,76 @@ class VoiceKeyboard : InputMethodService() {
                 }
             }
         }
+        ballLayoutParams = OverlayHelper.ballParams(windowSize, windowSize, initX, initY)
+        Log.d(TAG, "Floating ball created (${windowSize}px, radius=${config.ballRadius}px)")
+    }
 
-        ballLayoutParams = OverlayHelper.ballParams(ballSize, ballSize, initX, initY)
-        helper.addView(floatingBall!!, ballLayoutParams!!)
-        Log.d(TAG, "Ball overlay window added (${ballSize}x${ballSize} at $initX,$initY)")
+    private fun attachFloatingBall() {
+        if (ballAttached) return
+        val ball = floatingBall ?: return
+        val params = ballLayoutParams ?: return
+        val helper = overlayHelper ?: return
+        helper.addView(ball, params)
+        ballAttached = true
+        ball.ensureCustomBitmapLoaded()
+        ball.visibility = View.VISIBLE
+        ball.invalidate()
+    }
+
+    private fun detachFloatingBall() {
+        if (!ballAttached) return
+        floatingBall?.let { overlayHelper?.removeView(it) }
+        ballAttached = false
+    }
+
+    private fun releaseFloatingBall() {
+        detachFloatingBall()
+        floatingBall?.releaseResources()
+        floatingBall = null
+        ballLayoutParams = null
+    }
+
+    private fun applyOverlayPolicy() {
+        if (shouldShowFloatingBall()) {
+            ensureFloatingBallCreated()
+            attachFloatingBall()
+        } else {
+            detachFloatingBall()
+        }
+    }
+
+    private fun createOverlayWindow() {
+        ensureFloatingBallCreated()
+        attachFloatingBall()
+    }
+
+    private fun windowSizeForConfig(config: FloatingBallConfig): Int {
+        return config.overlayWindowSize.toInt().coerceAtLeast(dp(48))
+    }
+
+    private fun reloadFloatingBall() {
+        try {
+            if (!Settings.canDrawOverlays(this)) return
+
+            val savedX = ballLayoutParams?.x
+            val savedY = ballLayoutParams?.y
+
+            detachFloatingBall()
+            floatingBall?.releaseResources()
+            floatingBall = null
+            ballLayoutParams = null
+
+            ensureFloatingBallCreated()
+
+            if (savedX != null && savedY != null && ballLayoutParams != null) {
+                ballLayoutParams!!.x = savedX.coerceIn(0, (screenW - ballLayoutParams!!.width).coerceAtLeast(0))
+                ballLayoutParams!!.y = savedY.coerceIn(0, (screenH - ballLayoutParams!!.height).coerceAtLeast(0))
+            }
+
+            applyOverlayPolicy()
+        } catch (e: Exception) {
+            Log.e(TAG, "reloadFloatingBall failed", e)
+        }
     }
 
     private fun ballPosition(): Pair<Int, Int> {
@@ -792,12 +907,33 @@ class VoiceKeyboard : InputMethodService() {
 
     override fun onStartInputView(info: android.view.inputmethod.EditorInfo, restarting: Boolean) {
         super.onStartInputView(info, restarting)
-        ensureOverlay()
+        onInputSessionStarted()
+    }
+
+    override fun onWindowShown() {
+        super.onWindowShown()
+        onInputSessionStarted()
+    }
+
+    override fun onFinishInputView(finishingInput: Boolean) {
+        super.onFinishInputView(finishingInput)
+        onInputSessionEnded()
     }
 
     override fun onWindowHidden() {
         super.onWindowHidden()
         if (isListening) stopSpeechRecognition()
+        onInputSessionEnded()
+    }
+
+    private fun onInputSessionStarted() {
+        inputViewVisible = true
+        ensureOverlay()
+    }
+
+    private fun onInputSessionEnded() {
+        inputViewVisible = false
+        applyOverlayPolicy()
     }
 
     override fun onDestroy() {
@@ -807,6 +943,11 @@ class VoiceKeyboard : InputMethodService() {
         scope.cancel()
         clipboardHistory?.stop()
         clipboardHistory = null
+        settingsPrefs?.unregisterOnSharedPreferenceChangeListener(settingsChangeListener)
+        settingsPrefs = null
+        try {
+            unregisterReceiver(ballSettingsReceiver)
+        } catch (_: Exception) {}
         try {
             dismissRadialMenu()
             dismissSymbolPanel()
