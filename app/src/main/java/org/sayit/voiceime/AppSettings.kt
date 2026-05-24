@@ -8,7 +8,10 @@ object AppSettings {
     const val KEY_BALL_SIZE = "ball_size"
     const val KEY_OVERLAY_ALWAYS = "overlay_always"
     const val KEY_CUSTOM_BALL_PATH = "custom_ball_path"
+    const val KEY_GESTURE_GUIDE_SHOWN = "gesture_guide_shown"
+    const val KEY_PENDING_GESTURE_GUIDE = "pending_gesture_guide"
     const val ACTION_BALL_SETTINGS_CHANGED = "org.sayit.voiceime.BALL_SETTINGS_CHANGED"
+    const val ACTION_SHOW_GESTURE_GUIDE = "org.sayit.voiceime.SHOW_GESTURE_GUIDE"
     const val EXTRA_OVERLAY_ONLY = "overlay_only"
 
     private var prefs: SharedPreferences? = null
@@ -62,5 +65,30 @@ object AppSettings {
     val customBallImagePath: String? get() {
         val path = prefs?.getString(KEY_CUSTOM_BALL_PATH, null) ?: return null
         return path.takeIf { java.io.File(it).isFile }
+    }
+
+    fun readGestureGuideShown(context: Context): Boolean {
+        return prefs(context).getBoolean(KEY_GESTURE_GUIDE_SHOWN, false)
+    }
+
+    fun markGestureGuideShown(context: Context) {
+        prefs(context).edit().putBoolean(KEY_GESTURE_GUIDE_SHOWN, true).apply()
+    }
+
+    fun requestGestureGuide(context: Context) {
+        prefs(context).edit().putBoolean(KEY_PENDING_GESTURE_GUIDE, true).apply()
+    }
+
+    fun consumePendingGestureGuide(context: Context): Boolean {
+        val p = prefs(context)
+        if (!p.getBoolean(KEY_PENDING_GESTURE_GUIDE, false)) return false
+        p.edit().remove(KEY_PENDING_GESTURE_GUIDE).apply()
+        return true
+    }
+
+    fun notifyShowGestureGuide(context: Context) {
+        context.applicationContext.sendBroadcast(
+            android.content.Intent(ACTION_SHOW_GESTURE_GUIDE)
+        )
     }
 }

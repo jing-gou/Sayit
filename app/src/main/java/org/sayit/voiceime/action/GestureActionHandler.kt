@@ -26,6 +26,8 @@ class GestureActionHandler(private val ime: VoiceKeyboard) {
     private val deletedStack = ArrayDeque<String>()
     private var deleteCount = 0
     private var selectionHandledThisGesture = false
+    /** Last swipe direction while recording; used on release for send gesture. */
+    private var recordingSwipeDirection: Direction? = null
 
     companion object {
         private const val PX_PER_CHAR = 20f
@@ -39,6 +41,7 @@ class GestureActionHandler(private val ime: VoiceKeyboard) {
         when (action) {
             is GestureAction.LongPressStart -> {
                 currentVoiceMode = VoiceMode.INPUT
+                recordingSwipeDirection = null
                 ime.startVoiceInput()
             }
 
@@ -52,12 +55,14 @@ class GestureActionHandler(private val ime: VoiceKeyboard) {
                     resetDeleteState()
                 }
                 if (ime.isCurrentlyListening()) {
+                    recordingSwipeDirection = action.direction
                     when (action.direction) {
                         Direction.LEFT -> currentVoiceMode = VoiceMode.TRANSLATE
-                        Direction.RIGHT -> ime.commitEnterKey()
+                        Direction.RIGHT -> { /* send on release after speech is committed */ }
                         Direction.UP -> {
                             ime.cancelVoiceInput()
                             currentVoiceMode = VoiceMode.INPUT
+                            recordingSwipeDirection = null
                         }
                         Direction.DOWN -> currentVoiceMode = VoiceMode.QUESTION
                     }
@@ -65,18 +70,23 @@ class GestureActionHandler(private val ime: VoiceKeyboard) {
             }
 
             is GestureAction.SwipeProgress -> {
-                if (!ime.isCurrentlyListening() && action.direction == Direction.LEFT) {
+                if (ime.isCurrentlyListening()) {
+                    recordingSwipeDirection = action.direction
+                } else if (action.direction == Direction.LEFT) {
                     handleDeleteProgress(action.progress)
                 }
             }
 
             is GestureAction.SwipeComplete -> {
                 if (ime.isCurrentlyListening()) {
+                    val sendAfter = recordingSwipeDirection == Direction.RIGHT &&
+                        currentVoiceMode == VoiceMode.INPUT
                     when (currentVoiceMode) {
                         VoiceMode.QUESTION -> ime.stopVoiceInputWithMode(VoiceMode.QUESTION)
                         VoiceMode.TRANSLATE -> ime.stopVoiceInputWithMode(VoiceMode.TRANSLATE)
-                        else -> ime.stopVoiceInput()
+                        else -> ime.stopVoiceInput(sendAfter = sendAfter)
                     }
+                    recordingSwipeDirection = null
                 }
                 resetDeleteState()
             }
