@@ -6,6 +6,8 @@ import android.graphics.drawable.GradientDrawable
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
+import android.view.View.MeasureSpec
+import android.view.ViewTreeObserver
 import android.widget.*
 
 class SymbolPanelView(context: Context) : FrameLayout(context) {
@@ -13,22 +15,22 @@ class SymbolPanelView(context: Context) : FrameLayout(context) {
     var onSymbolSelected: ((String) -> Unit)? = null
     var onBackspace: (() -> Unit)? = null
     var onDismiss: (() -> Unit)? = null
+    var onPanelHeightChanged: ((Int) -> Unit)? = null
 
-    // Tab order: 字母、数字、符号、标点、Emoji
     private val tabNames = listOf("字母", "数字", "符号", "标点", "Emoji")
     private var currentTab = 0
+    private var isUpperCase = false
     private val tabButtons = mutableListOf<TextView>()
     private lateinit var contentLayout: LinearLayout
+    private lateinit var mainLayout: LinearLayout
+    private var shiftButton: TextView? = null
 
     private val accentColor = Color.parseColor("#6366F1")
     private val surfaceColor = Color.parseColor("#1E1E2E")
     private val keyColor = Color.parseColor("#2A2A3C")
 
     private val numberKeys = listOf(
-        "1", "2", "3",
-        "4", "5", "6",
-        "7", "8", "9",
-        ".", "0", "␣"
+        "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "␣"
     )
 
     private val punctuationKeys = listOf(
@@ -67,8 +69,8 @@ class SymbolPanelView(context: Context) : FrameLayout(context) {
             orientation = LinearLayout.VERTICAL
             layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
         }
+        this.mainLayout = mainLayout
 
-        // Header row
         val header = LinearLayout(context).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
@@ -77,7 +79,6 @@ class SymbolPanelView(context: Context) : FrameLayout(context) {
                 LinearLayout.LayoutParams.WRAP_CONTENT
             ).apply { bottomMargin = dp(10) }
         }
-
         header.addView(TextView(context).apply {
             text = "符号输入"
             textSize = 15f
@@ -85,18 +86,15 @@ class SymbolPanelView(context: Context) : FrameLayout(context) {
             typeface = android.graphics.Typeface.DEFAULT_BOLD
             layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
         })
-
         header.addView(createIconButton("✕", keyColor) { onDismiss?.invoke() })
         mainLayout.addView(header)
 
-        // Tab bar
         val tabScroll = HorizontalScrollView(context).apply {
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             ).apply { bottomMargin = dp(8) }
             isHorizontalScrollBarEnabled = false
-            isFillViewport = false
         }
         val tabRow = LinearLayout(context).apply {
             orientation = LinearLayout.HORIZONTAL
@@ -121,7 +119,6 @@ class SymbolPanelView(context: Context) : FrameLayout(context) {
         tabScroll.addView(tabRow)
         mainLayout.addView(tabScroll)
 
-        // Content
         contentLayout = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
             layoutParams = LinearLayout.LayoutParams(
@@ -130,16 +127,14 @@ class SymbolPanelView(context: Context) : FrameLayout(context) {
             )
         }
         mainLayout.addView(contentLayout)
-
-        // Bottom backspace bar
-        mainLayout.addView(createBackspaceBar())
+        mainLayout.addView(createBottomBar())
 
         addView(mainLayout)
         showTabContent(0)
         visibility = View.GONE
     }
 
-    private fun createBackspaceBar(): LinearLayout {
+    private fun createBottomBar(): LinearLayout {
         return LinearLayout(context).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.END
@@ -147,6 +142,25 @@ class SymbolPanelView(context: Context) : FrameLayout(context) {
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             ).apply { topMargin = dp(8) }
+
+            shiftButton = TextView(context).apply {
+                text = "⇧"
+                textSize = 15f
+                gravity = Gravity.CENTER
+                setTextColor(Color.WHITE)
+                background = roundedBg(keyColor, dp(10))
+                setPadding(dp(16), dp(10), dp(16), dp(10))
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    dp(44)
+                ).apply { marginEnd = dp(8) }
+                visibility = View.GONE
+                setOnClickListener {
+                    isUpperCase = !isUpperCase
+                    showTabContent(0)
+                }
+            }
+            addView(shiftButton)
 
             addView(TextView(context).apply {
                 text = "⌫  退格"
@@ -162,6 +176,13 @@ class SymbolPanelView(context: Context) : FrameLayout(context) {
                 setOnClickListener { onBackspace?.invoke() }
             })
         }
+    }
+
+    private fun updateBottomBarForTab() {
+        val btn = shiftButton ?: return
+        btn.visibility = if (currentTab == 0) View.VISIBLE else View.GONE
+        btn.background = roundedBg(if (isUpperCase) accentColor else keyColor, dp(10))
+        btn.text = if (isUpperCase) "⇪" else "⇧"
     }
 
     private fun switchTab(index: Int) {
@@ -186,6 +207,8 @@ class SymbolPanelView(context: Context) : FrameLayout(context) {
             3 -> showSymbolGrid(punctuationKeys)
             4 -> showSymbolGrid(emojiKeys)
         }
+        updateBottomBarForTab()
+        scheduleHeightUpdate()
     }
 
     private fun showNumberPad() {
@@ -196,9 +219,7 @@ class SymbolPanelView(context: Context) : FrameLayout(context) {
                 LinearLayout.LayoutParams.WRAP_CONTENT
             )
         }
-        numberKeys.forEach { key ->
-            grid.addView(createKeyButton(key, isWide = true))
-        }
+        numberKeys.forEach { key -> grid.addView(createKeyButton(key, isWide = true)) }
         contentLayout.addView(grid)
     }
 
@@ -210,9 +231,7 @@ class SymbolPanelView(context: Context) : FrameLayout(context) {
                 LinearLayout.LayoutParams.WRAP_CONTENT
             )
         }
-        keys.forEach { key ->
-            grid.addView(createKeyButton(key, isWide = false))
-        }
+        keys.forEach { key -> grid.addView(createKeyButton(key, isWide = false)) }
         contentLayout.addView(grid)
     }
 
@@ -231,7 +250,8 @@ class SymbolPanelView(context: Context) : FrameLayout(context) {
                 ).apply { topMargin = dp(3) }
             }
             row.forEach { letter ->
-                rowLayout.addView(createKeyButton(letter, isWide = false, letterKey = true))
+                val output = if (isUpperCase) letter else letter.lowercase()
+                rowLayout.addView(createKeyButton(output, isWide = false, letterKey = true))
             }
             kbLayout.addView(rowLayout)
         }
@@ -264,10 +284,7 @@ class SymbolPanelView(context: Context) : FrameLayout(context) {
                 setMargins(dp(3), dp(3), dp(3), dp(3))
             }
             setOnClickListener {
-                val output = when (key) {
-                    "␣" -> " "
-                    else -> key
-                }
+                val output = if (key == "␣") " " else key
                 onSymbolSelected?.invoke(output)
             }
         }
@@ -298,14 +315,42 @@ class SymbolPanelView(context: Context) : FrameLayout(context) {
         }
     }
 
+    private fun notifyHeightChanged() {
+        if (visibility != View.VISIBLE) {
+            onPanelHeightChanged?.invoke(0)
+            return
+        }
+        val width = resources.displayMetrics.widthPixels
+        val wSpec = MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY)
+        val hSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
+        mainLayout.measure(wSpec, hSpec)
+        val measured = mainLayout.measuredHeight + paddingTop + paddingBottom
+        if (measured <= 0) return
+        val maxInset = (resources.displayMetrics.heightPixels * 0.42f).toInt()
+        onPanelHeightChanged?.invoke(measured.coerceAtMost(maxInset))
+    }
+
+    private fun scheduleHeightUpdate() {
+        viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                viewTreeObserver.removeOnGlobalLayoutListener(this)
+                notifyHeightChanged()
+            }
+        })
+    }
+
     fun show() {
         visibility = View.VISIBLE
         alpha = 0f
         translationY = dp(40).toFloat()
-        animate().alpha(1f).translationY(0f).setDuration(200).start()
+        scheduleHeightUpdate()
+        animate().alpha(1f).translationY(0f).setDuration(200).withEndAction {
+            notifyHeightChanged()
+        }.start()
     }
 
     fun dismiss() {
+        onPanelHeightChanged?.invoke(0)
         animate().alpha(0f).translationY(dp(40).toFloat()).setDuration(150).withEndAction {
             visibility = View.GONE
             onDismiss?.invoke()

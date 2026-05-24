@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:1:1-45:12
-INJECTED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:1:1-45:12
-INJECTED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:1:1-45:12
-INJECTED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:1:1-45:12
+ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:1:1-46:12
+INJECTED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:1:1-46:12
+INJECTED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:1:1-46:12
+INJECTED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:1:1-46:12
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\sugar\.gradle\caches\8.13\transforms\ad873f467d5cad50be739b3abeb614d8\transformed\material-1.11.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.appcompat:appcompat-resources:1.6.1] C:\Users\sugar\.gradle\caches\8.13\transforms\c84ad69669c439a2b96432349a87779d\transformed\appcompat-resources-1.6.1\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] C:\Users\sugar\.gradle\caches\8.13\transforms\7d47bbd3bbc8de419968000b77c269f8\transformed\constraintlayout-2.0.1\AndroidManifest.xml:2:1-11:12
@@ -53,31 +53,35 @@ MERGED from [androidx.arch.core:core-runtime:2.2.0] C:\Users\sugar\.gradle\cache
 		INJECTED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml
 	xmlns:android
 		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:1:11-69
+uses-permission#android.permission.VIBRATE
+ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:3:5-66
+	android:name
+		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:3:22-63
 uses-permission#android.permission.RECORD_AUDIO
-ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:3:5-71
+ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:4:5-71
 	android:name
-		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:3:22-68
+		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:4:22-68
 uses-permission#android.permission.SYSTEM_ALERT_WINDOW
-ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:4:5-78
+ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:5:5-78
 	android:name
-		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:4:22-75
+		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:5:22-75
 uses-permission#android.permission.INTERNET
-ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:5:5-67
+ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:6:5-67
 	android:name
-		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:5:22-64
+		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:6:22-64
 uses-permission#android.permission.ACCESS_NETWORK_STATE
-ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:6:5-79
+ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:7:5-79
 	android:name
-		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:6:22-76
+		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:7:22-76
 uses-feature#android.hardware.microphone
-ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:8:5-89
+ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:9:5-89
 	android:required
-		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:8:62-86
+		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:9:62-86
 	android:name
-		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:8:19-61
+		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:9:19-61
 application
-ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:10:5-43:19
-INJECTED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:10:5-43:19
+ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:11:5-44:19
+INJECTED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:11:5-44:19
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\sugar\.gradle\caches\8.13\transforms\ad873f467d5cad50be739b3abeb614d8\transformed\material-1.11.0\AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\sugar\.gradle\caches\8.13\transforms\ad873f467d5cad50be739b3abeb614d8\transformed\material-1.11.0\AndroidManifest.xml:22:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] C:\Users\sugar\.gradle\caches\8.13\transforms\7d47bbd3bbc8de419968000b77c269f8\transformed\constraintlayout-2.0.1\AndroidManifest.xml:9:5-20
@@ -99,63 +103,63 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\sugar\.gradle\cach
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.12.0] C:\Users\sugar\.gradle\caches\8.13\transforms\f7b8b6b1cc005a1c805b56c9b3407fe6\transformed\core-1.12.0\AndroidManifest.xml:28:18-86
 	android:supportsRtl
-		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:15:9-35
+		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:16:9-35
 	android:label
-		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:14:9-41
+		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:15:9-41
 	android:roundIcon
-		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:13:9-54
+		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:14:9-54
 	android:icon
-		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:12:9-43
+		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:13:9-43
 	android:allowBackup
-		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:11:9-36
+		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:12:9-36
 	android:theme
-		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:16:9-68
+		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:17:9-68
 service#org.sayit.voiceime.VoiceKeyboard
-ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:18:9-26:19
+ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:19:9-27:19
 	android:exported
-		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:21:13-36
+		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:22:13-36
 	android:permission
-		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:20:13-70
+		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:21:13-70
 	android:name
-		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:19:13-60
+		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:20:13-60
 intent-filter#action:name:android.view.InputMethod
-ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:22:13-24:29
+ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:23:13-25:29
 action#android.view.InputMethod
-ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:23:17-67
+ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:24:17-67
 	android:name
-		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:23:25-64
+		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:24:25-64
 meta-data#android.view.im
-ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:25:13-88
+ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:26:13-88
 	android:resource
-		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:25:55-85
+		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:26:55-85
 	android:name
-		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:25:24-54
+		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:26:24-54
 activity#org.sayit.voiceime.PermissionActivity
-ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:28:9-31:40
+ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:29:9-32:40
 	android:exported
-		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:31:13-37
+		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:32:13-37
 	android:theme
-		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:30:13-72
+		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:31:13-72
 	android:name
-		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:29:13-65
+		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:30:13-65
 activity#org.sayit.voiceime.SettingsActivity
-ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:33:9-41:20
+ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:34:9-42:20
 	android:exported
-		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:36:13-36
+		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:37:13-36
 	android:theme
-		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:35:13-70
+		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:36:13-70
 	android:name
-		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:34:13-63
+		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:35:13-63
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:37:13-40:29
+ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:38:13-41:29
 action#android.intent.action.MAIN
-ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:38:17-69
+ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:39:17-69
 	android:name
-		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:38:25-66
+		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:39:25-66
 category#android.intent.category.LAUNCHER
-ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:39:17-77
+ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:40:17-77
 	android:name
-		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:39:27-74
+		ADDED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml:40:27-74
 uses-sdk
 INJECTED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from F:\Sayit\SayitVoiceIME\app\src\main\AndroidManifest.xml

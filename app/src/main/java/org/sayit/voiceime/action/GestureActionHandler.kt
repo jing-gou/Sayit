@@ -23,7 +23,7 @@ class GestureActionHandler(private val ime: VoiceKeyboard) {
     private var deleteCount = 0
 
     companion object {
-        private const val PX_PER_CHAR = 10f
+        private const val PX_PER_CHAR = 20f
     }
 
     fun setLogCallback(callback: (String) -> Unit) {
