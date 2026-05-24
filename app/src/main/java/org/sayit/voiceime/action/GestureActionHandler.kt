@@ -50,7 +50,10 @@ class GestureActionHandler(private val ime: VoiceKeyboard) {
                     when (action.direction) {
                         Direction.LEFT -> currentVoiceMode = VoiceMode.TRANSLATE
                         Direction.RIGHT -> ime.commitEnterKey()
-                        Direction.UP -> ime.undoLastInput()
+                        Direction.UP -> {
+                            ime.cancelVoiceInput()
+                            currentVoiceMode = VoiceMode.INPUT
+                        }
                         Direction.DOWN -> currentVoiceMode = VoiceMode.QUESTION
                     }
                 }
