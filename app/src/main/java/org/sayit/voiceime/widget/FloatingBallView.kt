@@ -82,33 +82,47 @@ class FloatingBallView(context: Context, val config: FloatingBallConfig) : View(
     }
 
     init {
-        setLayerType(LAYER_TYPE_SOFTWARE, null)
-        breathAnimator.start()
+        try {
+            setLayerType(LAYER_TYPE_SOFTWARE, null)
+            isClickable = true
+            isFocusable = true
+            breathAnimator.start()
+        } catch (e: Exception) {
+            android.util.Log.e("FloatingBall", "Init error", e)
+        }
     }
 
     fun setListeningState(listening: Boolean) {
-        isListening = listening
-        if (listening) {
-            waveAnimator.start()
-            performHaptic(HAPTIC_LONG_PRESS)
-        } else {
-            waveAnimator.cancel()
-            wavePhase = 0f
+        try {
+            isListening = listening
+            if (listening) {
+                waveAnimator.start()
+                performHaptic(HAPTIC_LONG_PRESS)
+            } else {
+                waveAnimator.cancel()
+                wavePhase = 0f
+            }
+            invalidate()
+        } catch (e: Exception) {
+            android.util.Log.e("FloatingBall", "setListeningState error", e)
         }
-        invalidate()
     }
 
     override fun onDraw(canvas: Canvas) {
-        super.onDraw(canvas)
-        val cx = width / 2f
-        val cy = height / 2f
+        try {
+            super.onDraw(canvas)
+            val cx = width / 2f
+            val cy = height / 2f
 
-        drawGlow(canvas, cx, cy)
-        drawBall(canvas, cx, cy)
-        if (isListening) drawSoundWaves(canvas, cx, cy)
-        drawIcon(canvas, cx, cy)
-        if (gestureState == GestureState.PRESSING) drawDirectionIndicators(canvas, cx, cy)
-        if (config.trailEnabled && gestureState == GestureState.SWIPING_DELETE) drawGestureTrail(canvas, cx, cy)
+            drawGlow(canvas, cx, cy)
+            drawBall(canvas, cx, cy)
+            if (isListening) drawSoundWaves(canvas, cx, cy)
+            drawIcon(canvas, cx, cy)
+            if (gestureState == GestureState.PRESSING) drawDirectionIndicators(canvas, cx, cy)
+            if (config.trailEnabled && gestureState == GestureState.SWIPING_DELETE) drawGestureTrail(canvas, cx, cy)
+        } catch (e: Throwable) {
+            android.util.Log.e("FloatingBall", "onDraw CRASH", e)
+        }
     }
 
     private fun drawGlow(canvas: Canvas, cx: Float, cy: Float) {
@@ -224,115 +238,128 @@ class FloatingBallView(context: Context, val config: FloatingBallConfig) : View(
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        when (event.action) {
-            MotionEvent.ACTION_DOWN -> {
-                pressStartX = event.rawX
-                pressStartY = event.rawY
-                fingerX = event.rawX
-                fingerY = event.rawY
-                gestureState = GestureState.PRESSING
-                hasMovedDuringDrag = false
+        try {
+            android.util.Log.d("FloatingBall", "onTouchEvent action=${event.action}")
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    android.util.Log.d("FloatingBall", "ACTION_DOWN start")
+                    pressStartX = event.rawX
+                    pressStartY = event.rawY
+                    fingerX = event.rawX
+                    fingerY = event.rawY
+                    gestureState = GestureState.PRESSING
+                    hasMovedDuringDrag = false
 
-                longPressRunnable = Runnable {
-                    if (gestureState == GestureState.PRESSING) {
-                        gestureState = GestureState.LONG_PRESSING
-                        listener?.onGestureAction(GestureAction.LongPressStart)
-                        listener?.onVoiceStateChanged(true)
-                        setListeningState(true)
+                    longPressRunnable = Runnable {
+                        try {
+                            if (gestureState == GestureState.PRESSING) {
+                                gestureState = GestureState.LONG_PRESSING
+                                android.util.Log.d("FloatingBall", "Long press triggered!")
+                                listener?.onGestureAction(GestureAction.LongPressStart)
+                            }
+                        } catch (e: Throwable) {
+                            android.util.Log.e("FloatingBall", "longPressRunnable error", e)
+                        }
                     }
+                    handler.postDelayed(longPressRunnable!!, config.longPressTimeout)
+                    try { performHaptic(HAPTIC_TAP) } catch (e: Throwable) {
+                        android.util.Log.e("FloatingBall", "haptic error", e)
+                    }
+                    invalidate()
+                    android.util.Log.d("FloatingBall", "ACTION_DOWN done")
+                    return true
                 }
-                handler.postDelayed(longPressRunnable!!, config.longPressTimeout)
-                performHaptic(HAPTIC_TAP)
-                invalidate()
-                return true
-            }
 
-            MotionEvent.ACTION_MOVE -> {
-                fingerX = event.rawX
-                fingerY = event.rawY
-                val dx = fingerX - pressStartX
-                val dy = fingerY - pressStartY
-                val distance = sqrt(dx * dx + dy * dy)
+                MotionEvent.ACTION_MOVE -> {
+                    fingerX = event.rawX
+                    fingerY = event.rawY
+                    val dx = fingerX - pressStartX
+                    val dy = fingerY - pressStartY
+                    val distance = sqrt(dx * dx + dy * dy)
 
-                when (gestureState) {
-                    GestureState.PRESSING -> {
-                        if (distance > config.gestureThreshold) {
-                            handler.removeCallbacks(longPressRunnable!!)
-                            val absDx = abs(dx)
-                            val absDy = abs(dy)
+                    when (gestureState) {
+                        GestureState.PRESSING -> {
+                            if (distance > config.gestureThreshold) {
+                                longPressRunnable?.let { handler.removeCallbacks(it) }
+                                val absDx = abs(dx)
+                                val absDy = abs(dy)
 
-                            if (absDx > absDy && dx < 0) {
-                                gestureState = GestureState.SWIPING_DELETE
-                                currentDirection = Direction.LEFT
-                                listener?.onGestureAction(GestureAction.Swipe(Direction.LEFT))
-                            } else {
-                                gestureState = GestureState.DRAGGING
-                                hasMovedDuringDrag = true
-                                listener?.onGestureAction(GestureAction.DragStart(pressStartX, pressStartY))
+                                if (absDx > absDy && dx < 0) {
+                                    gestureState = GestureState.SWIPING_DELETE
+                                    currentDirection = Direction.LEFT
+                                    listener?.onGestureAction(GestureAction.Swipe(Direction.LEFT))
+                                } else {
+                                    gestureState = GestureState.DRAGGING
+                                    hasMovedDuringDrag = true
+                                    listener?.onGestureAction(GestureAction.DragStart(pressStartX, pressStartY))
+                                }
                             }
                         }
-                    }
 
-                    GestureState.LONG_PRESSING -> {
-                        if (distance > config.gestureThreshold * 1.5f) {
-                            gestureState = GestureState.SWIPING_GESTURE
-                            currentDirection = determineDirection(dx, dy)
-                            listener?.onGestureAction(GestureAction.Swipe(currentDirection!!))
+                        GestureState.LONG_PRESSING -> {
+                            if (distance > config.gestureThreshold * 1.5f) {
+                                gestureState = GestureState.SWIPING_GESTURE
+                                currentDirection = determineDirection(dx, dy)
+                                listener?.onGestureAction(GestureAction.Swipe(currentDirection!!))
+                            }
                         }
-                    }
 
-                    GestureState.SWIPING_DELETE -> {
-                        val progress = calculateDeleteProgress(dx, dy)
-                        listener?.onGestureAction(GestureAction.SwipeProgress(Direction.LEFT, progress))
-                    }
+                        GestureState.SWIPING_DELETE -> {
+                            val progress = calculateDeleteProgress(dx, dy)
+                            listener?.onGestureAction(GestureAction.SwipeProgress(Direction.LEFT, progress))
+                        }
 
-                    GestureState.SWIPING_GESTURE -> {
-                        val progress = calculateGestureProgress(dx, dy, currentDirection!!)
-                        listener?.onGestureAction(GestureAction.SwipeProgress(currentDirection!!, progress))
-                    }
+                        GestureState.SWIPING_GESTURE -> {
+                            val progress = calculateGestureProgress(dx, dy, currentDirection!!)
+                            listener?.onGestureAction(GestureAction.SwipeProgress(currentDirection!!, progress))
+                        }
 
-                    GestureState.DRAGGING -> {
-                        listener?.onGestureAction(GestureAction.DragMove(fingerX, fingerY))
-                    }
+                        GestureState.DRAGGING -> {
+                            listener?.onGestureAction(GestureAction.DragMove(fingerX, fingerY))
+                        }
 
-                    else -> {}
-                }
-                invalidate()
-                return true
-            }
-
-            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                handler.removeCallbacks(longPressRunnable!!)
-
-                when (gestureState) {
-                    GestureState.LONG_PRESSING -> {
-                        listener?.onGestureAction(GestureAction.LongPressEnd)
-                        listener?.onVoiceStateChanged(false)
-                        setListeningState(false)
+                        else -> {}
                     }
-                    GestureState.SWIPING_DELETE -> {
-                        listener?.onGestureAction(GestureAction.SwipeComplete)
-                    }
-                    GestureState.SWIPING_GESTURE -> {
-                        listener?.onGestureAction(GestureAction.SwipeComplete)
-                    }
-                    GestureState.DRAGGING -> {
-                        listener?.onGestureAction(GestureAction.DragEnd(0f, 0f))
-                    }
-                    GestureState.PRESSING -> {
-                        performHaptic(HAPTIC_TAP)
-                    }
-                    else -> {}
+                    invalidate()
+                    return true
                 }
 
-                gestureState = GestureState.IDLE
-                currentDirection = null
-                trailPath.reset()
-                invalidate()
-                return true
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    longPressRunnable?.let { handler.removeCallbacks(it) }
+
+                    when (gestureState) {
+                        GestureState.LONG_PRESSING -> {
+                            listener?.onGestureAction(GestureAction.LongPressEnd)
+                            listener?.onVoiceStateChanged(false)
+                            setListeningState(false)
+                        }
+                        GestureState.SWIPING_DELETE -> {
+                            listener?.onGestureAction(GestureAction.SwipeComplete)
+                        }
+                        GestureState.SWIPING_GESTURE -> {
+                            listener?.onGestureAction(GestureAction.SwipeComplete)
+                        }
+                        GestureState.DRAGGING -> {
+                            listener?.onGestureAction(GestureAction.DragEnd(0f, 0f))
+                        }
+                        GestureState.PRESSING -> {
+                            try { performHaptic(HAPTIC_TAP) } catch (_: Throwable) {}
+                        }
+                        else -> {}
+                    }
+
+                    gestureState = GestureState.IDLE
+                    currentDirection = null
+                    trailPath.reset()
+                    invalidate()
+                    return true
+                }
             }
+            return super.onTouchEvent(event)
+        } catch (e: Throwable) {
+            android.util.Log.e("FloatingBall", "onTouchEvent CRASH", e)
+            return true
         }
-        return super.onTouchEvent(event)
     }
 
     private fun determineDirection(dx: Float, dy: Float): Direction {
