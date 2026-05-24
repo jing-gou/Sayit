@@ -2,17 +2,19 @@ package org.sayit.voiceime
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.PixelFormat
 import android.media.AudioFormat
 import android.media.AudioRecord
 import android.media.MediaRecorder
 import android.inputmethodservice.InputMethodService
+import android.net.Uri
+import android.provider.Settings
 import android.util.Log
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
-import android.widget.Button
+import android.view.WindowManager
 import android.widget.FrameLayout
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import kotlinx.coroutines.*
@@ -29,6 +31,7 @@ import org.sayit.voiceime.action.DeletedText
 import org.sayit.voiceime.action.GestureActionHandler
 import org.sayit.voiceime.action.VoiceMode
 import org.sayit.voiceime.api.LLMService
+import org.sayit.voiceime.api.StreamCallback
 import org.sayit.voiceime.gesture.GestureAction
 import org.sayit.voiceime.overlay.ResultBubbleView
 import org.sayit.voiceime.widget.FloatingBallConfig
@@ -49,8 +52,6 @@ class VoiceKeyboard : InputMethodService() {
     private val TAG = "VoiceKeyboard"
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
-    private var micButton: Button? = null
-    private var debugLogView: TextView? = null
     @Volatile private var isListening = false
     @Volatile private var taskFinished = false
 
@@ -60,15 +61,23 @@ class VoiceKeyboard : InputMethodService() {
 
     @Volatile private var resultBuffer = ""
 
-    private lateinit var floatingBall: FloatingBallView
+    // Overlay
+    private lateinit var windowManager: WindowManager
+    private var overlayContainer: FrameLayout? = null
+    private var overlayLayoutParams: WindowManager.LayoutParams? = null
+    private var screenW = 0
+    private var screenH = 0
+
+    // Views
+    private var floatingBall: FloatingBallView? = null
+    private var resultBubble: ResultBubbleView? = null
     private var gestureHandler: GestureActionHandler? = null
     private var llmService: LLMService? = null
-    private var resultBubble: ResultBubbleView? = null
     private var currentVoiceMode = VoiceMode.INPUT
 
     companion object {
         private val gson = Gson()
-        private const val CHUNK_SIZE = 6400  // 200ms @ 16kHz 16bit mono
+        private const val CHUNK_SIZE = 6400
 
         private const val PROTOCOL_VERSION = 0x01
         private const val MSG_FULL_CLIENT_REQUEST  = 0x01
@@ -93,128 +102,89 @@ class VoiceKeyboard : InputMethodService() {
                 .connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
                 .readTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
                 .build()
-            Log.d(TAG, "okHttpClient created")
+
+            windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
+            val dm = resources.displayMetrics
+            screenW = dm.widthPixels
+            screenH = dm.heightPixels
+
+            gestureHandler = GestureActionHandler(this)
+            llmService = LLMService(okHttpClient)
         } catch (e: Exception) {
             Log.e(TAG, "onCreate error", e)
         }
     }
 
-    override fun onCreateInputView(): View {
-        Log.d(TAG, "onCreateInputView called")
-        return try {
-            buildInputView()
-        } catch (e: Throwable) {
-            Log.e(TAG, "onCreateInputView CRASH", e)
-            // Return a safe fallback view so the IME doesn't crash-loop
-            TextView(this).apply {
-                text = "Sayit 初始化失败:\n${e.javaClass.simpleName}: ${e.message}"
-                textSize = 14f
-                setPadding(32, 32, 32, 32)
-                setTextColor(0xFFFF0000.toInt())
-                setBackgroundColor(0xFF1A1A1A.toInt())
-                minimumHeight = 400.dpToPx()
+    private fun ensureOverlay() {
+        if (overlayContainer != null) return
+        if (Settings.canDrawOverlays(this)) {
+            createOverlayWindow()
+        } else {
+            Log.w(TAG, "SYSTEM_ALERT_WINDOW not granted, launching settings")
+            try {
+                val intent = android.content.Intent(
+                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:$packageName")
+                )
+                intent.flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+                startActivity(intent)
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to launch overlay settings", e)
             }
         }
     }
 
-    private fun buildInputView(): View {
-        Log.d(TAG, "buildInputView step 1: root + debugPanel")
-        val root = FrameLayout(this).apply {
-            isClickable = true
-            isFocusable = true
-            minimumHeight = 400.dpToPx()
-            setBackgroundColor(0xFF1A1A1A.toInt())
+    private fun createOverlayWindow() {
+        Log.d(TAG, "createOverlayWindow")
+
+        val config = FloatingBallConfig.default(this)
+        val ballSize = (config.ballRadius * 2.5f).toInt()
+
+        floatingBall = FloatingBallView(this, config).apply {
+            listener = object : FloatingBallListener {
+                override fun onGestureAction(action: GestureAction) {
+                    gestureHandler?.handle(action)
+                }
+                override fun onVoiceStateChanged(listening: Boolean) {}
+            }
+            layoutParams = FrameLayout.LayoutParams(ballSize, ballSize, Gravity.CENTER)
         }
 
-        val debugPanel = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(16, 16, 16, 16)
+        resultBubble = ResultBubbleView(this).apply {
+            visibility = View.GONE
             layoutParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.WRAP_CONTENT,
-                Gravity.BOTTOM
+                FrameLayout.LayoutParams.WRAP_CONTENT
             )
         }
-        micButton = Button(this).apply {
-            text = "🎤 开始录音"
-            textSize = 16f
-            setOnClickListener { toggleListening() }
-            visibility = View.GONE
-        }
-        debugLogView = TextView(this).apply {
-            text = "[DEBUG] 等待操作..."
-            textSize = 11f
-            setPadding(0, 8, 0, 0)
-            setTextColor(0xFFFF0000.toInt())
-            maxLines = 10
-        }
-        debugPanel.addView(micButton)
-        debugPanel.addView(debugLogView)
-        root.addView(debugPanel)
 
-        try {
-            Log.d(TAG, "buildInputView step 2: FloatingBallConfig")
-            val config = FloatingBallConfig.default(this)
-
-            Log.d(TAG, "buildInputView step 3: FloatingBallView")
-            floatingBall = FloatingBallView(this, config).apply {
-                listener = object : FloatingBallListener {
-                    override fun onGestureAction(action: GestureAction) {
-                        android.util.Log.d("VoiceKeyboard", "onGestureAction: $action")
-                        gestureHandler?.handle(action)
-                    }
-                    override fun onVoiceStateChanged(listening: Boolean) {}
-                }
-                val size = (config.ballRadius * 2.5f).toInt()
-                layoutParams = FrameLayout.LayoutParams(size, size, Gravity.CENTER)
-            }
-            root.addView(floatingBall)
-            Log.d(TAG, "FloatingBallView added OK")
-        } catch (e: Throwable) {
-            Log.e(TAG, "FloatingBallView CRASH", e)
-            val errText = TextView(this).apply {
-                text = "悬浮球加载失败:\n${e.javaClass.simpleName}: ${e.message}"
-                textSize = 12f
-                setPadding(16, 16, 16, 16)
-                setTextColor(0xFFFF0000.toInt())
-                layoutParams = FrameLayout.LayoutParams(
-                    FrameLayout.LayoutParams.MATCH_PARENT,
-                    FrameLayout.LayoutParams.WRAP_CONTENT,
-                    Gravity.CENTER
-                )
-            }
-            root.addView(errText)
+        overlayContainer = FrameLayout(this).apply {
+            addView(floatingBall)
+            addView(resultBubble)
         }
 
-        try {
-            Log.d(TAG, "buildInputView step 4: ResultBubbleView")
-            resultBubble = ResultBubbleView(this).apply {
-                visibility = View.GONE
-                layoutParams = FrameLayout.LayoutParams(
-                    FrameLayout.LayoutParams.MATCH_PARENT,
-                    FrameLayout.LayoutParams.WRAP_CONTENT,
-                    Gravity.CENTER
-                )
-            }
-            root.addView(resultBubble)
-            Log.d(TAG, "ResultBubbleView added OK")
-        } catch (e: Throwable) {
-            Log.e(TAG, "ResultBubbleView CRASH", e)
+        overlayLayoutParams = WindowManager.LayoutParams(
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+            PixelFormat.TRANSLUCENT
+        ).apply {
+            gravity = Gravity.TOP or Gravity.START
+            x = screenW - ballSize - dp(16)
+            y = screenH / 3
         }
 
-        try {
-            Log.d(TAG, "buildInputView step 5: handlers")
-            gestureHandler = GestureActionHandler(this)
-            gestureHandler?.setLogCallback { msg -> debugLog(msg) }
-            llmService = LLMService(okHttpClient)
-            Log.d(TAG, "handlers OK")
-        } catch (e: Throwable) {
-            Log.e(TAG, "handlers CRASH", e)
-        }
+        windowManager.addView(overlayContainer, overlayLayoutParams)
+        Log.d(TAG, "Overlay window added")
+    }
 
-        debugLog("UI initialized OK")
-        Log.d(TAG, "buildInputView DONE")
-        return root
+    override fun onCreateInputView(): View {
+        // Minimal invisible view - floating ball is a separate overlay
+        return View(this).apply {
+            layoutParams = FrameLayout.LayoutParams(0, 0)
+        }
     }
 
     fun isCurrentlyListening(): Boolean = isListening
@@ -254,68 +224,36 @@ class VoiceKeyboard : InputMethodService() {
     }
 
     fun updateFloatingBallPosition(rawX: Float, rawY: Float) {
-        val parent = floatingBall.parent as? FrameLayout ?: return
-        val newX = rawX - floatingBall.width / 2f
-        val newY = rawY - floatingBall.height / 2f
-        floatingBall.x = newX.coerceIn(0f, (parent.width - floatingBall.width).toFloat())
-        floatingBall.y = newY.coerceIn(0f, (parent.height - floatingBall.height).toFloat())
-    }
-
-    fun snapFloatingBallToEdge() {
-        floatingBall.snapToEdge()
-    }
-
-    private fun toggleListening() {
-        debugLog("toggleListening: isListening=$isListening")
-        if (isListening) stopSpeechRecognition() else startSpeechRecognition()
+        val params = overlayLayoutParams ?: return
+        val ballSize = floatingBall?.width?.coerceAtLeast(1) ?: return
+        params.x = (rawX - ballSize / 2f).toInt().coerceIn(0, screenW - ballSize)
+        params.y = (rawY - ballSize / 2f).toInt().coerceIn(0, screenH - ballSize)
+        try {
+            windowManager.updateViewLayout(overlayContainer, params)
+        } catch (_: Exception) {}
     }
 
     private fun startSpeechRecognition() {
-        debugLog(">>> startSpeechRecognition")
-        debugLog("isListening=$isListening")
-        Log.d(TAG, "startSpeechRecognition called, isListening=$isListening")
-        if (isListening) {
-            debugLog("Already listening, return")
-            return
-        }
-
-        // Check if floatingBall is initialized
-        if (!::floatingBall.isInitialized) {
-            debugLog("ERROR: floatingBall not initialized!")
-            Log.e(TAG, "floatingBall not initialized!")
-            return
-        }
-        debugLog("floatingBall is initialized")
-
-        debugLog("Checking permission...")
+        if (isListening) return
         if (!checkRecordPermission()) {
-            debugLog("NO PERMISSION - requesting")
             requestRecordPermission()
             return
         }
-        debugLog("Permission OK, starting...")
         isListening = true
         taskFinished = false
         currentVoiceMode = VoiceMode.INPUT
-        debugLog("Setting ball listening state")
-        floatingBall.setListeningState(true)
-        updateButtonText("🔴 录音中...")
+        floatingBall?.setListeningState(true)
         try {
-            debugLog("Connecting to ASR...")
             connectToASR()
-            debugLog("connectToASR() returned")
         } catch (e: Exception) {
-            debugLog("ERROR: ${e.javaClass.simpleName}: ${e.message}")
             Log.e(TAG, "Error starting ASR", e)
-            e.printStackTrace()
             stopSpeechRecognition()
         }
     }
 
     private fun stopSpeechRecognition() {
         isListening = false
-        floatingBall.setListeningState(false)
-        updateButtonText("🎤 开始录音")
+        floatingBall?.setListeningState(false)
         audioRecord?.stop()
         audioRecord?.release()
         audioRecord = null
@@ -334,42 +272,51 @@ class VoiceKeyboard : InputMethodService() {
                 val question = resultBuffer
                 resultBuffer = ""
                 if (question.isNotEmpty()) {
-                    scope.launch {
-                        val result = llmService?.ask(question)
-                        result?.onSuccess { answer ->
+                    showLoadingBubble()
+                    llmService?.askStreaming(question, object : StreamCallback {
+                        override fun onStart() {
+                            scope.launch(Dispatchers.Main) { showLoadingBubble() }
+                        }
+                        override fun onDelta(delta: String) {
+                            scope.launch(Dispatchers.Main) { resultBubble?.appendText(delta) }
+                        }
+                        override fun onComplete(fullText: String) {}
+                        override fun onError(e: Exception) {
                             scope.launch(Dispatchers.Main) {
-                                showResultBubble(answer)
+                                resultBubble?.appendText("\n[错误: ${e.message}]")
                             }
                         }
-                        result?.onFailure { e ->
-                            debugLog("LLM提问失败: ${e.message}")
-                        }
-                    }
+                    })
                 }
             }
             VoiceMode.TRANSLATE -> {
                 val text = resultBuffer
                 resultBuffer = ""
                 if (text.isNotEmpty()) {
-                    scope.launch {
-                        val result = llmService?.translate(text)
-                        result?.onSuccess { translated ->
+                    showLoadingBubble()
+                    llmService?.translateStreaming(text, callback = object : StreamCallback {
+                        override fun onStart() {
+                            scope.launch(Dispatchers.Main) { showLoadingBubble() }
+                        }
+                        override fun onDelta(delta: String) {
+                            scope.launch(Dispatchers.Main) { resultBubble?.appendText(delta) }
+                        }
+                        override fun onComplete(fullText: String) {}
+                        override fun onError(e: Exception) {
                             scope.launch(Dispatchers.Main) {
-                                showResultBubble(translated)
+                                resultBubble?.appendText("\n[错误: ${e.message}]")
                             }
                         }
-                        result?.onFailure { e ->
-                            debugLog("翻译失败: ${e.message}")
-                        }
-                    }
+                    })
                 }
             }
         }
         currentVoiceMode = VoiceMode.INPUT
     }
 
-    private fun showResultBubble(text: String) {
-        resultBubble?.show(text, floatingBall)
+    private fun showLoadingBubble() {
+        val ball = floatingBall ?: return
+        resultBubble?.showLoading(ball)
         resultBubble?.onInsert = { result ->
             currentInputConnection?.commitText(result, 1)
         }
@@ -391,9 +338,6 @@ class VoiceKeyboard : InputMethodService() {
         webSocket = okHttpClient.newWebSocket(request, object : WebSocketListener() {
 
             override fun onOpen(webSocket: WebSocket, response: Response) {
-                val logId = response.header("X-Tt-Logid") ?: "无"
-                debugLog("连接成功 logid=$logId")
-
                 val payload = buildFullClientRequestPayload()
                 val frame   = buildBinaryFrame(
                     msgType  = MSG_FULL_CLIENT_REQUEST,
@@ -403,12 +347,11 @@ class VoiceKeyboard : InputMethodService() {
                     payload  = payload
                 )
                 webSocket.send(okio.ByteString.of(*frame))
-                debugLog("full client request 已发送 ${frame.size}B")
 
                 scope.launch {
                     try { startRecording(webSocket) }
                     catch (e: Exception) {
-                        debugLog("录音失败: ${e.message}")
+                        Log.e(TAG, "Recording failed", e)
                         scope.launch(Dispatchers.Main) { stopSpeechRecognition() }
                     }
                 }
@@ -418,17 +361,14 @@ class VoiceKeyboard : InputMethodService() {
                 handleBinaryResponse(bytes.toByteArray())
             }
 
-            override fun onMessage(webSocket: WebSocket, text: String) {
-                debugLog("收到文本（非预期）: ${text.take(100)}")
-            }
+            override fun onMessage(webSocket: WebSocket, text: String) {}
 
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-                debugLog("连接失败: ${response?.code} ${t.message}")
+                Log.e(TAG, "WS failed: ${response?.code} ${t.message}")
                 scope.launch(Dispatchers.Main) { stopSpeechRecognition() }
             }
 
             override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
-                debugLog("连接关闭: $code")
                 if (isListening) scope.launch(Dispatchers.Main) { stopSpeechRecognition() }
             }
         })
@@ -437,7 +377,7 @@ class VoiceKeyboard : InputMethodService() {
     private suspend fun startRecording(ws: WebSocket) = withContext(Dispatchers.IO) {
         val bufferSize = AudioRecord.getMinBufferSize(
             ASRConfig.SAMPLE_RATE, ASRConfig.CHANNEL_CONFIG, ASRConfig.AUDIO_FORMAT)
-        check(bufferSize > 0) { "无效 bufferSize: $bufferSize" }
+        check(bufferSize > 0) { "Invalid bufferSize: $bufferSize" }
 
         audioRecord = AudioRecord(
             MediaRecorder.AudioSource.MIC,
@@ -446,10 +386,9 @@ class VoiceKeyboard : InputMethodService() {
             ASRConfig.AUDIO_FORMAT,
             bufferSize
         )
-        check(audioRecord?.state == AudioRecord.STATE_INITIALIZED) { "AudioRecord 初始化失败" }
+        check(audioRecord?.state == AudioRecord.STATE_INITIALIZED) { "AudioRecord init failed" }
 
         audioRecord?.startRecording()
-        debugLog("开始录音")
 
         val buffer = ByteArray(CHUNK_SIZE)
         var totalBytes = 0
@@ -477,7 +416,6 @@ class VoiceKeyboard : InputMethodService() {
             payload = ByteArray(0)
         )
         ws.send(okio.ByteString.of(*lastFrame))
-        debugLog("最后一包已发送，总计 ${totalBytes / 1024}KB")
 
         var wait = 0
         while (!taskFinished && wait < 100) { delay(100); wait++ }
@@ -485,7 +423,7 @@ class VoiceKeyboard : InputMethodService() {
     }
 
     private fun handleBinaryResponse(raw: ByteArray) {
-        if (raw.size < 4) { debugLog("响应太短: ${raw.size}B"); return }
+        if (raw.size < 4) return
 
         val byte0 = raw[0].toInt() and 0xFF
         val byte1 = raw[1].toInt() and 0xFF
@@ -499,16 +437,13 @@ class VoiceKeyboard : InputMethodService() {
         val hasSequence = (flags == FLAG_HAS_SEQUENCE || flags == FLAG_LAST_PACKET_WITH_SEQ)
         val payloadOffset = headerSizeBytes + (if (hasSequence) 4 else 0)
 
-        if (raw.size < payloadOffset + 4) { debugLog("响应长度不足"); return }
+        if (raw.size < payloadOffset + 4) return
 
         val payloadSize = ByteBuffer.wrap(raw, payloadOffset, 4)
             .order(ByteOrder.BIG_ENDIAN).int.toLong() and 0xFFFFFFFFL
         val dataOffset = payloadOffset + 4
 
-        if (raw.size < dataOffset + payloadSize) {
-            debugLog("payload 长度不符 expected=$payloadSize actual=${raw.size - dataOffset}")
-            return
-        }
+        if (raw.size < dataOffset + payloadSize) return
 
         val payloadBytes = raw.copyOfRange(dataOffset, dataOffset + payloadSize.toInt())
 
@@ -524,11 +459,10 @@ class VoiceKeyboard : InputMethodService() {
                     val msgSize = ByteBuffer.wrap(payloadBytes, 4, 4).order(ByteOrder.BIG_ENDIAN).int
                     val msg     = if (payloadBytes.size >= 8 + msgSize)
                         String(payloadBytes, 8, msgSize, Charsets.UTF_8) else "?"
-                    debugLog("服务端错误 code=$code msg=$msg")
+                    Log.e(TAG, "ASR error code=$code msg=$msg")
                 }
                 scope.launch(Dispatchers.Main) { stopSpeechRecognition() }
             }
-            else -> debugLog("未知 msgType=0x${msgType.toString(16)}")
         }
     }
 
@@ -545,7 +479,6 @@ class VoiceKeyboard : InputMethodService() {
             val obj  = gson.fromJson(json, JsonObject::class.java)
             val text = obj.getAsJsonObject("result")?.get("text")?.asString ?: ""
             if (text.isNotEmpty()) {
-                debugLog("识别: $text")
                 scope.launch(Dispatchers.Main) {
                     currentInputConnection?.setComposingText(text, 1)
                     resultBuffer = text
@@ -555,7 +488,7 @@ class VoiceKeyboard : InputMethodService() {
                 taskFinished = true
             }
         } catch (e: Exception) {
-            debugLog("JSON解析失败: ${e.message} raw=${json.take(80)}")
+            Log.e(TAG, "JSON parse failed: ${e.message}")
         }
     }
 
@@ -606,19 +539,9 @@ class VoiceKeyboard : InputMethodService() {
 
     private fun requestRecordPermission() = PermissionActivity.startPermissionRequest(this)
 
-    private fun updateButtonText(text: String) { micButton?.text = text }
-
-    private fun debugLog(msg: String) {
-        Log.d(TAG, msg)
-        val line = "[${System.currentTimeMillis() % 100000}] $msg"
-        android.os.Handler(mainLooper).post {
-            debugLogView?.let { it.text = "$line\n${it.text}".take(500) }
-        }
-    }
-
     override fun onStartInputView(info: android.view.inputmethod.EditorInfo, restarting: Boolean) {
         super.onStartInputView(info, restarting)
-        updateButtonText(if (isListening) "🔴 录音中..." else "🎤 开始录音")
+        ensureOverlay()
     }
 
     override fun onWindowHidden() {
@@ -630,10 +553,13 @@ class VoiceKeyboard : InputMethodService() {
         super.onDestroy()
         stopSpeechRecognition()
         scope.cancel()
+        try {
+            overlayContainer?.let { windowManager.removeView(it) }
+        } catch (_: Exception) {}
         okHttpClient.dispatcher.executorService.shutdown()
     }
 
-    private fun Int.dpToPx(): Int {
-        return (this * resources.displayMetrics.density).toInt()
+    private fun dp(value: Int): Int {
+        return (value * resources.displayMetrics.density).toInt()
     }
 }

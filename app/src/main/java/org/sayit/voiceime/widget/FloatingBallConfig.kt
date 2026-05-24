@@ -14,8 +14,7 @@ data class FloatingBallConfig(
     val gestureThreshold: Float,
     val longPressTimeout: Long,
     val trailEnabled: Boolean,
-    val hapticEnabled: Boolean,
-    val edgeSnapEnabled: Boolean
+    val hapticEnabled: Boolean
 ) {
     companion object {
         fun default(context: Context): FloatingBallConfig {
@@ -36,8 +35,7 @@ data class FloatingBallConfig(
                 gestureThreshold = dp(30f),
                 longPressTimeout = 300L,
                 trailEnabled = true,
-                hapticEnabled = true,
-                edgeSnapEnabled = true
+                hapticEnabled = true
             )
         }
     }
