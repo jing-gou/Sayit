@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.LinearLayout
@@ -104,14 +105,14 @@ class ResultBubbleView(context: Context) : FrameLayout(context) {
         }
     }
 
-    fun showLoading(anchorView: View) {
+    fun showLoading(ballX: Int, ballY: Int, ballWidth: Int, ballHeight: Int, screenWidth: Int) {
         resultText.text = ""
         loadingIndicator.visibility = View.VISIBLE
         scrollView.visibility = View.GONE
         insertButton.isEnabled = false
         copyButton.isEnabled = false
 
-        positionRelativeTo(anchorView)
+        positionAtScreen(ballX, ballY, ballWidth, ballHeight, screenWidth)
         visibility = View.VISIBLE
         alpha = 0f
         animate().alpha(1f).setDuration(200).start()
@@ -149,14 +150,14 @@ class ResultBubbleView(context: Context) : FrameLayout(context) {
         dismissButton.setOnClickListener { dismiss() }
     }
 
-    fun show(result: String, anchorView: View) {
+    fun show(result: String, ballX: Int, ballY: Int, ballWidth: Int, ballHeight: Int, screenWidth: Int) {
         resultText.text = result
         loadingIndicator.visibility = View.GONE
         scrollView.visibility = View.VISIBLE
         insertButton.isEnabled = true
         copyButton.isEnabled = true
 
-        positionRelativeTo(anchorView)
+        positionAtScreen(ballX, ballY, ballWidth, ballHeight, screenWidth)
 
         visibility = View.VISIBLE
         alpha = 0f
@@ -187,23 +188,12 @@ class ResultBubbleView(context: Context) : FrameLayout(context) {
         }
     }
 
-    private fun positionRelativeTo(anchorView: View) {
-        val container = parent as? FrameLayout ?: return
-        val params = layoutParams as? FrameLayout.LayoutParams
-            ?: FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.WRAP_CONTENT,
-                FrameLayout.LayoutParams.WRAP_CONTENT
-            )
-
-        val ballCenterX = anchorView.x + anchorView.width / 2
+    private fun positionAtScreen(ballX: Int, ballY: Int, ballWidth: Int, ballHeight: Int, screenWidth: Int) {
+        val params = layoutParams as? WindowManager.LayoutParams ?: return
         val bubbleWidth = dp(300f)
-
-        params.gravity = Gravity.TOP or Gravity.START
-        params.topMargin = (anchorView.y + anchorView.height + dp(8f)).toInt()
-        params.marginStart = (ballCenterX - bubbleWidth / 2).toInt()
-            .coerceIn(0, (container.width - bubbleWidth).coerceAtLeast(0))
-
-        layoutParams = params
+        params.x = (ballX + ballWidth / 2 - bubbleWidth / 2)
+            .coerceIn(0, (screenWidth - bubbleWidth).coerceAtLeast(0))
+        params.y = ballY + ballHeight + dp(8f)
     }
 
     fun dismiss() {

@@ -2,20 +2,17 @@ package org.sayit.voiceime
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.graphics.PixelFormat
 import android.media.AudioFormat
 import android.media.AudioRecord
 import android.media.MediaRecorder
 import android.inputmethodservice.InputMethodService
+import android.inputmethodservice.InputMethodService.Insets
 import android.net.Uri
 import android.provider.Settings
 import android.util.Log
-import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
-import android.widget.FrameLayout
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import kotlinx.coroutines.*
 import okhttp3.*
@@ -33,6 +30,7 @@ import org.sayit.voiceime.action.VoiceMode
 import org.sayit.voiceime.api.LLMService
 import org.sayit.voiceime.api.StreamCallback
 import org.sayit.voiceime.gesture.GestureAction
+import org.sayit.voiceime.overlay.OverlayHelper
 import org.sayit.voiceime.overlay.ResultBubbleView
 import org.sayit.voiceime.widget.FloatingBallConfig
 import org.sayit.voiceime.widget.FloatingBallListener
@@ -64,10 +62,9 @@ class VoiceKeyboard : InputMethodService() {
 
     @Volatile private var resultBuffer = ""
 
-    // Overlay
-    private lateinit var windowManager: WindowManager
-    private var overlayContainer: FrameLayout? = null
-    private var overlayLayoutParams: WindowManager.LayoutParams? = null
+    // Overlay — ball uses a small window; other UI added on demand
+    private var overlayHelper: OverlayHelper? = null
+    private var ballLayoutParams: WindowManager.LayoutParams? = null
     private var screenW = 0
     private var screenH = 0
 
@@ -113,7 +110,7 @@ class VoiceKeyboard : InputMethodService() {
                 .readTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
                 .build()
 
-            windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
+            overlayHelper = OverlayHelper(this)
             val dm = resources.displayMetrics
             screenW = dm.widthPixels
             screenH = dm.heightPixels
@@ -126,7 +123,7 @@ class VoiceKeyboard : InputMethodService() {
     }
 
     private fun ensureOverlay() {
-        if (overlayContainer != null) return
+        if (floatingBall != null) return
         if (Settings.canDrawOverlays(this)) {
             createOverlayWindow()
         } else {
@@ -146,11 +143,10 @@ class VoiceKeyboard : InputMethodService() {
 
     private fun createOverlayWindow() {
         Log.d(TAG, "createOverlayWindow")
+        val helper = overlayHelper ?: return
 
         val config = FloatingBallConfig.default(this)
         val ballSize = (config.ballRadius * 2.5f).toInt()
-
-        // Initial ball position: right side, upper third
         val initX = screenW - ballSize - dp(16)
         val initY = screenH / 3
 
@@ -164,46 +160,36 @@ class VoiceKeyboard : InputMethodService() {
                     showRadialMenu()
                 }
             }
-            layoutParams = FrameLayout.LayoutParams(ballSize, ballSize)
-            translationX = initX.toFloat()
-            translationY = initY.toFloat()
         }
 
-        resultBubble = ResultBubbleView(this).apply {
-            visibility = View.GONE
-            layoutParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.WRAP_CONTENT,
-                FrameLayout.LayoutParams.WRAP_CONTENT
-            )
-        }
-
-        overlayContainer = FrameLayout(this).apply {
-            addView(floatingBall)
-            addView(resultBubble)
-        }
-
-        overlayLayoutParams = WindowManager.LayoutParams(
-            WindowManager.LayoutParams.MATCH_PARENT,
-            WindowManager.LayoutParams.MATCH_PARENT,
-            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
-                    WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
-            PixelFormat.TRANSLUCENT
-        ).apply {
-            gravity = Gravity.TOP or Gravity.START
-            x = 0
-            y = 0
-        }
-
-        windowManager.addView(overlayContainer, overlayLayoutParams)
-        Log.d(TAG, "Overlay window added")
+        ballLayoutParams = OverlayHelper.ballParams(ballSize, ballSize, initX, initY)
+        helper.addView(floatingBall!!, ballLayoutParams!!)
+        Log.d(TAG, "Ball overlay window added (${ballSize}x${ballSize} at $initX,$initY)")
     }
 
+    private fun ballPosition(): Pair<Int, Int> {
+        val params = ballLayoutParams
+        return (params?.x ?: 0) to (params?.y ?: 0)
+    }
+
+    private fun ballSize(): Int = floatingBall?.width?.coerceAtLeast(1) ?: 1
+
     override fun onCreateInputView(): View {
-        // Minimal invisible view - floating ball is a separate overlay
-        return View(this).apply {
-            layoutParams = FrameLayout.LayoutParams(0, 0)
+        // Zero-size input view — floating ball lives in a separate overlay
+        return object : View(this) {
+            override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+                setMeasuredDimension(0, 0)
+            }
         }
+    }
+
+    override fun onEvaluateFullscreenMode(): Boolean = false
+
+    override fun onComputeInsets(outInsets: Insets) {
+        super.onComputeInsets(outInsets)
+        outInsets.contentTopInsets = outInsets.visibleTopInsets
+        outInsets.touchableInsets = Insets.TOUCHABLE_INSETS_CONTENT
+        outInsets.touchableRegion.setEmpty()
     }
 
     fun isCurrentlyListening(): Boolean = isListening
@@ -248,18 +234,18 @@ class VoiceKeyboard : InputMethodService() {
 
     fun updateFloatingBallPosition(rawX: Float, rawY: Float) {
         val ball = floatingBall ?: return
-        val ballSize = ball.width.coerceAtLeast(1)
-        // On first call, calculate offset between finger and ball center
+        val params = ballLayoutParams ?: return
+        val helper = overlayHelper ?: return
+        val size = ball.width.coerceAtLeast(1)
         if (dragOffsetX == 0f && dragOffsetY == 0f) {
-            val ballCenterX = ball.translationX + ballSize / 2f
-            val ballCenterY = ball.translationY + ballSize / 2f
+            val ballCenterX = params.x + size / 2f
+            val ballCenterY = params.y + size / 2f
             dragOffsetX = rawX - ballCenterX
             dragOffsetY = rawY - ballCenterY
         }
-        val newX = (rawX - dragOffsetX - ballSize / 2f).coerceIn(0f, (screenW - ballSize).toFloat())
-        val newY = (rawY - dragOffsetY - ballSize / 2f).coerceIn(0f, (screenH - ballSize).toFloat())
-        ball.translationX = newX
-        ball.translationY = newY
+        params.x = (rawX - dragOffsetX - size / 2f).toInt().coerceIn(0, screenW - size)
+        params.y = (rawY - dragOffsetY - size / 2f).toInt().coerceIn(0, screenH - size)
+        helper.updateViewLayout(ball, params)
     }
 
     fun resetDragOffset() {
@@ -356,43 +342,75 @@ class VoiceKeyboard : InputMethodService() {
 
     private fun showLoadingBubble() {
         val ball = floatingBall ?: return
-        resultBubble?.showLoading(ball)
+        showResultBubble()
+        val (bx, by) = ballPosition()
+        val size = ballSize()
+        resultBubble?.showLoading(bx, by, size, size, screenW)
         resultBubble?.onInsert = { result ->
             currentInputConnection?.commitText(result, 1)
         }
+        resultBubble?.let { bubble ->
+            (bubble.layoutParams as? WindowManager.LayoutParams)?.let { params ->
+                overlayHelper?.updateViewLayout(bubble, params)
+            }
+        }
+    }
+
+    private fun showResultBubble() {
+        if (resultBubble != null) return
+        val helper = overlayHelper ?: return
+        val bubble = ResultBubbleView(this).apply {
+            onDismiss = { dismissResultBubble() }
+        }
+        val (bx, by) = ballPosition()
+        val params = OverlayHelper.wrapContentParams(bx, by + ballSize())
+        helper.addView(bubble, params)
+        resultBubble = bubble
+    }
+
+    private fun dismissResultBubble() {
+        resultBubble?.let { overlayHelper?.removeView(it) }
+        resultBubble = null
     }
 
     private fun showRadialMenu() {
         val ball = floatingBall ?: return
-        val container = overlayContainer ?: return
+        val helper = overlayHelper ?: return
 
-        // Dismiss existing menu
-        radialMenu?.dismiss()
+        val existing = radialMenu
+        if (existing != null && existing.visibility == View.VISIBLE) {
+            dismissRadialMenu()
+            return
+        }
 
-        // Get ball center in container coordinates (container is MATCH_PARENT at 0,0)
-        val ballSize = ball.width.coerceAtLeast(1)
-        val centerX = ball.translationX + ballSize / 2f
-        val centerY = ball.translationY + ballSize / 2f
+        val size = ballSize()
+        val (bx, by) = ballPosition()
+        val centerX = bx + size / 2f
+        val centerY = by + size / 2f
 
-        val menu = RadialMenuView(this, centerX, centerY, ballSize / 2f).apply {
-            onAction = { action ->
-                handleRadialAction(action)
+        val menu = RadialMenuView(this, centerX, centerY, size / 2f).apply {
+            onAction = { action -> handleRadialAction(action) }
+            onDismissRequest = {
+                val menu = radialMenu
+                radialMenu = null
+                menu?.let { overlayHelper?.removeView(it) }
             }
-            layoutParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT
-            )
             visibility = View.GONE
         }
 
-        container.addView(menu)
+        helper.addView(menu, OverlayHelper.fullScreenParams())
         radialMenu = menu
         menu.show()
     }
 
-    private fun handleRadialAction(action: RadialMenuAction) {
-        radialMenu?.dismiss()
+    private fun dismissRadialMenu() {
+        val menu = radialMenu ?: return
         radialMenu = null
+        overlayHelper?.removeView(menu)
+    }
+
+    private fun handleRadialAction(action: RadialMenuAction) {
+        dismissRadialMenu()
 
         when (action) {
             RadialMenuAction.SETTINGS -> {
@@ -419,22 +437,28 @@ class VoiceKeyboard : InputMethodService() {
     }
 
     private fun showSymbolPanel() {
-        val container = overlayContainer ?: return
-        symbolPanel?.dismiss()
+        val helper = overlayHelper ?: return
+        dismissSymbolPanel()
 
         val panel = SymbolPanelView(this).apply {
             onSymbolSelected = { sym ->
                 currentInputConnection?.commitText(sym, 1)
             }
-            layoutParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.WRAP_CONTENT,
-                Gravity.BOTTOM
-            )
+            onBackspace = {
+                currentInputConnection?.deleteSurroundingText(1, 0)
+            }
+            onDismiss = { dismissSymbolPanel() }
         }
-        container.addView(panel)
+        helper.addView(panel, OverlayHelper.bottomPanelParams())
         symbolPanel = panel
         panel.show()
+    }
+
+    private fun dismissSymbolPanel() {
+        symbolPanel?.let {
+            overlayHelper?.removeView(it)
+        }
+        symbolPanel = null
     }
 
     private fun connectToASR() {
@@ -669,7 +693,10 @@ class VoiceKeyboard : InputMethodService() {
         stopSpeechRecognition()
         scope.cancel()
         try {
-            overlayContainer?.let { windowManager.removeView(it) }
+            dismissRadialMenu()
+            dismissSymbolPanel()
+            dismissResultBubble()
+            overlayHelper?.removeAll()
         } catch (_: Exception) {}
         okHttpClient.dispatcher.executorService.shutdown()
     }

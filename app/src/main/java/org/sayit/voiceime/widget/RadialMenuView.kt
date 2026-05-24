@@ -14,6 +14,7 @@ enum class RadialMenuAction {
 class RadialMenuView(context: Context, private val ballCenterX: Float, private val ballCenterY: Float, private val ballRadius: Float) : View(context) {
 
     var onAction: ((RadialMenuAction) -> Unit)? = null
+    var onDismissRequest: (() -> Unit)? = null
 
     private var selectedSlice = -1
     private var touchDown = false
@@ -127,6 +128,9 @@ class RadialMenuView(context: Context, private val ballCenterX: Float, private v
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 if (selectedSlice >= 0) {
                     onAction?.invoke(slices[selectedSlice].action)
+                } else {
+                    // Tap center (ball) or dim background — collapse menu
+                    onDismissRequest?.invoke()
                 }
                 selectedSlice = -1
                 touchDown = false
@@ -178,7 +182,6 @@ class RadialMenuView(context: Context, private val ballCenterX: Float, private v
             .setDuration(100)
             .withEndAction {
                 visibility = GONE
-                (parent as? android.view.ViewGroup)?.removeView(this)
             }
             .start()
     }
