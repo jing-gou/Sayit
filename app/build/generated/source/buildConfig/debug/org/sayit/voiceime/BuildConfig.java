@@ -15,4 +15,10 @@ public final class BuildConfig {
   public static final String ASR_RESOURCE_ID = "volc.seedasr.sauc.duration";
   // Field from default config.
   public static final String ASR_WS_URL = "wss://openspeech.bytedance.com/api/v3/sauc/bigmodel_async";
+  // Field from default config.
+  public static final String LLM_API_KEY = "sk-c50r2legnwxhc29uhj32znd7ym9hve0q81djiy4t4g02tzt2";
+  // Field from default config.
+  public static final String LLM_API_URL = "https://api.xiaomimimo.com/v1/chat/completions";
+  // Field from default config.
+  public static final String LLM_MODEL = "mimo-v2.5-pro";
 }

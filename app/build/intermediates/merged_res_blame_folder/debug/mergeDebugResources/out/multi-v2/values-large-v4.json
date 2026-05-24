@@ -1,8 +1,25 @@
 {
     "logs": [
         {
-            "outputFile": "org.sayit.voiceime.app-mergeDebugResources-18:/values-large-v4/values-large-v4.xml",
+            "outputFile": "org.sayit.voiceime.app-mergeDebugResources-33:/values-large-v4/values-large-v4.xml",
             "map": [
+                {
+                    "source": "C:\\Users\\sugar\\.gradle\\caches\\8.13\\transforms\\ad873f467d5cad50be739b3abeb614d8\\transformed\\material-1.11.0\\res\\values-large-v4\\values-large-v4.xml",
+                    "from": {
+                        "startLines": "2,3,4,5",
+                        "startColumns": "4,4,4,4",
+                        "startOffsets": "55,169,285,407",
+                        "endColumns": "113,115,121,133",
+                        "endOffsets": "164,280,402,536"
+                    },
+                    "to": {
+                        "startLines": "11,12,13,14",
+                        "startColumns": "4,4,4,4",
+                        "startOffsets": "752,866,982,1104",
+                        "endColumns": "113,115,121,133",
+                        "endOffsets": "861,977,1099,1233"
+                    }
+                },
                 {
                     "source": "C:\\Users\\sugar\\.gradle\\caches\\8.13\\transforms\\c9591c1d9d48c11e13bd2a43b987c58f\\transformed\\appcompat-1.6.1\\res\\values-large-v4\\values-large-v4.xml",
                     "from": {

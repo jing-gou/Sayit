@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "org.sayit.voiceime.app-mergeDebugResources-33:/values-h320dp-port-v13/values-h320dp-port-v13.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\sugar\\.gradle\\caches\\8.13\\transforms\\ad873f467d5cad50be739b3abeb614d8\\transformed\\material-1.11.0\\res\\values-h320dp-port-v13\\values-h320dp-port-v13.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "63",
+                        "endOffsets": "114"
+                    }
+                }
+            ]
+        }
+    ]
+}
