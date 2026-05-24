@@ -20,21 +20,13 @@ class GestureActionHandler(private val ime: VoiceKeyboard) {
 
     private var currentVoiceMode = VoiceMode.INPUT
     private var isDragging = false
-    private var logCallback: ((String) -> Unit)? = null
-
-    // Stack: each entry is one deleted unit; restore pops from end (LIFO)
     private val deletedStack = ArrayDeque<String>()
     private var deleteCount = 0
     private var selectionHandledThisGesture = false
-    /** Last swipe direction while recording; used on release for send gesture. */
     private var recordingSwipeDirection: Direction? = null
 
     companion object {
         private const val PX_PER_CHAR = 20f
-    }
-
-    fun setLogCallback(callback: (String) -> Unit) {
-        logCallback = callback
     }
 
     fun handle(action: GestureAction) {
@@ -58,7 +50,7 @@ class GestureActionHandler(private val ime: VoiceKeyboard) {
                     recordingSwipeDirection = action.direction
                     when (action.direction) {
                         Direction.LEFT -> currentVoiceMode = VoiceMode.TRANSLATE
-                        Direction.RIGHT -> { /* send on release after speech is committed */ }
+                        Direction.RIGHT -> Unit
                         Direction.UP -> {
                             ime.cancelVoiceInput()
                             currentVoiceMode = VoiceMode.INPUT
@@ -109,14 +101,12 @@ class GestureActionHandler(private val ime: VoiceKeyboard) {
     private fun handleDeleteProgress(rawDx: Float) {
         val ic = ime.getInputConnection() ?: return
 
-        // Left of start (negative dx) deletes; right of start (non-negative) restores
         val targetCount = if (rawDx < 0) {
             (-rawDx / PX_PER_CHAR).toInt().coerceAtLeast(0)
         } else {
             0
         }
 
-        // Selected range: delete in one step on first left swipe (commitText replaces selection)
         if (!selectionHandledThisGesture && rawDx < 0) {
             val selected = readSelectedText(ic)
             if (!selected.isNullOrEmpty()) {
@@ -127,7 +117,6 @@ class GestureActionHandler(private val ime: VoiceKeyboard) {
             }
         }
 
-        // Delete one unit at a time — never batch-append, which breaks restore order
         while (deleteCount < targetCount) {
             val unit = ic.getTextBeforeCursor(1, 0)?.toString() ?: break
             if (unit.isEmpty()) break
@@ -136,7 +125,6 @@ class GestureActionHandler(private val ime: VoiceKeyboard) {
             deleteCount++
         }
 
-        // Restore one unit at a time from stack end (most recently deleted first)
         while (deleteCount > targetCount && deletedStack.isNotEmpty()) {
             val unit = deletedStack.removeLast()
             ic.commitText(unit, 1)

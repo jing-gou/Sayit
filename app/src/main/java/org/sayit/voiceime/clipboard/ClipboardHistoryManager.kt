@@ -4,8 +4,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
-
 class ClipboardHistoryManager(context: Context) {
 
     private val appContext = context.applicationContext
@@ -18,9 +16,9 @@ class ClipboardHistoryManager(context: Context) {
 
     fun start() {
         if (listener != null) return
-        captureClip("initial")
+        captureClip()
         listener = ClipboardManager.OnPrimaryClipChangedListener {
-            mainHandler.post { captureClip("changed") }
+            mainHandler.post { captureClip() }
         }
         clipboard.addPrimaryClipChangedListener(listener!!)
     }
@@ -32,9 +30,9 @@ class ClipboardHistoryManager(context: Context) {
 
     fun captureNow() {
         if (Looper.myLooper() == Looper.getMainLooper()) {
-            captureClip("manual")
+            captureClip()
         } else {
-            mainHandler.post { captureClip("manual") }
+            mainHandler.post { captureClip() }
         }
     }
 
@@ -43,17 +41,14 @@ class ClipboardHistoryManager(context: Context) {
         return store.getAll()
     }
 
-    private fun captureClip(reason: String) {
+    private fun captureClip() {
         try {
             val text = readPrimaryText() ?: return
             if (text.isBlank()) return
             if (text == lastCaptured) return
             store.add(text)
             lastCaptured = text
-        } catch (e: SecurityException) {
-            Log.w(TAG, "Clipboard read denied ($reason): ${e.message}")
-        } catch (e: Exception) {
-            Log.w(TAG, "Clipboard capture failed ($reason)", e)
+        } catch (_: Exception) {
         }
     }
 
@@ -63,7 +58,4 @@ class ClipboardHistoryManager(context: Context) {
         return clip.getItemAt(0).coerceToText(appContext)?.toString()
     }
 
-    companion object {
-        private const val TAG = "ClipboardHistory"
-    }
 }

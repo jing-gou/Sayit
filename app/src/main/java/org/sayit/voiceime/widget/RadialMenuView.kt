@@ -83,8 +83,7 @@ class RadialMenuView(
             }
             val ringR = (innerRadius - dp(2f)).coerceAtLeast(1f)
             canvas.drawCircle(ballCenterX, ballCenterY, ringR, ringPaint)
-        } catch (e: Exception) {
-            android.util.Log.e("RadialMenu", "onDraw error", e)
+        } catch (_: Exception) {
         }
     }
 
@@ -225,8 +224,7 @@ class RadialMenuView(
                     HAPTIC_CONFIRM -> vibrator.vibrate(VibrationEffect.createOneShot(22, 160))
                 }
             }
-        } catch (e: Exception) {
-            android.util.Log.w("RadialMenu", "haptic failed", e)
+        } catch (_: Exception) {
         }
     }
 

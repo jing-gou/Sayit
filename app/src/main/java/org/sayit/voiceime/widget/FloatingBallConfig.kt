@@ -24,7 +24,6 @@ data class FloatingBallConfig(
     val trailEnabled: Boolean,
     val hapticEnabled: Boolean
 ) {
-    /** Overlay window side length in px (includes glow padding). */
     val overlayWindowSize: Float get() = ballRadius * 2.8f
 
     companion object {

@@ -6,10 +6,6 @@ import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 
-/**
- * Manages overlay windows. The floating ball uses a small dedicated window so it
- * never blocks touches to the underlying app outside the ball bounds.
- */
 class OverlayHelper(private val context: Context) {
 
     private val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager

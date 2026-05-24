@@ -15,7 +15,6 @@ import android.inputmethodservice.InputMethodService
 import android.inputmethodservice.InputMethodService.Insets
 import android.net.Uri
 import android.provider.Settings
-import android.util.Log
 import android.text.InputType
 import android.view.KeyEvent
 import android.view.View
@@ -62,7 +61,6 @@ object ASRConfig {
 
 class VoiceKeyboard : InputMethodService() {
 
-    private val TAG = "VoiceKeyboard"
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     @Volatile private var isListening = false
@@ -82,18 +80,15 @@ class VoiceKeyboard : InputMethodService() {
 
     @Volatile private var resultBuffer = ""
 
-    // Overlay — ball uses a small window; other UI added on demand
     private var overlayHelper: OverlayHelper? = null
     private var ballLayoutParams: WindowManager.LayoutParams? = null
     private var ballAttached = false
     private var screenW = 0
     private var screenH = 0
 
-    // Drag offset (difference between finger and ball center at drag start)
     private var dragOffsetX = 0f
     private var dragOffsetY = 0f
 
-    // Views
     private var floatingBall: FloatingBallView? = null
     private var resultBubble: ResultBubbleView? = null
     private var radialMenu: RadialMenuView? = null
@@ -156,7 +151,6 @@ class VoiceKeyboard : InputMethodService() {
 
     override fun onCreate() {
         super.onCreate()
-        Log.d(TAG, "onCreate called")
         try {
             AppSettings.setup(this)
             okHttpClient = OkHttpClient.Builder()
@@ -187,15 +181,13 @@ class VoiceKeyboard : InputMethodService() {
             if (AppSettings.readOverlayAlways(this)) {
                 mainHandler.post { ensureOverlay() }
             }
-        } catch (e: Exception) {
-            Log.e(TAG, "onCreate error", e)
+        } catch (_: Exception) {
         }
     }
 
     private fun ensureOverlay() {
         if (!Settings.canDrawOverlays(this)) {
             if (floatingBall == null) {
-                Log.w(TAG, "SYSTEM_ALERT_WINDOW not granted, launching settings")
                 try {
                     val intent = android.content.Intent(
                         Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
@@ -203,8 +195,7 @@ class VoiceKeyboard : InputMethodService() {
                     )
                     intent.flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK
                     startActivity(intent)
-                } catch (e: Exception) {
-                    Log.e(TAG, "Failed to launch overlay settings", e)
+                } catch (_: Exception) {
                 }
             }
             return
@@ -217,7 +208,6 @@ class VoiceKeyboard : InputMethodService() {
         return AppSettings.readOverlayAlways(this) || inputViewVisible
     }
 
-    /** Create ball view + layout params without attaching to WindowManager. */
     private fun ensureFloatingBallCreated() {
         if (floatingBall != null) return
         val config = FloatingBallConfig.fromSettings(this)
@@ -237,7 +227,6 @@ class VoiceKeyboard : InputMethodService() {
             }
         }
         ballLayoutParams = OverlayHelper.ballParams(windowSize, windowSize, initX, initY)
-        Log.d(TAG, "Floating ball created (${windowSize}px, radius=${config.ballRadius}px)")
     }
 
     private fun attachFloatingBall() {
@@ -303,8 +292,7 @@ class VoiceKeyboard : InputMethodService() {
             }
 
             applyOverlayPolicy()
-        } catch (e: Exception) {
-            Log.e(TAG, "reloadFloatingBall failed", e)
+        } catch (_: Exception) {
         }
     }
 
@@ -330,7 +318,6 @@ class VoiceKeyboard : InputMethodService() {
 
     override fun onComputeInsets(outInsets: Insets) {
         super.onComputeInsets(outInsets)
-        // Placeholder height already drives visibleTopInsets; don't subtract again
         outInsets.contentTopInsets = outInsets.visibleTopInsets
         outInsets.touchableInsets = Insets.TOUCHABLE_INSETS_CONTENT
         outInsets.touchableRegion.setEmpty()
@@ -373,10 +360,6 @@ class VoiceKeyboard : InputMethodService() {
         currentInputConnection?.commitText(deleted.text, 1)
     }
 
-    /**
-     * Triggers the focused field's editor action (send / go / done).
-     * Falls back to newline only when no editor action is accepted.
-     */
     fun performSendAction(): Boolean {
         val ic = currentInputConnection ?: return false
         val editorInfo = currentInputEditorInfo
@@ -418,7 +401,6 @@ class VoiceKeyboard : InputMethodService() {
         return true
     }
 
-    /** Cancel in-progress voice input and clear ASR composing preview. */
     fun cancelVoiceInput() {
         pendingSendAfterResults = false
         if (!isListening && !recordingActive) return
@@ -466,8 +448,7 @@ class VoiceKeyboard : InputMethodService() {
         floatingBall?.setListeningState(true)
         try {
             connectToASR()
-        } catch (e: Exception) {
-            Log.e(TAG, "Error starting ASR", e)
+        } catch (_: Exception) {
             stopSpeechRecognition()
         }
     }
@@ -476,7 +457,6 @@ class VoiceKeyboard : InputMethodService() {
         if (!isListening && !recordingActive) return
         isListening = false
         floatingBall?.setListeningState(false)
-        // Recording coroutine sends grace-period audio + end packet, then deliverSpeechResults()
     }
 
     private fun deliverSpeechResults() {
@@ -634,8 +614,7 @@ class VoiceKeyboard : InputMethodService() {
             helper.addView(menu, OverlayHelper.fullScreenParams())
             radialMenu = menu
             menu.show()
-        } catch (e: Exception) {
-            Log.e(TAG, "showRadialMenu failed", e)
+        } catch (_: Exception) {
         }
     }
 
@@ -788,8 +767,7 @@ class VoiceKeyboard : InputMethodService() {
 
                 scope.launch {
                     try { startRecording(webSocket) }
-                    catch (e: Exception) {
-                        Log.e(TAG, "Recording failed", e)
+                    catch (_: Exception) {
                         scope.launch(Dispatchers.Main) { abortSpeechRecognition() }
                     }
                 }
@@ -802,7 +780,6 @@ class VoiceKeyboard : InputMethodService() {
             override fun onMessage(webSocket: WebSocket, text: String) {}
 
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-                Log.e(TAG, "WS failed: ${response?.code} ${t.message}")
                 scope.launch(Dispatchers.Main) { abortSpeechRecognition() }
             }
 
@@ -848,7 +825,6 @@ class VoiceKeyboard : InputMethodService() {
                 }
             }
 
-            // Grace period: keep sending audio before end packet
             val graceEnd = System.currentTimeMillis() + RECORDING_GRACE_MS
             while (isActive && System.currentTimeMillis() < graceEnd) {
                 val read = audioRecord?.read(buffer, 0, CHUNK_SIZE) ?: 0
@@ -914,13 +890,6 @@ class VoiceKeyboard : InputMethodService() {
                 processRecognitionJson(json, isLast)
             }
             MSG_ERROR_RESPONSE -> {
-                if (payloadBytes.size >= 8) {
-                    val code    = ByteBuffer.wrap(payloadBytes, 0, 4).order(ByteOrder.BIG_ENDIAN).int
-                    val msgSize = ByteBuffer.wrap(payloadBytes, 4, 4).order(ByteOrder.BIG_ENDIAN).int
-                    val msg     = if (payloadBytes.size >= 8 + msgSize)
-                        String(payloadBytes, 8, msgSize, Charsets.UTF_8) else "?"
-                    Log.e(TAG, "ASR error code=$code msg=$msg")
-                }
                 scope.launch(Dispatchers.Main) { stopSpeechRecognition() }
             }
         }
@@ -949,8 +918,7 @@ class VoiceKeyboard : InputMethodService() {
             if (isLast) {
                 taskFinished = true
             }
-        } catch (e: Exception) {
-            Log.e(TAG, "JSON parse failed: ${e.message}")
+        } catch (_: Exception) {
         }
     }
 

@@ -42,7 +42,7 @@ object AppSettings {
     val llmApiUrl: String get() = getString("llm_api_url", BuildConfig.LLM_API_URL)
     val llmApiKey: String get() = getString("llm_api_key", BuildConfig.LLM_API_KEY)
     val llmModel: String get() = getString("llm_model", BuildConfig.LLM_MODEL)
-    val llmPrompt: String get() = getString("llm_prompt", "你是一个智能助手，请简洁回答用户的问题。回答要准确、有帮助。")
+    val llmPrompt: String get() = getString("llm_prompt", "你是一个智能助手，请简洁回答用户的问题。回答要准确、有帮助，不需要格式化。")
     val translationLang: String get() = getString("translation_lang", "英文")
     val asrApiKey: String get() = getString("asr_api_key", BuildConfig.ASR_API_KEY)
     val asrResourceId: String get() = getString("asr_resource_id", BuildConfig.ASR_RESOURCE_ID)

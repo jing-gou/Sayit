@@ -9,10 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
-/**
- * 用于请求录音权限的 Activity
- * IME Service 无法直接请求权限，需要通过这个辅助页面
- */
 class PermissionActivity : AppCompatActivity() {
 
     companion object {
@@ -43,7 +39,6 @@ class PermissionActivity : AppCompatActivity() {
                 REQUEST_CODE
             )
         } else {
-            // 已有权限
             finish()
         }
     }

@@ -127,11 +127,7 @@ class FloatingBallView(context: Context, initialConfig: FloatingBallConfig) : Vi
         customBitmap = null
         try {
             customBitmap = BitmapFactory.decodeFile(path)
-            if (customBitmap == null) {
-                android.util.Log.w("FloatingBall", "decodeFile returned null: $path")
-            }
-        } catch (e: Exception) {
-            android.util.Log.e("FloatingBall", "Failed to load custom ball image", e)
+        } catch (_: Exception) {
         }
     }
 
@@ -177,8 +173,7 @@ class FloatingBallView(context: Context, initialConfig: FloatingBallConfig) : Vi
             if (config.trailEnabled && gestureState == GestureState.SWIPING_DELETE) {
                 drawGestureTrail(canvas, cx, cy)
             }
-        } catch (e: Exception) {
-            android.util.Log.e("FloatingBall", "onDraw error", e)
+        } catch (_: Exception) {
         }
     }
 
@@ -325,8 +320,7 @@ class FloatingBallView(context: Context, initialConfig: FloatingBallConfig) : Vi
     override fun onTouchEvent(event: MotionEvent): Boolean {
         try {
             return handleTouchEvent(event)
-        } catch (e: Exception) {
-            android.util.Log.e("FloatingBall", "onTouchEvent error", e)
+        } catch (_: Exception) {
             gestureState = GestureState.IDLE
             return true
         }
@@ -544,8 +538,7 @@ class FloatingBallView(context: Context, initialConfig: FloatingBallConfig) : Vi
                 @Suppress("DEPRECATION")
                 vibrator.vibrate(12)
             }
-        } catch (e: Exception) {
-            android.util.Log.w("FloatingBall", "haptic failed", e)
+        } catch (_: Exception) {
         }
     }
 
@@ -584,7 +577,6 @@ class FloatingBallView(context: Context, initialConfig: FloatingBallConfig) : Vi
         breathAnimator.cancel()
         waveAnimator.cancel()
         handler.removeCallbacksAndMessages(null)
-        // Keep customBitmap — view may be re-attached when "input only" mode toggles
     }
 
     companion object {

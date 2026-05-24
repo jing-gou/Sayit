@@ -13,16 +13,12 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 
-/**
- * Full-screen gesture tutorial overlay for the floating ball.
- */
 class GestureGuideView(
     context: Context,
     defaultDontShowAgain: Boolean = true
 ) : FrameLayout(context) {
 
     var onDismiss: (() -> Unit)? = null
-    /** Called when user taps primary button; [dontShowAgain] reflects checkbox state. */
     var onComplete: ((dontShowAgain: Boolean) -> Unit)? = null
 
     private val accentColor = Color.parseColor("#6366F1")
@@ -36,7 +32,7 @@ class GestureGuideView(
     init {
         setBackgroundColor(Color.argb(200, 0, 0, 0))
         isClickable = true
-        setOnClickListener { /* consume backdrop taps */ }
+        setOnClickListener { }
 
         val root = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
@@ -56,7 +52,7 @@ class GestureGuideView(
                 LayoutParams.WRAP_CONTENT
             )
             setPadding(dp(16), dp(16), dp(16), dp(14))
-            setOnClickListener { /* keep taps inside card */ }
+            setOnClickListener { }
         }
 
         card.addView(TextView(context).apply {

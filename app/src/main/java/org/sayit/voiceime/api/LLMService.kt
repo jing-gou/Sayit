@@ -99,7 +99,6 @@ class LLMService(sharedClient: OkHttpClient) {
                         finish()
                     }
                 } catch (_: Exception) {
-                    // Ignore malformed partial chunks
                 }
             }
 
@@ -112,7 +111,6 @@ class LLMService(sharedClient: OkHttpClient) {
             override fun onFailure(eventSource: EventSource, t: Throwable?, response: okhttp3.Response?) {
                 if (completed) return
 
-                // OkHttp reports CANCEL when the stream is closed after normal completion — not a real error
                 val msg = t?.message.orEmpty()
                 if (msg.contains("CANCEL", ignoreCase = true) && fullText.isNotEmpty()) {
                     finish()

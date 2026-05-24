@@ -11,7 +11,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.*
@@ -53,7 +52,6 @@ class SettingsActivity : AppCompatActivity() {
 
     companion object {
         const val PREFS_NAME = AppSettings.PREFS_NAME
-        private const val TAG = "SettingsActivity"
         const val KEY_LLM_API_URL = "llm_api_url"
         const val KEY_LLM_API_KEY = "llm_api_key"
         const val KEY_LLM_MODEL = "llm_model"
@@ -86,7 +84,6 @@ class SettingsActivity : AppCompatActivity() {
             setPadding(dp(16), dp(24), dp(16), dp(32))
         }
 
-        // Header
         root.addView(TextView(this).apply {
             text = "Sayit"
             textSize = 28f
@@ -100,7 +97,6 @@ class SettingsActivity : AppCompatActivity() {
             setPadding(0, dp(4), 0, dp(24))
         })
 
-        // --- Floating Ball ---
         val ballCard = createCard()
         ballCard.addSectionTitle("悬浮球")
 
@@ -174,7 +170,6 @@ class SettingsActivity : AppCompatActivity() {
         })
         root.addView(ballCard)
 
-        // --- LLM ---
         val llmCard = createCard()
         llmCard.addSectionTitle("大模型 (LLM)")
         llmApiUrl = llmCard.addField("API 地址", prefs.getString(KEY_LLM_API_URL, BuildConfig.LLM_API_URL) ?: "")
@@ -187,7 +182,6 @@ class SettingsActivity : AppCompatActivity() {
         )
         root.addView(llmCard)
 
-        // --- ASR ---
         val asrCard = createCard()
         asrCard.addSectionTitle("语音识别 (ASR)")
         asrApiKey = asrCard.addField("API Key", prefs.getString(KEY_ASR_API_KEY, BuildConfig.ASR_API_KEY) ?: "")
@@ -195,7 +189,6 @@ class SettingsActivity : AppCompatActivity() {
         asrWsUrl = asrCard.addField("WebSocket URL", prefs.getString(KEY_ASR_WS_URL, BuildConfig.ASR_WS_URL) ?: "")
         root.addView(asrCard)
 
-        // --- Language ---
         val langCard = createCard()
         langCard.addSectionTitle("语言设置")
         langCard.addFieldLabel("翻译目标语种")
@@ -224,7 +217,6 @@ class SettingsActivity : AppCompatActivity() {
         langCard.addView(asrLanguage)
         root.addView(langCard)
 
-        // Save button
         root.addView(TextView(this).apply {
             text = "保存设置"
             textSize = 16f
@@ -300,7 +292,6 @@ class SettingsActivity : AppCompatActivity() {
                 Intent.FLAG_GRANT_READ_URI_PERMISSION
             )
         } catch (_: Exception) {
-            // Some providers don't support persistable grants
         }
 
         val path = copyImageToInternal(uri)
@@ -320,17 +311,10 @@ class SettingsActivity : AppCompatActivity() {
             val dest = java.io.File(filesDir, "custom_ball.jpg")
             contentResolver.openInputStream(uri)?.use { input ->
                 dest.outputStream().use { output -> input.copyTo(output) }
-            } ?: run {
-                Log.e(TAG, "openInputStream returned null for $uri")
-                return null
-            }
-            if (!dest.exists() || dest.length() == 0L) {
-                Log.e(TAG, "dest file empty: ${dest.absolutePath}")
-                return null
-            }
+            } ?: return null
+            if (!dest.exists() || dest.length() == 0L) return null
             dest.absolutePath
-        } catch (e: Exception) {
-            Log.e(TAG, "copyImageToInternal failed", e)
+        } catch (_: Exception) {
             null
         }
     }
