@@ -18,6 +18,7 @@ import kotlin.math.*
 interface FloatingBallListener {
     fun onGestureAction(action: GestureAction)
     fun onVoiceStateChanged(isListening: Boolean)
+    fun onTap() {}
 }
 
 class FloatingBallView(context: Context, val config: FloatingBallConfig) : View(context) {
@@ -41,6 +42,7 @@ class FloatingBallView(context: Context, val config: FloatingBallConfig) : View(
 
     private var isListening = false
     private var hasMovedDuringDrag = false
+    private var pressStartTime = 0L
 
     private var trailPath = Path()
     private val trailPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -246,6 +248,7 @@ class FloatingBallView(context: Context, val config: FloatingBallConfig) : View(
                     fingerY = event.rawY
                     gestureState = GestureState.PRESSING
                     hasMovedDuringDrag = false
+                    pressStartTime = android.os.SystemClock.uptimeMillis()
 
                     longPressRunnable = Runnable {
                         try {
@@ -302,8 +305,8 @@ class FloatingBallView(context: Context, val config: FloatingBallConfig) : View(
                         }
 
                         GestureState.SWIPING_DELETE -> {
-                            val progress = calculateDeleteProgress(dx, dy)
-                            listener?.onGestureAction(GestureAction.SwipeProgress(Direction.LEFT, progress))
+                            // Pass raw dx: negative=left(delete), positive=right(restore)
+                            listener?.onGestureAction(GestureAction.SwipeProgress(Direction.LEFT, dx))
                         }
 
                         GestureState.SWIPING_GESTURE -> {
@@ -341,6 +344,11 @@ class FloatingBallView(context: Context, val config: FloatingBallConfig) : View(
                         }
                         GestureState.PRESSING -> {
                             try { performHaptic(HAPTIC_TAP) } catch (_: Throwable) {}
+                            // Single tap detection: short press, no movement
+                            val elapsed = android.os.SystemClock.uptimeMillis() - pressStartTime
+                            if (elapsed < 200) {
+                                listener?.onTap()
+                            }
                         }
                         else -> {}
                     }

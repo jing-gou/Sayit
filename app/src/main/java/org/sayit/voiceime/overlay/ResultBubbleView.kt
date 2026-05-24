@@ -116,8 +116,6 @@ class ResultBubbleView(context: Context) : FrameLayout(context) {
         alpha = 0f
         animate().alpha(1f).setDuration(200).start()
 
-        insertButton.setOnClickListener { }
-        copyButton.setOnClickListener { }
         dismissButton.setOnClickListener { dismiss() }
     }
 
@@ -127,9 +125,28 @@ class ResultBubbleView(context: Context) : FrameLayout(context) {
             scrollView.visibility = View.VISIBLE
             insertButton.isEnabled = true
             copyButton.isEnabled = true
+            wireUpButtons()
         }
         resultText.append(delta)
         scrollView.post { scrollView.fullScroll(View.FOCUS_DOWN) }
+    }
+
+    fun finalizeResult() {
+        wireUpButtons()
+    }
+
+    private fun wireUpButtons() {
+        insertButton.setOnClickListener {
+            onInsert?.invoke(resultText.text.toString())
+            dismiss()
+        }
+        copyButton.setOnClickListener {
+            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as? android.content.ClipboardManager
+            val clip = android.content.ClipData.newPlainText("sayit_result", resultText.text.toString())
+            clipboard?.setPrimaryClip(clip)
+            dismiss()
+        }
+        dismissButton.setOnClickListener { dismiss() }
     }
 
     fun show(result: String, anchorView: View) {

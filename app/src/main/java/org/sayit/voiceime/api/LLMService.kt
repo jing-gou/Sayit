@@ -12,7 +12,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.sse.EventSource
 import okhttp3.sse.EventSourceListener
 import okhttp3.sse.EventSources
-import org.sayit.voiceime.BuildConfig
+import org.sayit.voiceime.AppSettings
 
 interface StreamCallback {
     fun onStart() {}
@@ -24,12 +24,13 @@ interface StreamCallback {
 class LLMService(private val client: OkHttpClient) {
 
     private val gson = Gson()
-    private val apiUrl = BuildConfig.LLM_API_URL
-    private val apiKey = BuildConfig.LLM_API_KEY
+    private val apiUrl get() = AppSettings.llmApiUrl
+    private val apiKey get() = AppSettings.llmApiKey
+    private val model get() = AppSettings.llmModel
 
     fun askStreaming(question: String, callback: StreamCallback) {
         val body = buildRequestBody(
-            systemPrompt = "你是一个智能助手，请简洁回答用户的问题。回答要准确、有帮助。",
+            systemPrompt = AppSettings.llmPrompt,
             userMessage = question,
             stream = true
         )
@@ -81,7 +82,7 @@ class LLMService(private val client: OkHttpClient) {
         })
     }
 
-    fun translateStreaming(text: String, targetLang: String = "英文", callback: StreamCallback) {
+    fun translateStreaming(text: String, targetLang: String = AppSettings.translationLang, callback: StreamCallback) {
         val body = buildRequestBody(
             systemPrompt = "你是一个专业的翻译助手。请将用户输入的文本翻译成$targetLang。只输出翻译结果，不要添加任何解释。",
             userMessage = text,
@@ -136,7 +137,7 @@ class LLMService(private val client: OkHttpClient) {
 
     private fun buildRequestBody(systemPrompt: String, userMessage: String, stream: Boolean = false): okhttp3.RequestBody {
         val json = JsonObject().apply {
-            addProperty("model", BuildConfig.LLM_MODEL)
+            addProperty("model", model)
             addProperty("max_completion_tokens", 1024)
             addProperty("stream", stream)
 
