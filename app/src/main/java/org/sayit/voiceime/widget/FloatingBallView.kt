@@ -10,9 +10,6 @@ import android.os.Vibrator
 import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
-import android.view.animation.OvershootInterpolator
-import androidx.dynamicanimation.animation.SpringAnimation
-import androidx.dynamicanimation.animation.SpringForce
 import org.sayit.voiceime.gesture.Direction
 import org.sayit.voiceime.gesture.GestureAction
 import org.sayit.voiceime.gesture.GestureState
@@ -385,25 +382,6 @@ class FloatingBallView(context: Context, val config: FloatingBallConfig) : View(
         }
         val maxDistance = config.gestureThreshold * 8f
         return (distance / maxDistance).coerceIn(0f, 1f)
-    }
-
-    fun snapToEdge() {
-        if (!config.edgeSnapEnabled) return
-
-        val parent = parent as? android.view.ViewGroup ?: return
-        val targetX = if (x < parent.width / 2f) 0f else (parent.width - width).toFloat()
-
-        SpringAnimation(this, SpringAnimation.X, targetX).apply {
-            spring.stiffness = SpringForce.STIFFNESS_MEDIUM
-            spring.dampingRatio = SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY
-            start()
-        }
-
-        SpringAnimation(this, SpringAnimation.Y, y.coerceIn(0f, (parent.height - height).toFloat())).apply {
-            spring.stiffness = SpringForce.STIFFNESS_MEDIUM
-            spring.dampingRatio = SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY
-            start()
-        }
     }
 
     private fun performHaptic(type: Int) {

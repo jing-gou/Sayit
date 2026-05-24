@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.ScrollView
 import android.widget.TextView
 import android.view.animation.OvershootInterpolator
@@ -20,6 +21,7 @@ class ResultBubbleView(context: Context) : FrameLayout(context) {
     private val insertButton: Button
     private val copyButton: Button
     private val dismissButton: Button
+    private val loadingIndicator: ProgressBar
 
     var onInsert: ((String) -> Unit)? = null
     var onDismiss: (() -> Unit)? = null
@@ -33,10 +35,19 @@ class ResultBubbleView(context: Context) : FrameLayout(context) {
             layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
         }
 
+        loadingIndicator = ProgressBar(context).apply {
+            isIndeterminate = true
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { gravity = Gravity.CENTER }
+            visibility = View.GONE
+        }
+
         resultText = TextView(context).apply {
             setTextColor(Color.WHITE)
             textSize = 14f
-            maxLines = 6
+            maxLines = 10
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -46,7 +57,7 @@ class ResultBubbleView(context: Context) : FrameLayout(context) {
         scrollView = ScrollView(context).apply {
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                dp(120f)
+                dp(180f)
             )
             addView(resultText)
         }
@@ -69,6 +80,7 @@ class ResultBubbleView(context: Context) : FrameLayout(context) {
         buttonBar.addView(copyButton)
         buttonBar.addView(dismissButton)
 
+        mainLayout.addView(loadingIndicator)
         mainLayout.addView(scrollView)
         mainLayout.addView(buttonBar)
 
@@ -92,16 +104,42 @@ class ResultBubbleView(context: Context) : FrameLayout(context) {
         }
     }
 
+    fun showLoading(anchorView: View) {
+        resultText.text = ""
+        loadingIndicator.visibility = View.VISIBLE
+        scrollView.visibility = View.GONE
+        insertButton.isEnabled = false
+        copyButton.isEnabled = false
+
+        positionRelativeTo(anchorView)
+        visibility = View.VISIBLE
+        alpha = 0f
+        animate().alpha(1f).setDuration(200).start()
+
+        insertButton.setOnClickListener { }
+        copyButton.setOnClickListener { }
+        dismissButton.setOnClickListener { dismiss() }
+    }
+
+    fun appendText(delta: String) {
+        if (loadingIndicator.visibility == View.VISIBLE) {
+            loadingIndicator.visibility = View.GONE
+            scrollView.visibility = View.VISIBLE
+            insertButton.isEnabled = true
+            copyButton.isEnabled = true
+        }
+        resultText.append(delta)
+        scrollView.post { scrollView.fullScroll(View.FOCUS_DOWN) }
+    }
+
     fun show(result: String, anchorView: View) {
         resultText.text = result
+        loadingIndicator.visibility = View.GONE
+        scrollView.visibility = View.VISIBLE
+        insertButton.isEnabled = true
+        copyButton.isEnabled = true
 
-        val params = layoutParams as? FrameLayout.LayoutParams ?: FrameLayout.LayoutParams(
-            FrameLayout.LayoutParams.MATCH_PARENT,
-            FrameLayout.LayoutParams.WRAP_CONTENT
-        )
-        params.gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
-        params.topMargin = anchorView.bottom + dp(16f)
-        layoutParams = params
+        positionRelativeTo(anchorView)
 
         visibility = View.VISIBLE
         alpha = 0f
@@ -116,13 +154,13 @@ class ResultBubbleView(context: Context) : FrameLayout(context) {
             .start()
 
         insertButton.setOnClickListener {
-            onInsert?.invoke(result)
+            onInsert?.invoke(resultText.text.toString())
             dismiss()
         }
 
         copyButton.setOnClickListener {
             val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as? android.content.ClipboardManager
-            val clip = android.content.ClipData.newPlainText("sayit_result", result)
+            val clip = android.content.ClipData.newPlainText("sayit_result", resultText.text.toString())
             clipboard?.setPrimaryClip(clip)
             dismiss()
         }
@@ -130,6 +168,25 @@ class ResultBubbleView(context: Context) : FrameLayout(context) {
         dismissButton.setOnClickListener {
             dismiss()
         }
+    }
+
+    private fun positionRelativeTo(anchorView: View) {
+        val container = parent as? FrameLayout ?: return
+        val params = layoutParams as? FrameLayout.LayoutParams
+            ?: FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT
+            )
+
+        val ballCenterX = anchorView.x + anchorView.width / 2
+        val bubbleWidth = dp(300f)
+
+        params.gravity = Gravity.TOP or Gravity.START
+        params.topMargin = (anchorView.y + anchorView.height + dp(8f)).toInt()
+        params.marginStart = (ballCenterX - bubbleWidth / 2).toInt()
+            .coerceIn(0, (container.width - bubbleWidth).coerceAtLeast(0))
+
+        layoutParams = params
     }
 
     fun dismiss() {

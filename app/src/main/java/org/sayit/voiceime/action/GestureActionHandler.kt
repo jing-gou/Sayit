@@ -101,7 +101,6 @@ class GestureActionHandler(private val ime: VoiceKeyboard) {
 
             is GestureAction.DragEnd -> {
                 isDragging = false
-                ime.snapFloatingBallToEdge()
             }
 
             is GestureAction.None -> {}
