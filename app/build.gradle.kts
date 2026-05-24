@@ -3,6 +3,8 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
+import java.util.Properties
+
 android {
     namespace = "org.sayit.voiceime"
     compileSdk = 34
@@ -14,15 +16,19 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        // 从 local.properties 读取 ASR 配置
-        val asrAppId = project.findProperty("asr.app_id") as? String ?: ""
-        val asrKeyId = project.findProperty("asr.access_key_id") as? String ?: ""
-        val asrKeySecret = project.findProperty("asr.access_key_secret") as? String ?: ""
-        val asrWsUrl = project.findProperty("asr.ws_url") as? String ?: ""
+        // 从 local.properties 读取 ASR 配置（火山引擎新版本控制台）
+        val localProperties = Properties()
+        val localPropertiesFile = rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+            localProperties.load(localPropertiesFile.inputStream())
+        }
 
-        buildConfigField("String", "ASR_APP_ID", "\"$asrAppId\"")
-        buildConfigField("String", "ASR_ACCESS_KEY_ID", "\"$asrKeyId\"")
-        buildConfigField("String", "ASR_ACCESS_KEY_SECRET", "\"$asrKeySecret\"")
+        val asrApiKey = localProperties.getProperty("asr.api_key") ?: ""
+        val asrResourceId = localProperties.getProperty("asr.resource_id") ?: ""
+        val asrWsUrl = localProperties.getProperty("asr.ws_url") ?: ""
+
+        buildConfigField("String", "ASR_API_KEY", "\"$asrApiKey\"")
+        buildConfigField("String", "ASR_RESOURCE_ID", "\"$asrResourceId\"")
         buildConfigField("String", "ASR_WS_URL", "\"$asrWsUrl\"")
     }
 
