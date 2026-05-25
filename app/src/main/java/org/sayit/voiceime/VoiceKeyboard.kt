@@ -17,11 +17,14 @@ import android.net.Uri
 import android.provider.Settings
 import android.util.Log
 import android.text.InputType
+import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.View.MeasureSpec
 import android.view.WindowManager
+import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import kotlinx.coroutines.*
 import okhttp3.*
@@ -73,8 +76,10 @@ class VoiceKeyboard : InputMethodService() {
     @Volatile private var pendingSendAfterResults = false
     private var inputViewVisible = false
 
+    /** IME input view root; symbol panel is embedded here (not overlay). */
+    private var inputViewRoot: FrameLayout? = null
+    /** Overlay clipboard panel still reports height for IME inset. */
     private var symbolPanelInsetHeight = 0
-    private var inputPlaceholder: View? = null
 
     private var audioRecord: AudioRecord? = null
     private var webSocket: WebSocket? = null
@@ -316,35 +321,38 @@ class VoiceKeyboard : InputMethodService() {
     private fun ballSize(): Int = floatingBall?.width?.coerceAtLeast(1) ?: 1
 
     override fun onCreateInputView(): View {
-        val placeholder = object : View(this) {
-            override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-                val w = MeasureSpec.getSize(widthMeasureSpec)
-                setMeasuredDimension(w, symbolPanelInsetHeight)
-            }
+        return FrameLayout(this).apply {
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            inputViewRoot = this
         }
-        inputPlaceholder = placeholder
-        return placeholder
     }
 
     override fun onEvaluateFullscreenMode(): Boolean = false
 
     override fun onComputeInsets(outInsets: Insets) {
         super.onComputeInsets(outInsets)
-        val inset = symbolPanelInsetHeight.coerceAtLeast(0)
-        if (inset > 0) {
-            outInsets.contentTopInsets = inset
-            outInsets.visibleTopInsets = inset
-        }
+        val inset = outInsets.visibleTopInsets.coerceAtLeast(symbolPanelInsetHeight)
+        outInsets.contentTopInsets = inset
+        outInsets.visibleTopInsets = inset
         outInsets.touchableInsets = Insets.TOUCHABLE_INSETS_CONTENT
         outInsets.touchableRegion.setEmpty()
     }
 
-    private fun updateSymbolPanelInset(heightPx: Int) {
+    private fun refreshInputViewLayout() {
+        inputViewRoot?.requestLayout()
+        updateInputViewShown()
+        window?.window?.decorView?.requestApplyInsets()
+    }
+
+    /** Clipboard overlay uses manual inset; symbol panel uses embedded input view height. */
+    private fun updateOverlayPanelInset(heightPx: Int) {
         val next = heightPx.coerceAtLeast(0)
         if (next == symbolPanelInsetHeight) return
         symbolPanelInsetHeight = next
-        inputPlaceholder?.requestLayout()
-        updateInputViewShown()
+        refreshInputViewLayout()
     }
 
     fun isCurrentlyListening(): Boolean = isListening
@@ -682,7 +690,7 @@ class VoiceKeyboard : InputMethodService() {
                 dismissClipboardPanel()
             }
             onDismiss = { dismissClipboardPanel() }
-            onPanelHeightChanged = { height -> updateSymbolPanelInset(height) }
+            onPanelHeightChanged = { height -> updateOverlayPanelInset(height) }
         }
         history.captureNow()
         panel.setEntries(history.getEntries())
@@ -692,41 +700,41 @@ class VoiceKeyboard : InputMethodService() {
     }
 
     private fun dismissClipboardPanel() {
-        updateSymbolPanelInset(0)
+        updateOverlayPanelInset(0)
         clipboardPanel?.let { overlayHelper?.removeView(it) }
         clipboardPanel = null
     }
 
     private fun showSymbolPanel() {
-        val helper = overlayHelper ?: return
+        val root = inputViewRoot ?: return
         dismissClipboardPanel()
         dismissSymbolPanel()
 
-        val panel = SymbolPanelView(applicationContext).apply {
+        val panel = SymbolPanelView(this).apply {
+            layoutParams = FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                Gravity.BOTTOM
+            )
             onSymbolSelected = { sym ->
                 currentInputConnection?.commitText(sym, 1)
             }
             onBackspace = {
                 currentInputConnection?.deleteSurroundingText(1, 0)
             }
-            onDismiss = {
-                dismissSymbolPanel()
-            }
-            onPanelHeightChanged = { height ->
-                updateSymbolPanelInset(height)
-            }
+            onDismiss = { dismissSymbolPanel() }
+            onLayoutChanged = { refreshInputViewLayout() }
         }
-        helper.addView(panel, OverlayHelper.bottomPanelParams())
+        root.addView(panel)
         symbolPanel = panel
         panel.show()
+        refreshInputViewLayout()
     }
 
     private fun dismissSymbolPanel() {
-        updateSymbolPanelInset(0)
-        symbolPanel?.let {
-            overlayHelper?.removeView(it)
-        }
+        symbolPanel?.let { inputViewRoot?.removeView(it) }
         symbolPanel = null
+        refreshInputViewLayout()
     }
 
     private fun showGestureGuide(autoPrompt: Boolean = false) {

@@ -1,0 +1,34 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="org.sayit.voiceime.test" >
+4
+5    <uses-sdk
+5-->F:\Sayit\SayitVoiceIME\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest1195728646413918077.xml:5:5-74
+6        android:minSdkVersion="26"
+6-->F:\Sayit\SayitVoiceIME\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest1195728646413918077.xml:5:15-41
+7        android:targetSdkVersion="34" />
+7-->F:\Sayit\SayitVoiceIME\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest1195728646413918077.xml:5:42-71
+8
+9    <instrumentation
+9-->F:\Sayit\SayitVoiceIME\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest1195728646413918077.xml:11:5-15:68
+10        android:name="android.test.InstrumentationTestRunner"
+10-->F:\Sayit\SayitVoiceIME\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest1195728646413918077.xml:11:22-75
+11        android:functionalTest="false"
+11-->F:\Sayit\SayitVoiceIME\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest1195728646413918077.xml:14:22-52
+12        android:handleProfiling="false"
+12-->F:\Sayit\SayitVoiceIME\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest1195728646413918077.xml:13:22-53
+13        android:label="Tests for org.sayit.voiceime"
+13-->F:\Sayit\SayitVoiceIME\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest1195728646413918077.xml:15:22-66
+14        android:targetPackage="org.sayit.voiceime" />
+14-->F:\Sayit\SayitVoiceIME\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest1195728646413918077.xml:12:22-64
+15
+16    <application
+16-->F:\Sayit\SayitVoiceIME\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest1195728646413918077.xml:7:5-9:19
+17        android:debuggable="true"
+18        android:extractNativeLibs="false" >
+19        <uses-library android:name="android.test.runner" />
+19-->F:\Sayit\SayitVoiceIME\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest1195728646413918077.xml:8:9-60
+19-->F:\Sayit\SayitVoiceIME\app\build\intermediates\tmp\manifest\androidTest\debug\tempFile1ProcessTestManifest1195728646413918077.xml:8:23-57
+20    </application>
+21
+22</manifest>

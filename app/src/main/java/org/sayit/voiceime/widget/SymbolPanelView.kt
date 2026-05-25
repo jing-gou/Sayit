@@ -18,7 +18,10 @@ class SymbolPanelView(context: Context) : FrameLayout(context) {
     var onSymbolSelected: ((String) -> Unit)? = null
     var onBackspace: (() -> Unit)? = null
     var onDismiss: (() -> Unit)? = null
+    /** Overlay mode (e.g. clipboard) — pushes IME inset by reported height. */
     var onPanelHeightChanged: ((Int) -> Unit)? = null
+    /** Embedded in IME input view — parent relayout picks up height. */
+    var onLayoutChanged: (() -> Unit)? = null
 
     private val tabNames = listOf("字母", "数字", "符号", "标点", "Emoji")
     private var currentTab = 0
@@ -27,10 +30,21 @@ class SymbolPanelView(context: Context) : FrameLayout(context) {
     private lateinit var contentLayout: LinearLayout
     private lateinit var contentScroll: ScrollView
     private lateinit var mainLayout: LinearLayout
-    /** Max height of the scrollable key area (emoji/symbol grids). */
-    private val maxContentHeightPx: Int
-    /** Max total panel height reported to IME inset (header + tabs + content + bottom bar). */
+    /** Letter tab: 3 rows, no scroll. */
+    private val letterContentHeightPx: Int
+    /** Number tab: 3×4 grid, no scroll. */
+    private val numberPadContentHeightPx: Int
+    /** Symbol / punctuation / emoji: scroll when taller than this. */
+    private val scrollableMaxContentHeightPx: Int
+    /** Max total panel height (overlay mode). */
     private val maxPanelHeightPx: Int
+
+    private companion object {
+        private const val TAB_LETTER = 0
+        private const val TAB_NUMBER = 1
+        private const val NUMBER_COLUMNS = 3
+        private const val NUMBER_ROWS = 4
+    }
     private var shiftButton: TextView? = null
     private val backspaceHandler = Handler(Looper.getMainLooper())
     private var backspaceRepeatRunnable: Runnable? = null
@@ -101,8 +115,17 @@ class SymbolPanelView(context: Context) : FrameLayout(context) {
 
     init {
         val screenH = resources.displayMetrics.heightPixels
-        maxContentHeightPx = minOf(dp(200), (screenH * 0.26f).toInt())
-        maxPanelHeightPx = minOf(dp(280), (screenH * 0.30f).toInt())
+        val keyVMargin = dp(6) // GridLayout top+bottom margin per key (3+3)
+        val numberKeyH = dp(44)
+        val letterKeyH = dp(42)
+        numberPadContentHeightPx = NUMBER_ROWS * (numberKeyH + keyVMargin)
+        letterContentHeightPx = 3 * (letterKeyH + keyVMargin) + 2 * dp(3)
+        scrollableMaxContentHeightPx = minOf(dp(168), (screenH * 0.22f).toInt())
+        val chromeEstimatePx = dp(10 + 10) + dp(40) + dp(36) + dp(8 + 44) // padding, header, tabs, bottom bar
+        maxPanelHeightPx = minOf(
+            (screenH * 0.42f).toInt(),
+            chromeEstimatePx + maxOf(numberPadContentHeightPx, letterContentHeightPx, scrollableMaxContentHeightPx)
+        )
         background = roundedBg(surfaceColor, dp(16), dp(16), 0, 0)
         setPadding(dp(12), dp(10), dp(12), dp(10))
         elevation = dp(8).toFloat()
@@ -261,6 +284,14 @@ class SymbolPanelView(context: Context) : FrameLayout(context) {
         updateContentScrollHeight()
     }
 
+    private fun contentHeightForTab(tab: Int, measuredContentH: Int): Int {
+        return when (tab) {
+            TAB_LETTER -> maxOf(measuredContentH, letterContentHeightPx)
+            TAB_NUMBER -> maxOf(measuredContentH, numberPadContentHeightPx)
+            else -> measuredContentH.coerceAtMost(scrollableMaxContentHeightPx)
+        }
+    }
+
     private fun updateContentScrollHeight() {
         contentLayout.post {
             val width = contentLayout.width.takeIf { it > 0 }
@@ -269,25 +300,30 @@ class SymbolPanelView(context: Context) : FrameLayout(context) {
             val hSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
             contentLayout.measure(wSpec, hSpec)
             val contentH = contentLayout.measuredHeight.coerceAtLeast(0)
-            val scrollH = contentH.coerceAtMost(maxContentHeightPx)
+            val targetH = contentHeightForTab(currentTab, contentH)
 
             val params = contentScroll.layoutParams as LinearLayout.LayoutParams
-            params.height = if (scrollH > 0) scrollH else LinearLayout.LayoutParams.WRAP_CONTENT
+            params.height = if (targetH > 0) targetH else LinearLayout.LayoutParams.WRAP_CONTENT
             contentScroll.layoutParams = params
+            contentScroll.isVerticalScrollBarEnabled = currentTab != TAB_NUMBER && currentTab != TAB_LETTER
+            if (currentTab == TAB_NUMBER || currentTab == TAB_LETTER) {
+                contentScroll.scrollTo(0, 0)
+            }
             contentScroll.requestLayout()
-            mainLayout.post { notifyHeightChanged() }
+            mainLayout.post { requestLayoutChanged() }
         }
     }
 
     private fun showNumberPad() {
         val grid = GridLayout(context).apply {
-            columnCount = 3
+            columnCount = NUMBER_COLUMNS
+            rowCount = NUMBER_ROWS
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             )
         }
-        numberKeys.forEach { key -> grid.addView(createKeyButton(key, isWide = true)) }
+        numberKeys.forEach { key -> grid.addView(createKeyButton(key, isWide = true, numberKey = true)) }
         contentLayout.addView(grid)
     }
 
@@ -299,7 +335,7 @@ class SymbolPanelView(context: Context) : FrameLayout(context) {
                 LinearLayout.LayoutParams.WRAP_CONTENT
             )
         }
-        keys.forEach { key -> grid.addView(createKeyButton(key, isWide = false)) }
+        keys.forEach { key -> grid.addView(createKeyButton(key, fillColumn = true)) }
         contentLayout.addView(grid)
     }
 
@@ -326,14 +362,25 @@ class SymbolPanelView(context: Context) : FrameLayout(context) {
         contentLayout.addView(kbLayout)
     }
 
-    private fun createKeyButton(key: String, isWide: Boolean, letterKey: Boolean = false): TextView {
+    private fun createKeyButton(
+        key: String,
+        isWide: Boolean = false,
+        letterKey: Boolean = false,
+        numberKey: Boolean = false,
+        fillColumn: Boolean = false
+    ): TextView {
         val label = if (key == "␣") "␣" else key
+        val expandColumn = isWide || numberKey || fillColumn
         val keyW = when {
-            isWide -> 0
+            expandColumn -> 0
             letterKey -> dp(34)
             else -> dp(44)
         }
-        val keyH = if (letterKey) dp(42) else dp(44)
+        val keyH = when {
+            letterKey -> dp(42)
+            numberKey -> dp(44)
+            else -> dp(44)
+        }
         return TextView(context).apply {
             text = label
             textSize = when {
@@ -348,7 +395,9 @@ class SymbolPanelView(context: Context) : FrameLayout(context) {
             layoutParams = GridLayout.LayoutParams().apply {
                 width = keyW
                 height = keyH
-                if (isWide) columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1, 1f)
+                if (expandColumn) {
+                    columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1, 1f)
+                }
                 setMargins(dp(3), dp(3), dp(3), dp(3))
             }
             setOnClickListener {
@@ -417,18 +466,24 @@ class SymbolPanelView(context: Context) : FrameLayout(context) {
         }
     }
 
-    private fun notifyHeightChanged() {
+    private fun requestLayoutChanged() {
         if (visibility != View.VISIBLE) {
             onPanelHeightChanged?.invoke(0)
+            onLayoutChanged?.invoke()
             return
         }
-        val width = resources.displayMetrics.widthPixels
-        val wSpec = MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY)
-        val hSpec = MeasureSpec.makeMeasureSpec(maxPanelHeightPx, MeasureSpec.AT_MOST)
-        mainLayout.measure(wSpec, hSpec)
-        val measured = mainLayout.measuredHeight + paddingTop + paddingBottom
-        if (measured <= 0) return
-        onPanelHeightChanged?.invoke(measured.coerceAtMost(maxPanelHeightPx))
+        if (onPanelHeightChanged != null) {
+            val width = resources.displayMetrics.widthPixels
+            val wSpec = MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY)
+            val hSpec = MeasureSpec.makeMeasureSpec(maxPanelHeightPx, MeasureSpec.AT_MOST)
+            mainLayout.measure(wSpec, hSpec)
+            val measured = mainLayout.measuredHeight + paddingTop + paddingBottom
+            if (measured > 0) {
+                onPanelHeightChanged?.invoke(measured.coerceAtMost(maxPanelHeightPx))
+            }
+        }
+        requestLayout()
+        onLayoutChanged?.invoke()
     }
 
     private fun scheduleHeightUpdate() {
@@ -446,13 +501,14 @@ class SymbolPanelView(context: Context) : FrameLayout(context) {
         translationY = dp(40).toFloat()
         scheduleHeightUpdate()
         animate().alpha(1f).translationY(0f).setDuration(200).withEndAction {
-            notifyHeightChanged()
+            requestLayoutChanged()
         }.start()
     }
 
     fun dismiss() {
         stopBackspaceRepeat()
         onPanelHeightChanged?.invoke(0)
+        onLayoutChanged?.invoke()
         animate().alpha(0f).translationY(dp(40).toFloat()).setDuration(150).withEndAction {
             visibility = View.GONE
             onDismiss?.invoke()
