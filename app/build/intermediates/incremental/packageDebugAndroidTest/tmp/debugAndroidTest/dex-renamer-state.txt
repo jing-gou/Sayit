@@ -1,0 +1,7 @@
+#Mon May 25 02:13:02 CST 2026
+base.0=F\:\\Sayit\\SayitVoiceIME\\app\\build\\intermediates\\dex\\debugAndroidTest\\mergeProjectDexDebugAndroidTest\\0\\classes.dex
+base.1=F\:\\Sayit\\SayitVoiceIME\\app\\build\\intermediates\\dex\\debugAndroidTest\\mergeProjectDexDebugAndroidTest\\11\\classes.dex
+path.0=0/classes.dex
+path.1=11/classes.dex
+renamed.0=classes.dex
+renamed.1=classes2.dex

@@ -1,0 +1,5 @@
+org.sayit.voiceime.test.app-androidTest-0 F:\Sayit\SayitVoiceIME\app\build\generated\res\resValues\androidTest\debug
+org.sayit.voiceime.test.app-updated_navigation_xml-1 F:\Sayit\SayitVoiceIME\app\build\generated\updated_navigation_xml\debugAndroidTest
+org.sayit.voiceime.test.app-mergeDebugAndroidTestResources-2 F:\Sayit\SayitVoiceIME\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
+org.sayit.voiceime.test.app-mergeDebugAndroidTestResources-3 F:\Sayit\SayitVoiceIME\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
+org.sayit.voiceime.test.app-debugAndroidTest-4 F:\Sayit\SayitVoiceIME\app\build\intermediates\merged_res\debugAndroidTest\mergeDebugAndroidTestResources

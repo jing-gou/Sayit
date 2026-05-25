@@ -1,9 +1,15 @@
-# SayitVoiceIME
+# Sayit 你说
 
 基于 Android `InputMethodService` 的**语音输入法**：以系统悬浮窗悬浮球为交互核心，结合流式语音识别（ASR）与大模型（LLM），在任意应用的输入框中完成听写、翻译、问答与快捷编辑。
 
 ---
+## Demo视频
 
+### 哔哩哔哩
+https://www.bilibili.com/video/BV1sDGx67Ejv/
+
+
+---
 ## 第三方库与依赖
 
 ### Maven 依赖（`app/build.gradle.kts`）
@@ -35,7 +41,7 @@
 | 服务 | 说明 | 典型配置项 |
 |------|------|------------|
 | **火山引擎 / 字节跳动流式 ASR** | WebSocket 实时语音识别 | `asr.api_key`、`asr.resource_id`、`asr.ws_url` |
-| **兼容 OpenAI Chat Completions 的 LLM API** | 流式问答、翻译（默认豆包等） | `llm.api_key`、`llm.api_url`、`llm.model` |
+| **兼容 OpenAI Chat Completions 的 LLM API** | 流式问答、翻译（默认XiaomiMIMO） | `llm.api_key`、`llm.api_url`、`llm.model` |
 
 示例 ASR 端点见 [`TEST_GUIDE.md`](TEST_GUIDE.md)（如 `wss://openspeech.bytedance.com/api/v3/sauc/bigmodel_async`）。
 
@@ -199,13 +205,33 @@ Windows PowerShell：
 
 ---
 
-## 相关文档
+## 从一张 PNG 生成各规格启动图标
 
-- [`TEST_GUIDE.md`](TEST_GUIDE.md) — ASR 连接、日志与常见问题  
-- [`docs/PR_DESCRIPTIONS.md`](docs/PR_DESCRIPTIONS.md) — 功能分 PR 说明（若参与赛制提交）  
+**方式 A — 脚本（推荐，一条命令）**
+
+准备正方形 PNG（建议 ≥1024×1024，主体在画面中心）。在项目根目录执行：
+
+```powershell
+.\scripts\generate-launcher-icons.ps1 -Source "你的图标.png"
+```
+
+会写入 `app/src/main/res/mipmap-{mdpi,hdpi,xhdpi,xxhdpi,xxxhdpi}/` 下的 `ic_launcher.png`（方图）与 `ic_launcher_round.png`（圆形裁剪）。然后重新编译安装即可。
+
+| 目录 | 边长 (px) |
+|------|-----------|
+| mipmap-mdpi | 48 |
+| mipmap-hdpi | 72 |
+| mipmap-xhdpi | 96 |
+| mipmap-xxhdpi | 144 |
+| mipmap-xxxhdpi | 192 |
+
+**方式 B — Android Studio**
+
+`File` → `New` → `Image Asset` → **Launcher Icons (Adaptive and Legacy)** → 选你的 PNG → Next → Finish。会自动生成 mipmaps 与 adaptive 资源。
+
+当前 `AndroidManifest.xml` 使用 `@mipmap/ic_launcher` 与 `@mipmap/ic_launcher_round`，与上述输出一致。
 
 ---
 
-## 许可证
 
-见仓库根目录许可证文件（如有）。第三方库各自遵循其开源协议（OkHttp Apache 2.0、Gson Apache 2.0 等）。
+
